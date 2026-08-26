@@ -196,9 +196,9 @@ export function PolicyBrief() {
                   padding: "0.35rem 0.7rem",
                   borderRadius: "var(--radius-sm)",
                   fontSize: "0.75rem",
-                  color: year === t ? "var(--emerald-light)" : "var(--text-secondary)",
-                  background: year === t ? "var(--emerald-dim)" : "transparent",
-                  border: `1px solid ${year === t ? "var(--emerald)" : "var(--border)"}`,
+                  color: year === t ? "var(--gold)" : "var(--text-secondary)",
+                  background: year === t ? "rgba(212,160,23,0.1)" : "transparent",
+                  border: `1px solid ${year === t ? "rgba(212,160,23,0.3)" : "var(--border)"}`,
                 }}
               >
                 Year {t}
@@ -212,14 +212,14 @@ export function PolicyBrief() {
           <h4 style={{ fontSize: "0.85rem", marginBottom: "0.75rem" }}>1. Allocation</h4>
           <div style={{ display: "flex", height: 24, borderRadius: "var(--radius-sm)", overflow: "hidden", marginBottom: "0.75rem", border: "1px solid var(--border)" }}>
             {activeSectors.map((s) => (
-              <div key={s.id} style={{ width: `${s.pct}%`, background: "var(--emerald)", opacity: 0.6, transition: "width 300ms" }} />
+              <div key={s.id} style={{ width: `${s.pct}%`, background: "var(--gold)", opacity: 0.6, transition: "width 300ms" }} />
             ))}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "0.5rem" }}>
             {sorted.map((s) => (
               <div key={s.id} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", padding: "0.3rem 0", borderBottom: "1px solid var(--border)" }}>
                 <span style={{ color: s.alloc > 0 ? "var(--text-primary)" : "var(--text-muted)" }}>{s.nameAr}</span>
-                <span className="mono" style={{ color: s.alloc > 0 ? "var(--emerald-light)" : "var(--text-muted)" }}>
+                <span className="mono" style={{ color: s.alloc > 0 ? "var(--gold)" : "var(--text-muted)" }}>
                   {s.alloc > 0 ? `${(s.alloc / 1_000_000).toFixed(1)}M (${s.pct.toFixed(0)}%)` : "—"}
                 </span>
               </div>
@@ -234,7 +234,7 @@ export function PolicyBrief() {
             {Object.entries(weights).map(([key, val]) => (
               <div key={key} style={{ textAlign: "center", padding: "0.5rem", borderRadius: "var(--radius-sm)", background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "capitalize" }}>{key.replace(/_/g, " ")}</div>
-                <div className="mono" style={{ fontSize: "0.9rem", color: "var(--emerald-light)" }}>{(val * 100).toFixed(0)}%</div>
+                <div className="mono" style={{ fontSize: "0.9rem", color: "var(--gold)" }}>{(val * 100).toFixed(0)}%</div>
               </div>
             ))}
           </div>
@@ -246,7 +246,7 @@ export function PolicyBrief() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
             <div style={{ textAlign: "center", padding: "0.75rem", borderRadius: "var(--radius-sm)", background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
               <div style={{ fontSize: "0.6rem", color: "var(--text-muted)" }}>Total Impact Score</div>
-              <div className="mono" style={{ fontSize: "1.3rem", color: "var(--emerald-light)" }}>{results.totalImpact.toFixed(1)}</div>
+              <div className="mono" style={{ fontSize: "1.3rem", color: "var(--gold)" }}>{results.totalImpact.toFixed(1)}</div>
             </div>
             <div style={{ textAlign: "center", padding: "0.75rem", borderRadius: "var(--radius-sm)", background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
               <div style={{ fontSize: "0.6rem", color: "var(--text-muted)" }}>Total GDP Flow</div>
@@ -269,7 +269,7 @@ export function PolicyBrief() {
             {activeSectors.map((s) => (
               <div key={s.id} style={{ padding: "0.5rem", borderRadius: "var(--radius-sm)", background: "var(--bg-secondary)", border: "1px solid var(--border)", textAlign: "center" }}>
                 <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>{s.nameAr}</div>
-                <div className="mono" style={{ fontSize: "1rem", color: "var(--emerald-light)" }}>{s.sroi.toFixed(2)}x</div>
+                <div className="mono" style={{ fontSize: "1rem", color: "var(--emerald)" }}>{s.sroi.toFixed(2)}x</div>
               </div>
             ))}
           </div>

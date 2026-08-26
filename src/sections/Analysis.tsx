@@ -53,9 +53,9 @@ export function Analysis() {
                 fontSize: "0.75rem",
                 fontWeight: 500,
                 whiteSpace: "nowrap",
-                color: activeTab === tab.id ? "var(--emerald-light)" : "var(--text-secondary)",
-                background: activeTab === tab.id ? "var(--emerald-dim)" : "transparent",
-                border: `1px solid ${activeTab === tab.id ? "var(--emerald)" : "transparent"}`,
+                color: activeTab === tab.id ? "var(--gold)" : "var(--text-secondary)",
+                background: activeTab === tab.id ? "rgba(212,160,23,0.1)" : "transparent",
+                border: `1px solid ${activeTab === tab.id ? "rgba(212,160,23,0.3)" : "transparent"}`,
                 transition: "all 180ms ease",
               }}
             >

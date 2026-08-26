@@ -73,18 +73,18 @@ export function DiminishingReturns() {
         ))}
 
         {/* Curve */}
-        <path d={pathD} fill="none" stroke="var(--emerald)" strokeWidth={2} />
+        <path d={pathD} fill="none" stroke="var(--gold)" strokeWidth={2} />
 
         {/* Area under curve */}
         <path
           d={`${pathD} L ${points[points.length - 1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`}
-          fill="var(--emerald)"
+          fill="var(--gold)"
           opacity={0.08}
         />
 
         {/* Current allocation point */}
-        <circle cx={currentX} cy={currentY} r={4} fill="var(--emerald-light)" />
-        <line x1={currentX} y1={currentY} x2={currentX} y2={padding.top + chartHeight} stroke="var(--emerald)" strokeWidth={1} strokeDasharray="3,3" />
+        <circle cx={currentX} cy={currentY} r={4} fill="var(--gold)" />
+        <line x1={currentX} y1={currentY} x2={currentX} y2={padding.top + chartHeight} stroke="var(--gold)" strokeWidth={1} strokeDasharray="3,3" />
 
         {/* Labels */}
         <text x={padding.left + chartWidth / 2} y={svgHeight - 5} textAnchor="middle" fill="var(--text-muted)" fontSize={10}>
@@ -95,13 +95,13 @@ export function DiminishingReturns() {
         </text>
 
         {/* Current value label */}
-        <text x={currentX} y={currentY - 8} textAnchor="middle" fill="var(--emerald-light)" fontSize={9} fontWeight={600}>
+        <text x={currentX} y={currentY - 8} textAnchor="middle" fill="var(--gold)" fontSize={9} fontWeight={600}>
           {currentPoint.impact.toFixed(1)}
         </text>
       </svg>
 
       <div style={{ marginTop: "0.5rem", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-        Current allocation: <span className="mono" style={{ color: "var(--emerald-light)" }}>
+        Current allocation: <span className="mono" style={{ color: "var(--gold)" }}>
           {(currentAlloc / 1_000_000).toFixed(1)}M
         </span>
         {" "}| Marginal return: <span className="mono" style={{ color: currentPoint.marginalImpact < 0.5 ? "var(--amber)" : "var(--text-primary)" }}>

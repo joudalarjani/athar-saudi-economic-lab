@@ -29,7 +29,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Direct Social Impact
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--emerald-light)", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--gold)", marginTop: "0.25rem" }}>
           {results.totalImpact.toFixed(1)}
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>
@@ -42,7 +42,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           SROI (Weighted Average)
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--emerald-light)", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--emerald)", marginTop: "0.25rem" }}>
           {weightedSROI.toFixed(2)}x
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>
@@ -55,7 +55,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Keynesian Multiplier
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--blue)", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--gold)", marginTop: "0.25rem" }}>
           {overallMultiplier.toFixed(2)}x
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>
@@ -68,7 +68,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Economic Impact (GDP Flow)
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--gold)", marginTop: "0.25rem" }}>
           {(totalGDP / 1_000_000).toFixed(1)}M
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>
@@ -81,7 +81,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Portfolio Risk
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", color: results.risk.portfolio > 0.25 ? "var(--red)" : "var(--text-primary)", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: results.risk.portfolio > 0.25 ? "var(--red)" : "var(--gold)", marginTop: "0.25rem" }}>
           {(results.risk.portfolio * 100).toFixed(1)}%
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>
@@ -94,7 +94,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Resilience Score
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", color: results.resilience < 40 ? "var(--amber)" : "var(--text-primary)", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: results.resilience < 40 ? "var(--amber)" : "var(--emerald)", marginTop: "0.25rem" }}>
           {results.resilience.toFixed(1)}
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>
@@ -107,7 +107,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Equity Index
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--emerald)", marginTop: "0.25rem" }}>
           {(results.equityIndex * 100).toFixed(1)}%
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>
@@ -120,7 +120,7 @@ export function MetricsPanel() {
         <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
           Long-term Impact (Year {year})
         </div>
-        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--emerald-light)", marginTop: "0.25rem" }}>
+        <div className="mono" style={{ fontSize: "1.4rem", color: "var(--emerald)", marginTop: "0.25rem" }}>
           {SECTORS.reduce((s, sec) => s + (results.impactTimeSeries[sec.id]?.[year === 0 ? 0 : year === 1 ? 1 : year === 3 ? 2 : year === 5 ? 3 : 4] || 0), 0).toFixed(1)}
         </div>
         <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>

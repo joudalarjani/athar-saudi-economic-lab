@@ -476,4 +476,68 @@ export const SECTOR_DATA: SectorData[] = [
       "Regional concentration limits diversification benefits",
     ],
   },
+
+  // ═══════════════════════════════════════════════════
+  // 8. HAJJ & UMRAH SERVICES (NEW SECTOR)
+  // ═══════════════════════════════════════════════════
+  {
+    sectorId: "hajj",
+    sector: "Hajj & Umrah Services",
+    sectorAr: "خدمات الحج والمعتمر",
+    allocation: 10_000_000,
+
+    SROI: 1.6,
+    SROI_source:
+      "Ministry of Hajj / Simulation Estimate: " +
+      "No comprehensive SROI study exists for Hajj/Umrah services specifically. " +
+      "Estimate based on: (1) Tourism social value literature (UNWTO), " +
+      "(2) Religious tourism social value frameworks, " +
+      "(3) Ministry of Hajj economic impact data. " +
+      "Range: 1.2x–2.0x. Midpoint: 1.6x. " +
+      "Conservative due to difficulty monetizing religious/social outcomes.",
+    SROI_year: 2024,
+
+    multiplier: 1.5,
+    multiplier_source:
+      "Hajj/Umrah spending has significant local multiplier: " +
+      "transportation, accommodation, food services, retail, religious services. " +
+      "UNWTO tourism multiplier for religious tourism: 0.8-1.5. " +
+      "Saudi-specific: high local content in services → moderate-high multiplier. " +
+      "Estimate: 1.5.",
+    time_horizon: "Medium-term (1-5 years; seasonal/event-based impact with infrastructure legacy)",
+    risk: "High (σ ≈ 0.40): Event-dependent (pandemic disruption shown in 2020-2021), infrastructure capacity constraints, regulatory changes, geopolitical factors",
+    sustainability:
+      "Moderate — Hajj/Umrah generates its own revenue (visa fees, service charges). " +
+      "Social services component requires ongoing government investment. " +
+      "Vision 2030 target: 30M Umrah visitors/year. " +
+      "Infrastructure investments have long-term legacy value.",
+    equity:
+      "Moderate — benefits pilgrims (predominantly lower-middle income from Muslim-majority countries). " +
+      "Local economic benefits concentrate in Makkah/Madinah regions. " +
+      "Health and safety services have strong equity dimensions.",
+    regional_factor:
+      "Extremely concentrated in Makkah and Madinah regions. " +
+      "Limited direct regional spillover to other Saudi regions. " +
+      "Transportation infrastructure creates some national linkage.",
+    confidence: "Very Low",
+    evidence_type: "SIMULATION_ASSUMPTION",
+    source_url:
+      "https://www.vision2030.gov.sa/en/programs/hajj-and-umrah " +
+      "https://www.holymosque.gov.sa/en",
+    assumptions: [
+      "SROI 1.6 is a simulation assumption — no published study exists for this sector",
+      "SROI range: 1.2x–2.0x (midpoint used: 1.6x)",
+      "Multiplier 1.5 reflects tourism/service multiplier literature",
+      "Impact is highly seasonal and event-dependent",
+      "Social value of religious access is difficult to monetize — estimate is conservative",
+    ],
+    limitations: [
+      "This is a newly added sector — parameters are simulation estimates, not empirical data",
+      "No comprehensive SROI study for Hajj/Umrah services found in public literature",
+      "Multiplier estimate adapted from general tourism literature, not Saudi Hajj-specific data",
+      "COVID-19 demonstrated extreme vulnerability to external shocks",
+      "Regional concentration limits diversification benefits",
+      "High sigma (0.40) reflects significant uncertainty in all parameters",
+    ],
+  },
 ];

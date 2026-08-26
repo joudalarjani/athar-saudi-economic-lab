@@ -68,7 +68,7 @@ export function DefendPolicy() {
                     <span style={{ color: sec.alloc > 0 ? "var(--text-primary)" : "var(--text-muted)" }}>
                       {sec.nameAr}
                     </span>
-                    <span className="mono" style={{ color: sec.alloc > 0 ? "var(--emerald-light)" : "var(--text-muted)" }}>
+                    <span className="mono" style={{ color: sec.alloc > 0 ? "var(--gold)" : "var(--text-muted)" }}>
                       {sec.alloc > 0 ? `${(sec.alloc / 1_000_000).toFixed(1)}M` : "—"}
                     </span>
                   </div>
@@ -76,7 +76,7 @@ export function DefendPolicy() {
                     <div style={{
                       height: "100%",
                       width: `${sec.pct}%`,
-                      background: sec.alloc > 0 ? "var(--emerald)" : "transparent",
+                      background: sec.alloc > 0 ? "var(--gold)" : "transparent",
                       borderRadius: 3,
                       transition: "width 300ms ease",
                     }} />
@@ -89,7 +89,7 @@ export function DefendPolicy() {
             <div>
               <div style={{ padding: "1rem", borderRadius: "var(--radius-sm)", background: "var(--bg-secondary)", border: "1px solid var(--border)", marginBottom: "0.75rem" }}>
                 <div style={{ fontSize: "0.65rem", color: "var(--text-muted)", marginBottom: "0.25rem" }}>Total Allocated</div>
-                <div className="mono" style={{ fontSize: "1.1rem", color: "var(--emerald-light)" }}>
+                <div className="mono" style={{ fontSize: "1.1rem", color: "var(--gold)" }}>
                   {((total / BUDGET) * 100).toFixed(0)}% of budget
                 </div>
                 {remaining > 0 && (
@@ -102,7 +102,7 @@ export function DefendPolicy() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                 <div style={{ padding: "0.5rem", borderRadius: "var(--radius-sm)", background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
                   <div style={{ fontSize: "0.6rem", color: "var(--text-muted)" }}>Impact</div>
-                  <div className="mono" style={{ fontSize: "0.9rem", color: "var(--emerald-light)" }}>{results.totalImpact.toFixed(1)}</div>
+                  <div className="mono" style={{ fontSize: "0.9rem", color: "var(--gold)" }}>{results.totalImpact.toFixed(1)}</div>
                 </div>
                 <div style={{ padding: "0.5rem", borderRadius: "var(--radius-sm)", background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
                   <div style={{ fontSize: "0.6rem", color: "var(--text-muted)" }}>Risk</div>
@@ -126,8 +126,8 @@ export function DefendPolicy() {
           <h4 style={{ fontSize: "0.85rem", marginBottom: "1rem" }}>Questions to Consider</h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {top3.length > 0 && (
-              <div style={{ padding: "0.75rem", borderRadius: "var(--radius-sm)", background: "rgba(25,135,84,0.05)", border: "1px solid rgba(25,135,84,0.15)" }}>
-                <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--emerald-light)", marginBottom: "0.25rem" }}>
+              <div style={{ padding: "0.75rem", borderRadius: "var(--radius-sm)", background: "rgba(212,160,23,0.05)", border: "1px solid rgba(212,160,23,0.15)" }}>
+                <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--gold)", marginBottom: "0.25rem" }}>
                   Why these top priorities?
                 </div>
                 <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)" }}>
@@ -186,7 +186,7 @@ export function DefendPolicy() {
                 <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "capitalize" }}>
                   {key.replace(/_/g, " ")}
                 </div>
-                <div className="mono" style={{ fontSize: "0.9rem", color: "var(--emerald-light)" }}>
+                <div className="mono" style={{ fontSize: "0.9rem", color: "var(--gold)" }}>
                   {(val * 100).toFixed(0)}%
                 </div>
               </div>

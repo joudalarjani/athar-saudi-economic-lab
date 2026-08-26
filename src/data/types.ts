@@ -16,7 +16,8 @@ export type SectorId =
   | "employment"
   | "women_empowerment"
   | "environment"
-  | "community";
+  | "community"
+  | "hajj";
 
 export interface SectorParams {
   id: SectorId;

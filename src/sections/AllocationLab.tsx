@@ -26,7 +26,7 @@ export function AllocationLab() {
       <div className="section-pad">
         {/* Header */}
         <div className="section-header" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-          <h2 style={{ marginBottom: "0.25rem" }}>التجربة التفاعلية</h2>
+          <h2 style={{ marginBottom: "0.25rem", color: "var(--gold)" }}>التجربة التفاعلية</h2>
           <p className="muted" style={{ fontSize: "0.85rem" }}>
             Allocate your 100M SAR across sectors. Watch how your decisions create impact.
           </p>
@@ -36,11 +36,11 @@ export function AllocationLab() {
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
           <div className="card card-sm" style={{ textAlign: "center", minWidth: 140 }}>
             <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>Budget</div>
-            <div className="mono" style={{ fontSize: "1.2rem" }}>100M</div>
+            <div className="mono" style={{ fontSize: "1.2rem", color: "var(--gold)" }}>100M</div>
           </div>
-          <div className="card card-sm" style={{ textAlign: "center", minWidth: 140, borderColor: remaining > 0 ? "var(--gold)" : "var(--border)" }}>
+          <div className="card card-sm" style={{ textAlign: "center", minWidth: 140, borderColor: remaining > 0 ? "rgba(212,160,23,0.3)" : "var(--border)" }}>
             <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>Remaining</div>
-            <div className="mono" style={{ fontSize: "1.2rem", color: remaining > 0 ? "var(--gold)" : "var(--emerald-light)" }}>
+            <div className="mono" style={{ fontSize: "1.2rem", color: remaining > 0 ? "var(--gold)" : "var(--emerald)" }}>
               {(remaining / 1_000_000).toFixed(1)}M
             </div>
           </div>
@@ -63,8 +63,8 @@ export function AllocationLab() {
                 key={t}
                 className="btn-outline"
                 style={{
-                  borderColor: year === t ? "var(--emerald)" : undefined,
-                  color: year === t ? "var(--emerald-light)" : undefined,
+                  borderColor: year === t ? "var(--gold)" : undefined,
+                  color: year === t ? "var(--gold)" : undefined,
                   fontSize: "0.75rem",
                 }}
                 onClick={() => setYear(t)}
@@ -110,7 +110,7 @@ export function AllocationLab() {
                 <div style={{ marginTop: "0.5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.25rem", fontSize: "0.65rem" }}>
                   <div>
                     <span className="dim">SROI: </span>
-                    <span className="mono" style={{ color: "var(--emerald-light)" }}>{results.sroi[sec.id].toFixed(2)}x</span>
+                    <span className="mono" style={{ color: "var(--emerald)" }}>{results.sroi[sec.id].toFixed(2)}x</span>
                   </div>
                   <div>
                     <span className="dim">Multiplier: </span>
@@ -143,7 +143,7 @@ export function AllocationLab() {
           <h4 style={{ fontSize: "0.85rem", marginBottom: "0.5rem" }}>SROI ≠ Keynesian Multiplier</h4>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", fontSize: "0.75rem" }}>
             <div>
-              <div style={{ color: "var(--emerald-light)", fontWeight: 600, marginBottom: "0.25rem" }}>SROI (Social Return on Investment)</div>
+              <div style={{ color: "var(--emerald)", fontWeight: 600, marginBottom: "0.25rem" }}>SROI (Social Return on Investment)</div>
               <div className="dim">Measures: Social value created per 1 SAR invested</div>
               <div className="dim">Unit: Ratio (e.g., 3.5x = 3.5 SAR social value per 1 SAR)</div>
               <div className="dim">Includes: Monetized social outcomes (health, education, participation)</div>

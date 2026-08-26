@@ -53,8 +53,8 @@ export const Optimization: React.FC = () => {
             <h4 className="mb-md" style={{ color: "var(--gold)" }}>My Allocation</h4>
             {SECTORS.map((sec) => (
               <div key={sec.id} className="flex-between" style={{ marginBottom: "0.3rem" }}>
-                <span style={{ fontSize: "0.8rem" }}>{sec.nameEn}</span>
-                <span className="mono" style={{ fontSize: "0.8rem" }}>
+                <span style={{ fontSize: "0.8rem" }}>{sec.nameAr}</span>
+                <span className="mono" style={{ fontSize: "0.8rem", color: "var(--gold)" }}>
                   {(amounts[sec.id] / 1_000_000).toFixed(1)}M
                 </span>
               </div>
@@ -76,10 +76,10 @@ export const Optimization: React.FC = () => {
           </div>
 
           <div className="card">
-            <h4 className="mb-md" style={{ color: "var(--emerald-light)" }}>Optimized Allocation</h4>
+            <h4 className="mb-md" style={{ color: "var(--emerald)" }}>Optimized Allocation</h4>
             {SECTORS.map((sec) => (
               <div key={sec.id} className="flex-between" style={{ marginBottom: "0.3rem" }}>
-                <span style={{ fontSize: "0.8rem" }}>{sec.nameEn}</span>
+                <span style={{ fontSize: "0.8rem" }}>{sec.nameAr}</span>
                 <div className="flex-row gap-sm">
                   <span className="mono" style={{ fontSize: "0.8rem" }}>
                     {(optimal[sec.id] / 1_000_000).toFixed(1)}M

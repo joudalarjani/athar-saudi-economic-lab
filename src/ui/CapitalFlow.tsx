@@ -16,7 +16,7 @@ export function CapitalFlow() {
 
   return (
     <div className="card" style={{ marginBottom: "1.5rem" }}>
-      <h4 style={{ marginBottom: "1rem", fontSize: "0.85rem" }}>Capital Flow</h4>
+      <h4 style={{ marginBottom: "1rem", fontSize: "0.85rem", color: "var(--gold)" }}>Capital Flow</h4>
 
       {/* Flow visualization */}
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
@@ -24,14 +24,14 @@ export function CapitalFlow() {
         {/* Source */}
         <div style={{
           padding: "0.5rem 1rem",
-          background: "var(--emerald-dim)",
-          border: "1px solid var(--emerald)",
+          background: "rgba(212,160,23,0.08)",
+          border: "1px solid rgba(212,160,23,0.25)",
           borderRadius: "var(--radius-sm)",
           textAlign: "center",
           minWidth: 100,
         }}>
           <div style={{ fontSize: "0.6rem", color: "var(--text-muted)" }}>CAPITAL</div>
-          <div className="mono" style={{ fontSize: "0.85rem", color: "var(--emerald-light)" }}>
+          <div className="mono" style={{ fontSize: "0.85rem", color: "var(--gold)" }}>
             {(total / 1_000_000).toFixed(0)}M
           </div>
         </div>
@@ -48,8 +48,8 @@ export function CapitalFlow() {
                 key={sec.id}
                 style={{
                   padding: "0.3rem 0.6rem",
-                  background: "var(--bg-hover)",
-                  border: "1px solid var(--border)",
+                  background: "rgba(15,22,41,0.6)",
+                  border: "1px solid rgba(212,160,23,0.12)",
                   borderRadius: "var(--radius-sm)",
                   fontSize: "0.65rem",
                   position: "relative",
@@ -59,12 +59,12 @@ export function CapitalFlow() {
                 <div style={{
                   position: "absolute",
                   inset: 0,
-                  background: "var(--emerald)",
-                  opacity: 0.1,
+                  background: "var(--gold)",
+                  opacity: 0.08,
                   width: `${pct}%`,
                 }} />
                 <span style={{ position: "relative" }}>{sec.nameAr}</span>
-                <span className="mono" style={{ position: "relative", marginLeft: 4, color: "var(--emerald-light)" }}>
+                <span className="mono" style={{ position: "relative", marginLeft: 4, color: "var(--gold)" }}>
                   {(amounts[sec.id] / 1_000_000).toFixed(1)}M
                 </span>
               </div>
@@ -78,34 +78,34 @@ export function CapitalFlow() {
         <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
           <div style={{
             padding: "0.3rem 0.6rem",
-            background: "var(--bg-hover)",
+            background: "rgba(15,22,41,0.6)",
             borderRadius: "var(--radius-sm)",
             fontSize: "0.65rem",
           }}>
             <span style={{ color: "var(--text-muted)" }}>Direct </span>
-            <span className="mono" style={{ color: "var(--emerald-light)" }}>
+            <span className="mono" style={{ color: "var(--gold)" }}>
               {(totalDirect / 1_000_000).toFixed(1)}M
             </span>
           </div>
           <div style={{
             padding: "0.3rem 0.6rem",
-            background: "var(--bg-hover)",
+            background: "rgba(15,22,41,0.6)",
             borderRadius: "var(--radius-sm)",
             fontSize: "0.65rem",
           }}>
             <span style={{ color: "var(--text-muted)" }}>Indirect </span>
-            <span className="mono" style={{ color: "var(--blue)" }}>
+            <span className="mono" style={{ color: "var(--emerald)" }}>
               +{(totalIndirect / 1_000_000).toFixed(1)}M
             </span>
           </div>
           <div style={{
             padding: "0.3rem 0.6rem",
-            background: "var(--bg-hover)",
+            background: "rgba(15,22,41,0.6)",
             borderRadius: "var(--radius-sm)",
             fontSize: "0.65rem",
           }}>
             <span style={{ color: "var(--text-muted)" }}>Induced </span>
-            <span className="mono" style={{ color: "var(--gold)" }}>
+            <span className="mono" style={{ color: "var(--emerald-light)" }}>
               +{(totalInduced / 1_000_000).toFixed(1)}M
             </span>
           </div>
@@ -113,11 +113,11 @@ export function CapitalFlow() {
       </div>
 
       <div style={{ marginTop: "0.75rem", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-        Total GDP Flow: <span className="mono" style={{ color: "var(--text-primary)" }}>
+        Total GDP Flow: <span className="mono" style={{ color: "var(--gold)" }}>
           {((totalDirect + totalIndirect + totalInduced) / 1_000_000).toFixed(1)}M SAR
         </span>
         {" "}|{" "}
-        Multiplier: <span className="mono" style={{ color: "var(--text-primary)" }}>
+        Multiplier: <span className="mono" style={{ color: "var(--gold)" }}>
           {totalDirect > 0 ? ((totalDirect + totalIndirect + totalInduced) / totalDirect).toFixed(2) : "0.00"}x
         </span>
       </div>

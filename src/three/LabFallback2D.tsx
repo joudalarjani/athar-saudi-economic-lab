@@ -10,7 +10,7 @@ export function LabFallback2D() {
     <div style={{
       width: "100%",
       padding: "1.5rem",
-      background: "radial-gradient(ellipse at center, #0d1210 0%, #070a0c 100%)",
+      background: "radial-gradient(ellipse at center, rgba(15,22,41,0.8) 0%, var(--bg-primary) 100%)",
       borderRadius: "var(--radius-md)",
       border: "1px solid var(--border)",
     }}>
@@ -20,14 +20,14 @@ export function LabFallback2D() {
           width: 80,
           height: 80,
           borderRadius: "50%",
-          background: `radial-gradient(circle, rgba(25,135,84,${0.3 + (total / BUDGET) * 0.4}) 0%, rgba(25,135,84,0.05) 70%)`,
-          border: "2px solid var(--emerald)",
+          background: `radial-gradient(circle, rgba(212,160,23,${0.2 + (total / BUDGET) * 0.3}) 0%, rgba(212,160,23,0.03) 70%)`,
+          border: "2px solid rgba(212,160,23,0.3)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           margin: "0 auto",
         }}>
-          <div className="mono" style={{ fontSize: "0.75rem", color: "var(--emerald-light)" }}>
+          <div className="mono" style={{ fontSize: "0.75rem", color: "var(--gold)" }}>
             {((1 - total / BUDGET) * 100).toFixed(0)}%
           </div>
         </div>
@@ -36,7 +36,7 @@ export function LabFallback2D() {
         </div>
       </div>
 
-      {/* Sector nodes as a radial layout */}
+      {/* Sector nodes */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(4, 1fr)",
@@ -64,15 +64,15 @@ export function LabFallback2D() {
                 height: 36 + ratio * 20,
                 borderRadius: "50%",
                 background: isActive
-                  ? `radial-gradient(circle, rgba(25,135,84,${0.2 + ratio * 0.5}) 0%, rgba(25,135,84,0.05) 70%)`
+                  ? `radial-gradient(circle, rgba(212,160,23,${0.15 + ratio * 0.35}) 0%, rgba(212,160,23,0.03) 70%)`
                   : "radial-gradient(circle, rgba(30,41,45,0.3) 0%, transparent 70%)",
-                border: `1.5px solid ${isActive ? "var(--emerald)" : "var(--border)"}`,
+                border: `1.5px solid ${isActive ? "rgba(212,160,23,0.4)" : "var(--border)"}`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 transition: "all 300ms ease",
               }}>
-                <span className="mono" style={{ fontSize: "0.5rem", color: isActive ? "var(--emerald-light)" : "var(--text-muted)" }}>
+                <span className="mono" style={{ fontSize: "0.5rem", color: isActive ? "var(--gold)" : "var(--text-muted)" }}>
                   {isActive ? `${(ratio * 100).toFixed(0)}%` : "—"}
                 </span>
               </div>
