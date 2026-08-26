@@ -164,8 +164,8 @@ export function AllocationLab() {
           <button className="btn-outline" onClick={resetAmounts} style={{ marginRight: "1rem" }}>
             Reset
           </button>
-          <button className="btn-primary" onClick={() => setPhase("optimize")}>
-            Analyze My Allocation
+          <button className="btn-primary" onClick={() => setPhase("scenarios")}>
+            Compare Scenarios
           </button>
         </div>
       </div>

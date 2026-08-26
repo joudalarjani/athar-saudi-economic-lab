@@ -118,11 +118,11 @@ export const Optimization: React.FC = () => {
         </p>
 
         <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-          <button className="btn-outline" onClick={() => setPhase("lab")} style={{ marginRight: "1rem" }}>
-            Back to Lab
+          <button className="btn-outline" onClick={() => setPhase("model")} style={{ marginRight: "1rem" }}>
+            Back to Model
           </button>
-          <button className="btn-primary" onClick={() => setPhase("analysis")}>
-            Advanced Analysis
+          <button className="btn-primary" onClick={() => setPhase("scenarios")}>
+            Compare Scenarios
           </button>
         </div>
       </div>

@@ -155,8 +155,8 @@ export function PolicyReview() {
         <div className="section-pad" style={{ textAlign: "center", padding: "4rem 2rem" }}>
           <h2>Economic Policy Review</h2>
           <p className="muted" style={{ marginTop: "1rem" }}>Allocate funds in the Lab first to enable policy review.</p>
-          <button className="btn-primary" style={{ marginTop: "1.5rem" }} onClick={() => setPhase("lab")}>
-            Go to Lab
+          <button className="btn-primary" style={{ marginTop: "1.5rem" }} onClick={() => setPhase("model")}>
+            Go to Model
           </button>
         </div>
       </div>
@@ -315,13 +315,13 @@ export function PolicyReview() {
 
         {/* Actions */}
         <div style={{ textAlign: "center", display: "flex", gap: "0.75rem", justifyContent: "center" }}>
-          <button className="btn-outline" onClick={() => setPhase("defend")}>
-            Back to Defend
+          <button className="btn-outline" onClick={() => setPhase("tradeoff")}>
+            Back to Trade-off
           </button>
-          <button className="btn-outline" onClick={() => setPhase("lab")}>
+          <button className="btn-outline" onClick={() => setPhase("model")}>
             Revise Allocation
           </button>
-          <button className="btn-primary" onClick={() => setPhase("brief")}>
+          <button className="btn-primary" onClick={() => setPhase("impact")}>
             Generate Policy Brief
           </button>
         </div>

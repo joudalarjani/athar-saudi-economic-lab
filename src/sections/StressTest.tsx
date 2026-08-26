@@ -31,8 +31,8 @@ export const StressTest: React.FC = () => {
         {totalAllocated === 0 ? (
           <div className="card" style={{ textAlign: "center", padding: "3rem" }}>
             <p className="muted">No allocation yet. Go to the Lab to allocate funds first.</p>
-            <button className="btn-primary mt-md" onClick={() => setPhase("lab")}>
-              Go to Lab
+            <button className="btn-primary mt-md" onClick={() => setPhase("model")}>
+              Go to Model
             </button>
           </div>
         ) : (
@@ -102,11 +102,11 @@ export const StressTest: React.FC = () => {
             </div>
 
             <div style={{ textAlign: "center" }}>
-              <button className="btn-outline" onClick={() => setPhase("analysis")} style={{ marginRight: "1rem" }}>
+              <button className="btn-outline" onClick={() => setPhase("model")} style={{ marginRight: "1rem" }}>
                 Back
               </button>
-              <button className="btn-primary" onClick={() => setPhase("defend")}>
-                Defend Your Policy
+              <button className="btn-primary" onClick={() => setPhase("tradeoff")}>
+                Trade-off Analysis
               </button>
             </div>
           </>

@@ -156,8 +156,8 @@ export function PolicyBrief() {
         <div className="section-pad" style={{ textAlign: "center", padding: "4rem 2rem" }}>
           <h2>Policy Brief</h2>
           <p className="muted" style={{ marginTop: "1rem" }}>Allocate funds in the Lab to generate a policy brief.</p>
-          <button className="btn-primary" style={{ marginTop: "1.5rem" }} onClick={() => setPhase("lab")}>
-            Go to Lab
+          <button className="btn-primary" style={{ marginTop: "1.5rem" }} onClick={() => setPhase("model")}>
+            Go to Model
           </button>
         </div>
       </div>
@@ -420,14 +420,14 @@ export function PolicyBrief() {
 
         {/* Actions */}
         <div style={{ textAlign: "center", display: "flex", gap: "0.75rem", justifyContent: "center" }}>
-          <button className="btn-outline" onClick={() => setPhase("review")}>
+          <button className="btn-outline" onClick={() => setPhase("policy")}>
             Back to Review
           </button>
           <button className="btn-outline" onClick={handleCopy}>
             Copy Brief
           </button>
-          <button className="btn-primary" onClick={() => setPhase("credits")}>
-            Complete
+          <button className="btn-primary" onClick={() => setPhase("thesis")}>
+            My Thesis
           </button>
         </div>
       </div>

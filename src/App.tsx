@@ -2,27 +2,31 @@ import { useState, useEffect } from "react";
 import { useStore } from "./store/useStore";
 import { BUDGET } from "./data/types";
 import { Hero } from "./sections/Hero";
+import { TheQuestion } from "./sections/TheQuestion";
+import { TheEvidence } from "./sections/TheEvidence";
+import { TheMechanism } from "./sections/TheMechanism";
 import { AllocationLab } from "./sections/AllocationLab";
-import { Optimization } from "./sections/Optimization";
-import { Analysis } from "./sections/Analysis";
-import { StressTest } from "./sections/StressTest";
-import { DefendPolicy } from "./sections/DefendPolicy";
+import { TheScenarios } from "./sections/TheScenarios";
+import { TheTradeOff } from "./sections/TheTradeOff";
 import { PolicyReview } from "./sections/PolicyReview";
 import { PolicyBrief } from "./sections/PolicyBrief";
-import { Credits } from "./sections/Credits";
+import { MyThesis } from "./sections/MyThesis";
+import { About } from "./sections/About";
 import { LabScene } from "./three/LabScene";
 import { LabFallback2D } from "./three/LabFallback2D";
 
 const PHASES = [
   { id: "hero" as const, label: "Start" },
-  { id: "lab" as const, label: "Allocate" },
-  { id: "optimize" as const, label: "Optimize" },
-  { id: "analysis" as const, label: "Analysis" },
-  { id: "stress" as const, label: "Stress Test" },
-  { id: "defend" as const, label: "Defend" },
-  { id: "review" as const, label: "Review" },
-  { id: "brief" as const, label: "Brief" },
-  { id: "credits" as const, label: "Done" },
+  { id: "question" as const, label: "01 The Question" },
+  { id: "evidence" as const, label: "02 The Evidence" },
+  { id: "mechanism" as const, label: "03 The Mechanism" },
+  { id: "model" as const, label: "04 The Model" },
+  { id: "scenarios" as const, label: "05 The Scenarios" },
+  { id: "tradeoff" as const, label: "06 The Trade-off" },
+  { id: "policy" as const, label: "07 The Policy" },
+  { id: "impact" as const, label: "08 The Impact" },
+  { id: "thesis" as const, label: "09 My Thesis" },
+  { id: "about" as const, label: "About" },
 ];
 
 function useIsMobile() {
@@ -62,7 +66,7 @@ export default function App() {
             ))}
           </nav>
 
-          {phase === "lab" && (
+          {phase === "model" && (
             <div style={{ padding: "0 1.5rem", paddingTop: "0.5rem" }}>
               {isMobile ? <LabFallback2D /> : <LabScene />}
             </div>
@@ -71,16 +75,18 @@ export default function App() {
       )}
 
       {phase === "hero" && <Hero />}
-      {phase === "lab" && <AllocationLab />}
-      {phase === "optimize" && <Optimization />}
-      {phase === "analysis" && <Analysis />}
-      {phase === "stress" && <StressTest />}
-      {phase === "defend" && <DefendPolicy />}
-      {phase === "review" && <PolicyReview />}
-      {phase === "brief" && <PolicyBrief />}
-      {phase === "credits" && <Credits />}
+      {phase === "question" && <TheQuestion />}
+      {phase === "evidence" && <TheEvidence />}
+      {phase === "mechanism" && <TheMechanism />}
+      {phase === "model" && <AllocationLab />}
+      {phase === "scenarios" && <TheScenarios />}
+      {phase === "tradeoff" && <TheTradeOff />}
+      {phase === "policy" && <PolicyReview />}
+      {phase === "impact" && <PolicyBrief />}
+      {phase === "thesis" && <MyThesis />}
+      {phase === "about" && <About />}
 
-      {phase !== "hero" && phase !== "credits" && (
+      {phase !== "hero" && phase !== "about" && (
         <div className="signature-bar">
           <span>Joud — Economic Policy Lab</span>
           <span className="mono">

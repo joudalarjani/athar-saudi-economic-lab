@@ -27,8 +27,8 @@ export function DefendPolicy() {
         <div className="section-pad" style={{ textAlign: "center", padding: "4rem 2rem" }}>
           <h2>Defend Your Policy</h2>
           <p className="muted" style={{ marginTop: "1rem" }}>Allocate funds in the Lab first.</p>
-          <button className="btn-primary" style={{ marginTop: "1.5rem" }} onClick={() => setPhase("lab")}>
-            Go to Lab
+          <button className="btn-primary" style={{ marginTop: "1.5rem" }} onClick={() => setPhase("model")}>
+            Go to Model
           </button>
         </div>
       </div>
@@ -196,13 +196,13 @@ export function DefendPolicy() {
 
         {/* Actions */}
         <div style={{ textAlign: "center", display: "flex", gap: "0.75rem", justifyContent: "center" }}>
-          <button className="btn-outline" onClick={() => setPhase("stress")}>
-            Back to Stress Test
+          <button className="btn-outline" onClick={() => setPhase("tradeoff")}>
+            Back to Trade-off
           </button>
-          <button className="btn-outline" onClick={() => setPhase("lab")}>
+          <button className="btn-outline" onClick={() => setPhase("model")}>
             Revise Allocation
           </button>
-          <button className="btn-primary" onClick={() => setPhase("review")}>
+          <button className="btn-primary" onClick={() => setPhase("policy")}>
             Enter Policy Review
           </button>
         </div>

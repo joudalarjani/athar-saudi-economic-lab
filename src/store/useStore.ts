@@ -4,13 +4,26 @@ import { BUDGET } from "../data/types";
 import { SECTORS } from "../data/sectors.db";
 import { computeAll } from "../engine";
 
+type Phase =
+  | "hero"
+  | "question"
+  | "evidence"
+  | "mechanism"
+  | "model"
+  | "scenarios"
+  | "tradeoff"
+  | "policy"
+  | "impact"
+  | "thesis"
+  | "about";
+
 interface AtharState {
   amounts: Record<SectorId, number>;
   year: 0 | 1 | 3 | 5 | 10;
   weights: ObjectiveWeights;
   activeShocks: ShockId[];
   snapshots: AllocationSnapshot[];
-  phase: "hero" | "lab" | "optimize" | "analysis" | "stress" | "defend" | "review" | "brief" | "credits";
+  phase: Phase;
   results: ComputedResults;
 
   setAmount: (sector: SectorId, amount: number) => void;
@@ -19,7 +32,7 @@ interface AtharState {
   setWeight: (key: keyof ObjectiveWeights, value: number) => void;
   toggleShock: (shock: ShockId) => void;
   saveSnapshot: (label: string) => void;
-  setPhase: (phase: AtharState["phase"]) => void;
+  setPhase: (phase: Phase) => void;
   recalc: () => void;
 }
 

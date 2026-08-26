@@ -77,11 +77,11 @@ export function Analysis() {
 
         {/* Actions */}
         <div style={{ textAlign: "center", marginTop: "2rem" }}>
-          <button className="btn-outline" onClick={() => setPhase("optimize")} style={{ marginRight: "1rem" }}>
-            Back to Optimization
+          <button className="btn-outline" onClick={() => setPhase("model")} style={{ marginRight: "1rem" }}>
+            Back to Model
           </button>
-          <button className="btn-primary" onClick={() => setPhase("stress")}>
-            Stress Test
+          <button className="btn-primary" onClick={() => setPhase("tradeoff")}>
+            Trade-off Analysis
           </button>
         </div>
       </div>
