@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# TypeScript / build artifacts
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
 # Local Node.js tools
 _tools
 

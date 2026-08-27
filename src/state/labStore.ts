@@ -1,0 +1,203 @@
+/**
+ * Central state for ATHAR lab.
+ * Uses Zustand for simplicity.
+ */
+
+import { create } from 'zustand';
+import { SECTORS, TOTAL_BUDGET } from '../data/sectors';
+import { DEFAULT_OBJECTIVE_WEIGHTS } from '../data/objectives';
+import { FUNDING_INSTRUMENTS } from '../data/fundingInstruments';
+import type { ObjectiveWeights } from '../engine/optimizer';
+
+export type Stage =
+  | 'hero'
+  | 'lab'
+  | 'analysis'
+  | 'optimization'
+  | 'stress'
+  | 'sensitivity'
+  | 'capitalStack'
+  | 'regional'
+  | 'critique'
+  | 'brief';
+
+interface LabState {
+  // Navigation
+  stage: Stage;
+  setStage: (s: Stage) => void;
+
+  // Allocation
+  allocations: Record<string, number>;
+  setAllocation: (sectorId: string, amount: number) => void;
+  setAllAllocations: (allocations: Record<string, number>) => void;
+  resetAllocations: () => void;
+
+  // Parameters
+  discountRate: number;
+  setDiscountRate: (r: number) => void;
+  horizon: number;
+  setHorizon: (h: number) => void;
+
+  // Time machine
+  currentYear: number;
+  setCurrentYear: (y: number) => void;
+
+  // Multi-objective weights
+  objectiveWeights: ObjectiveWeights;
+  setObjectiveWeight: (key: keyof ObjectiveWeights, value: number) => void;
+  resetObjectiveWeights: () => void;
+
+  // Funding mix (capital stack)
+  fundingMix: Record<string, number>;
+  setFundingShare: (instrumentId: string, value: number) => void;
+  resetFundingMix: () => void;
+
+  // Reach rates (per sector)
+  reachRates: Record<string, number>;
+  setReachRate: (sectorId: string, value: number) => void;
+
+  // 3D camera
+  cameraMode: 'free' | 'top' | 'cinematic';
+  setCameraMode: (m: 'free' | 'top' | 'cinematic') => void;
+  showLabels: boolean;
+  toggleLabels: () => void;
+
+  // Reduced motion / 2D fallback
+  prefer2D: boolean;
+  setPrefer2D: (b: boolean) => void;
+
+  // Mobile detection
+  isMobile: boolean;
+  setIsMobile: (b: boolean) => void;
+
+  // Model explainer modal
+  showModelExplainer: boolean;
+  setShowModelExplainer: (b: boolean) => void;
+}
+
+/**
+ * Compute initial equal allocation within min/max bounds.
+ */
+function initialAllocations(): Record<string, number> {
+  const total = TOTAL_BUDGET;
+  const allocations: Record<string, number> = {};
+  let remaining = total;
+
+  for (const sector of SECTORS) {
+    const equalShare = total / SECTORS.length;
+    const a = Math.max(sector.minAllocation, Math.min(sector.maxAllocation, equalShare));
+    allocations[sector.id] = a;
+  }
+
+  // Adjust to hit total
+  const sum = Object.values(allocations).reduce((s, v) => s + v, 0);
+  const diff = total - sum;
+  if (Math.abs(diff) > 0.01) {
+    // Distribute diff to flexible sectors
+    for (const sector of SECTORS) {
+      const a = allocations[sector.id];
+      const room = sector.maxAllocation - a;
+      if (room > 0) {
+        const adjustment = Math.min(room, diff / SECTORS.length);
+        allocations[sector.id] = a + adjustment;
+      }
+    }
+  }
+
+  return allocations;
+}
+
+const initialFunding = (): Record<string, number> => {
+  const mix: Record<string, number> = {};
+  const total = 1.0;
+  const perShare = total / FUNDING_INSTRUMENTS.length;
+  for (const inst of FUNDING_INSTRUMENTS) {
+    mix[inst.id] = perShare;
+  }
+  return mix;
+};
+
+const initialReachRates = (): Record<string, number> => {
+  const rates: Record<string, number> = {};
+  for (const s of SECTORS) {
+    rates[s.id] = 0.7;
+  }
+  return rates;
+};
+
+export const useLabStore = create<LabState>((set, get) => ({
+  stage: 'hero',
+  setStage: (s) => set({ stage: s }),
+
+  allocations: initialAllocations(),
+  setAllocation: (sectorId, amount) => {
+    const { allocations } = get();
+    const sector = SECTORS.find((s) => s.id === sectorId);
+    if (!sector) return;
+    const clamped = Math.max(sector.minAllocation, Math.min(sector.maxAllocation, amount));
+    const newAllocations = { ...allocations, [sectorId]: clamped };
+
+    // Rebalance: ensure total is exactly TOTAL_BUDGET
+    const currentSum = Object.values(newAllocations).reduce((s, v) => s + v, 0);
+    const diff = TOTAL_BUDGET - currentSum;
+    if (Math.abs(diff) > 0.01) {
+      // Distribute diff to other sectors
+      for (const s of SECTORS) {
+        if (s.id === sectorId) continue;
+        const current = newAllocations[s.id] ?? 0;
+        const adjustment = diff / (SECTORS.length - 1);
+        const newVal = current + adjustment;
+        const clampedVal = Math.max(s.minAllocation, Math.min(s.maxAllocation, newVal));
+        newAllocations[s.id] = clampedVal;
+      }
+    }
+
+    set({ allocations: newAllocations });
+  },
+  setAllAllocations: (allocations) => set({ allocations }),
+  resetAllocations: () => set({ allocations: initialAllocations() }),
+
+  discountRate: 0.03,
+  setDiscountRate: (r) => set({ discountRate: Math.max(0, Math.min(0.15, r)) }),
+  horizon: 10,
+  setHorizon: (h) => set({ horizon: Math.max(1, Math.min(15, h)) }),
+
+  currentYear: 5,
+  setCurrentYear: (y) => set({ currentYear: Math.max(0, Math.min(15, y)) }),
+
+  objectiveWeights: { ...DEFAULT_OBJECTIVE_WEIGHTS },
+  setObjectiveWeight: (key, value) => {
+    const { objectiveWeights } = get();
+    const newWeights = { ...objectiveWeights, [key]: Math.max(0, Math.min(1, value)) };
+    set({ objectiveWeights: newWeights });
+  },
+  resetObjectiveWeights: () => set({ objectiveWeights: { ...DEFAULT_OBJECTIVE_WEIGHTS } }),
+
+  fundingMix: initialFunding(),
+  setFundingShare: (instrumentId, value) => {
+    const { fundingMix } = get();
+    const clamped = Math.max(0, Math.min(1, value));
+    set({ fundingMix: { ...fundingMix, [instrumentId]: clamped } });
+  },
+  resetFundingMix: () => set({ fundingMix: initialFunding() }),
+
+  reachRates: initialReachRates(),
+  setReachRate: (sectorId, value) => {
+    const { reachRates } = get();
+    set({ reachRates: { ...reachRates, [sectorId]: Math.max(0.1, Math.min(1, value)) } });
+  },
+
+  cameraMode: 'cinematic',
+  setCameraMode: (m) => set({ cameraMode: m }),
+  showLabels: true,
+  toggleLabels: () => set((s) => ({ showLabels: !s.showLabels })),
+
+  prefer2D: false,
+  setPrefer2D: (b) => set({ prefer2D: b }),
+
+  isMobile: false,
+  setIsMobile: (b) => set({ isMobile: b }),
+
+  showModelExplainer: false,
+  setShowModelExplainer: (b) => set({ showModelExplainer: b }),
+}));
