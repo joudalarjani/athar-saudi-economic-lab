@@ -90,7 +90,7 @@ export function Optimization() {
                       setObjectiveWeight(key as any, parseFloat(e.target.value))
                     }
                     className="w-full h-1 appearance-none cursor-pointer"
-                    style={{ accentColor: '#C7A04A' }}
+                    style={{ accentColor: '#10b981' }}
                   />
                   <div className="text-[9px] text-ivory/40 font-mono uppercase">
                     {labels.en}
@@ -154,7 +154,7 @@ export function Optimization() {
                 Apply →
               </button>
             </div>
-            <div className="text-3xl text-emerald-300 font-mono tabular-nums">
+            <div className="text-3xl text-[#10b981] font-mono tabular-nums">
               {formatNumber(optMetrics.totalBeneficiaries)}
             </div>
             <div className="text-[10px] text-ivory/50 mt-1">مستفيد مباشر</div>
@@ -196,7 +196,7 @@ export function Optimization() {
                 {formatNumber(userMetrics.totalBeneficiaries)}
               </div>
               <div className="text-[10px] text-ivory/30 my-1">→</div>
-              <div className="text-lg text-emerald-300 font-mono">
+              <div className="text-lg text-[#10b981] font-mono">
                 {formatNumber(optMetrics.totalBeneficiaries)}
               </div>
             </div>
@@ -206,7 +206,7 @@ export function Optimization() {
                 {formatSROIRange(userMetrics.portfolioSROIMin, userMetrics.portfolioSROIMax)}
               </div>
               <div className="text-[10px] text-ivory/30 my-1">→</div>
-              <div className="text-base text-emerald-300 font-mono">
+              <div className="text-base text-[#10b981] font-mono">
                 {formatSROIRange(optMetrics.portfolioSROIMin, optMetrics.portfolioSROIMax)}
               </div>
             </div>
@@ -216,7 +216,7 @@ export function Optimization() {
                 {formatSAR(userMetrics.totalSocialValue, { compact: true })}
               </div>
               <div className="text-[10px] text-ivory/30 my-1">→</div>
-              <div className="text-lg text-emerald-300 font-mono">
+              <div className="text-lg text-[#10b981] font-mono">
                 {formatSAR(optMetrics.totalSocialValue, { compact: true })}
               </div>
             </div>
@@ -226,7 +226,7 @@ export function Optimization() {
                 {formatPercent(userMetrics.resilienceScore, 0)}
               </div>
               <div className="text-[10px] text-ivory/30 my-1">→</div>
-              <div className="text-lg text-emerald-300 font-mono">
+              <div className="text-lg text-[#10b981] font-mono">
                 {formatPercent(optMetrics.resilienceScore, 0)}
               </div>
             </div>
@@ -257,7 +257,7 @@ export function Optimization() {
                 <div
                   className={`font-mono tabular-nums w-24 text-right ${
                     diff > 0
-                      ? 'text-emerald-400'
+                      ? 'text-[#10b981]'
                       : diff < 0
                       ? 'text-red-400'
                       : 'text-ivory/30'

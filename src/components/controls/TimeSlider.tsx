@@ -61,8 +61,8 @@ export function TimeSlider() {
         onChange={(e) => setCurrentYear(parseInt(e.target.value))}
         className="w-full h-1.5 appearance-none rounded-sm cursor-pointer mb-3"
         style={{
-          background: `linear-gradient(to left, #C7A04A 0%, #C7A04A ${(currentYear / horizon) * 100}%, #1A2138 ${(currentYear / horizon) * 100}%, #1A2138 100%)`,
-          accentColor: '#C7A04A',
+          background: `linear-gradient(to left, #10b981 0%, #10b981 ${(currentYear / horizon) * 100}%, #1A2138 ${(currentYear / horizon) * 100}%, #1A2138 100%)`,
+          accentColor: '#10b981',
         }}
       />
 
@@ -93,7 +93,7 @@ export function TimeSlider() {
         </div>
         <div>
           <div className="text-[10px] text-ivory/50 font-mono">Social Value</div>
-          <div className="text-xl text-emerald-400 font-mono tabular-nums">
+          <div className="text-xl text-[#10b981] font-mono tabular-nums">
             {Math.round(yearData.totalSocialValue / 1_000_000)}M
           </div>
         </div>

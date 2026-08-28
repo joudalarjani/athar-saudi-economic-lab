@@ -28,7 +28,7 @@ export function AllocationPanel() {
 
       <div className="text-[10px] text-ivory/50 font-mono mb-4 flex justify-between">
         <span>Total: {formatSAR(total, { compact: true })}</span>
-        <span className={remaining === 0 ? 'text-emerald-400' : 'text-yellow-400'}>
+        <span className={remaining === 0 ? 'text-[#10b981]' : 'text-yellow-400'}>
           {remaining === 0 ? '✓ Balanced' : `Remaining: ${formatSAR(remaining, { compact: true })}`}
         </span>
       </div>
@@ -74,7 +74,7 @@ export function AllocationPanel() {
                   className="w-full h-1.5 appearance-none rounded-sm cursor-pointer"
                   style={{
                     background: `linear-gradient(to left, ${sector.color}40, ${sector.color})`,
-                    accentColor: sector.color,
+                    accentColor: '#10b981',
                   }}
                 />
                 <div className="flex justify-between mt-0.5 text-[8px] font-mono text-ivory/30">

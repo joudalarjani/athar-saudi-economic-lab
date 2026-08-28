@@ -53,7 +53,7 @@ export function Stat({
 
   const trendColor =
     trend === 'positive'
-      ? 'text-emerald-400'
+      ? 'text-[#10b981]'
       : trend === 'negative'
       ? 'text-red-400'
       : color;

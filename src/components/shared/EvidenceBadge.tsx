@@ -4,7 +4,7 @@ const LEVEL_CONFIG: Record<EvidenceLevel, { labelAr: string; labelEn: string; co
   VERIFIED: {
     labelAr: 'بيانات موثقة',
     labelEn: 'VERIFIED',
-    color: 'text-emerald-300',
+    color: 'text-[#10b981]',
     bg: 'bg-emerald-900/30 border-emerald-700/40',
     icon: '✓',
   },

@@ -157,7 +157,7 @@ export function Sensitivity() {
                   {formatSAR(bars[0].range, { compact: true })}
                 </span>{' '}
                 في المقياس. هذا يعني أن{' '}
-                <span className="text-emerald-400">دقة الافتراضات</span> هي العامل الحاسم في
+                <span className="text-[#10b981]">دقة الافتراضات</span> هي العامل الحاسم في
                 مصداقية أي تنبؤ.
               </>
             )}

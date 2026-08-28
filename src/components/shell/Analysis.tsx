@@ -47,12 +47,12 @@ export function Analysis() {
             className="glass-panel terminal-border p-6"
           >
               <div className="flex items-center justify-between mb-3">
-                <div className="text-[10px] tracking-widest uppercase text-emerald-400 font-mono">
+                <div className="text-[10px] tracking-widest uppercase text-[#10b981] font-mono">
                   <GlossaryTag id="sroi">SROI / العائد الاجتماعي</GlossaryTag>
                 </div>
               <EvidenceBadge level="CASE_STUDY" size="xs" />
             </div>
-            <div className="text-5xl text-emerald-300 font-mono tabular-nums">
+            <div className="text-5xl text-[#10b981] font-mono tabular-nums">
               {formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}
             </div>
             <div className="text-ivory/60 text-sm mt-1">
@@ -64,7 +64,7 @@ export function Analysis() {
             <div className="mt-4 pt-4 border-t border-emerald-700/30 space-y-2 text-xs text-ivory/70">
               <div className="flex justify-between">
                 <span>Total Social Value:</span>
-                <span className="font-mono text-emerald-300">
+                <span className="font-mono text-[#10b981]">
                   {formatSAR(metrics.totalSocialValue, { compact: true })}
                 </span>
               </div>
@@ -171,10 +171,10 @@ export function Analysis() {
                     <td className="py-2 px-2 text-right font-mono text-ivory/70">
                       {formatNumber(s.directBeneficiaries)}
                     </td>
-                    <td className="py-2 px-2 text-right font-mono text-emerald-300">
+                    <td className="py-2 px-2 text-right font-mono text-[#10b981]">
                       {formatSROIRange(s.sroiMin, s.sroiMax)}
                     </td>
-                    <td className="py-2 px-2 text-right font-mono text-emerald-300/70">
+                    <td className="py-2 px-2 text-right font-mono text-[#10b981]/70">
                       {(s.socialValue / 1_000_000).toFixed(1)}M
                     </td>
                     <td className="py-2 px-2 text-right font-mono text-blue-300">

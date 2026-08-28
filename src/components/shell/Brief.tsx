@@ -107,7 +107,7 @@ export function Brief() {
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <div className="text-[10px] text-ivory/50 font-mono">SROI (Social)</div>
-                <div className="text-lg text-emerald-300 font-mono">
+                <div className="text-lg text-[#10b981] font-mono">
                   {formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}
                 </div>
               </div>

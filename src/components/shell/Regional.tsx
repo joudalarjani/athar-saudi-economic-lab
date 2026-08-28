@@ -125,7 +125,7 @@ export function Regional() {
                         />
                         {/* Gap portion (emerald) overlaid */}
                         <div
-                          className="absolute inset-y-0 right-0 bg-emerald/60"
+                          className="absolute inset-y-0 right-0 bg-[#10b981]/60"
                           style={{
                             width: `${(c.gapAmount / 100_000_000) * 100 * 4}%`,
                             mixBlendMode: 'screen',
@@ -138,7 +138,7 @@ export function Regional() {
                     </div>
                     <div
                       className={`w-14 text-right font-mono text-[10px] ${
-                        c.diff > 0 ? 'text-emerald-400' : c.diff < 0 ? 'text-red-400' : 'text-ivory/30'
+                        c.diff > 0 ? 'text-[#10b981]' : c.diff < 0 ? 'text-red-400' : 'text-ivory/30'
                       }`}
                     >
                       {c.diff > 0 ? '+' : ''}
@@ -155,7 +155,7 @@ export function Regional() {
                 <span className="text-ivory/70">Population-Based</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-emerald/60" />
+                <div className="w-3 h-3 bg-[#10b981]/60" />
                 <span className="text-ivory/70">Gap-Based</span>
               </div>
             </div>

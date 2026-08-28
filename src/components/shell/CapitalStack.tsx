@@ -122,7 +122,7 @@ export function CapitalStack() {
                     value={value}
                     onChange={(e) => setFundingShare(inst.id, parseFloat(e.target.value))}
                     className="w-full h-1 appearance-none cursor-pointer"
-                    style={{ accentColor: instrumentColor(inst.id) }}
+                    style={{ accentColor: '#10b981' }}
                   />
                   <div className="text-[9px] text-ivory/40 leading-relaxed">
                     {inst.description}
@@ -158,7 +158,7 @@ export function CapitalStack() {
             <ScoreCard
               label="Sustainability"
               value={formatPercent(result.sustainabilityScore, 0)}
-              color="text-emerald-400"
+              color="text-[#10b981]"
             />
             <ScoreCard
               label="Liquidity"
@@ -232,7 +232,7 @@ function instrumentColor(id: string): string {
   const colors: Record<string, string> = {
     government_grants: '#3B82F6',
     waqf: '#0F6E4F',
-    social_investment: '#C7A04A',
+    social_investment: '#d4a017',
     outcome_finance: '#A78BFA',
     csr: '#F472B6',
     crowdfunding: '#22C55E',

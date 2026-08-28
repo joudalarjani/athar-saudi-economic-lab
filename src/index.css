@@ -10,6 +10,18 @@
     --color-gold-light: #f0d67c;
     --color-emerald: #10b981;
     --color-ivory: #f0e6d3;
+
+    --bg-primary: #0a0e1a;
+    --bg-card: #0d1527;
+    --border-gold: rgba(212, 160, 23, 0.12);
+    --gold: #d4a017;
+    --gold-dark: #b8860b;
+    --emerald: #10b981;
+    --text-primary: #f0e6d3;
+    --text-secondary: rgba(240, 230, 211, 0.6);
+    --text-muted: rgba(240, 230, 211, 0.35);
+    --danger: #ef4444;
+    --gridline: rgba(255, 255, 255, 0.06);
   }
 
   html {
@@ -17,8 +29,8 @@
   }
 
   body {
-    background: var(--color-midnight-900);
-    color: var(--color-ivory);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     font-feature-settings: "kern", "liga", "calt", "ss01";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -65,8 +77,34 @@
     background: linear-gradient(135deg, rgba(20, 27, 48, 0.82), rgba(15, 22, 41, 0.6));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(212, 160, 23, 0.12);
+    border: 1px solid var(--border-gold);
     border-radius: 4px;
+  }
+
+  .theme-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: 8px;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--bg-primary);
+    font-weight: 600;
+    border-radius: 6px;
+  }
+
+  .section-title {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .sar-value {
+    color: var(--gold);
+  }
+
+  .metric-positive {
+    color: var(--emerald);
   }
 
   .terminal-border {

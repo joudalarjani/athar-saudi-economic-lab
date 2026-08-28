@@ -43,7 +43,7 @@ export function ImpactPanel() {
             label="Social Value (SROI)"
             value={metrics.totalSocialValue}
             format="sar-compact"
-            color="text-emerald-400"
+            color="text-[#10b981]"
             size="lg"
             trend="positive"
             subtitle="قيمة اجتماعية"
@@ -69,12 +69,12 @@ export function ImpactPanel() {
           {/* SROI Box */}
           <div className="border border-emerald-700/30 rounded-sm p-3 bg-emerald-900/10">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-[10px] text-emerald-400 font-mono tracking-wider">
+              <div className="text-[10px] text-[#10b981] font-mono tracking-wider">
                 <GlossaryTag id="sroi">SROI</GlossaryTag>
               </div>
               <div className="text-[9px] text-ivory/40 font-mono">CASE STUDY</div>
             </div>
-            <div className="text-2xl font-mono text-emerald-300 tabular-nums">
+            <div className="text-2xl font-mono text-[#10b981] tabular-nums">
               {formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}
             </div>
             <div className="text-[9px] text-ivory/50 font-mono mt-0.5">
@@ -139,7 +139,7 @@ export function ImpactPanel() {
             label="NPV (10Y, 3%)"
             value={metrics.npvTotal}
             format="sar-compact"
-            color="text-emerald-400"
+            color="text-[#10b981]"
             size="md"
             subtitle="صافي القيمة الحالية"
           />

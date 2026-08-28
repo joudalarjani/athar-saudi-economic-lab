@@ -127,7 +127,7 @@ export function StressTest() {
                       <span className="text-[10px] text-ivory/40 font-mono">Δ</span>
                       <span
                         className={`text-xs font-mono tabular-nums ${
-                          change >= 0 ? 'text-emerald-400' : 'text-red-400'
+                          change >= 0 ? 'text-[#10b981]' : 'text-red-400'
                         }`}
                       >
                         {change >= 0 ? '+' : ''}
@@ -155,7 +155,7 @@ export function StressTest() {
             <div
               className={`text-5xl font-mono tabular-nums ${
                 retentionPct > 80
-                  ? 'text-emerald-400'
+                  ? 'text-[#10b981]'
                   : retentionPct > 60
                   ? 'text-yellow-400'
                   : 'text-red-400'
@@ -228,7 +228,7 @@ export function StressTest() {
                   <div
                     className={`font-mono tabular-nums w-14 text-right ${
                       mult > 1
-                        ? 'text-emerald-400'
+                        ? 'text-[#10b981]'
                         : mult > 0.8
                         ? 'text-yellow-400'
                         : 'text-red-400'

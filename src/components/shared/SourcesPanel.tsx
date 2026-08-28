@@ -91,7 +91,7 @@ export function SourcesPanel() {
                           <div key={c.id}>
                             <div className="flex items-center justify-between">
                               <span className="text-[11px] text-ivory/70">{c.program}</span>
-                              <span className="text-[11px] font-mono text-emerald-400">
+                              <span className="text-[11px] font-mono text-[#10b981]">
                                 {c.reportedSROI.toFixed(2)}×
                               </span>
                             </div>
