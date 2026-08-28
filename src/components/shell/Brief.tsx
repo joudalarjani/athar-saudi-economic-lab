@@ -257,8 +257,15 @@ export function Brief() {
           </a>
         </motion.div>
 
-        {/* Restart */}
-        <div className="text-center mt-8">
+        {/* Restart / Credits */}
+        <div className="flex items-center justify-center gap-8 mt-8">
+          <button
+            onClick={() => setStage('credits')}
+            className="text-sm text-[#d4a017] hover:text-[#ffd166] font-mono tracking-widest uppercase transition-colors"
+          >
+            → Credits
+          </button>
+          <span className="text-ivory/20">•</span>
           <button
             onClick={() => setStage('hero')}
             className="text-[10px] text-ivory/40 hover:text-gold font-mono tracking-widest uppercase"

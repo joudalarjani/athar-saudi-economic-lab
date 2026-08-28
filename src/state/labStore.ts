@@ -21,7 +21,8 @@ export type Stage =
   | 'capitalStack'
   | 'regional'
   | 'critique'
-  | 'brief';
+  | 'brief'
+  | 'credits';
 
 interface LabState {
   // Navigation

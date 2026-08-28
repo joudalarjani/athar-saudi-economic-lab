@@ -13,6 +13,7 @@ import { CapitalStack } from './components/shell/CapitalStack';
 import { Regional } from './components/shell/Regional';
 import { Critique } from './components/shell/Critique';
 import { Brief } from './components/shell/Brief';
+import { Credits } from './components/shell/Credits';
 import { Signature } from './components/shared/Signature';
 import { ModelExplainer } from './components/shared/ModelExplainer';
 import { GlossaryModal } from './components/shared/GlossaryModal';
@@ -55,6 +56,7 @@ function App() {
           {stage === 'regional' && <Regional />}
           {stage === 'critique' && <Critique />}
           {stage === 'brief' && <Brief />}
+          {stage === 'credits' && <Credits />}
         </StageTransition>
       </AnimatePresence>
       <Signature />

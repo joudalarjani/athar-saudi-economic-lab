@@ -11,6 +11,7 @@ const STAGES: Array<{ id: Stage; label: string; ar: string }> = [
   { id: 'regional', label: 'Regional', ar: 'إقليمي' },
   { id: 'critique', label: 'Critique', ar: 'مراجعة' },
   { id: 'brief', label: 'Brief', ar: 'موجز' },
+  { id: 'credits', label: 'Credits', ar: 'شكراً' },
 ];
 
 export function GlobalNav() {
