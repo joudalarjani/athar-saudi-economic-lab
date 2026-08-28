@@ -28,7 +28,7 @@ const SECTOR_CITIES: Record<string, { strong?: boolean; cities: CityId[] }> = {
   housing: { cities: ['riyadh', 'dammam'] },
   employment: { cities: ['riyadh', 'jeddah', 'dammam'] },
   women: { cities: ['riyadh', 'jeddah', 'medina'] },
-  environment: { cities: ['jeddah', 'mecca'] },
+  environment: { cities: ['jeddah'] },
   hajj: { strong: true, cities: ['mecca', 'medina'] },
 };
 
@@ -164,7 +164,7 @@ export function SaudiMap() {
                   y2={q.y}
                   stroke="rgba(212,160,23,0.25)"
                   strokeWidth="0.6"
-                  strokeDasharray="2 2"
+                  strokeDasharray="4 4"
                 >
                   <animate
                     attributeName="stroke-dashoffset"
@@ -181,7 +181,7 @@ export function SaudiMap() {
             {CITIES.map((c, idx) => {
               const active = activeCity(c.id);
               const hajj = isHajj(c.id);
-              const baseR = c.capital ? 9 : 7;
+              const baseR = c.capital ? 10 : 8;
               const r = active ? baseR + (hajj ? 3 : 1.2) : baseR;
               const amt = cityAllocation[c.id].amount;
               return (
@@ -199,7 +199,7 @@ export function SaudiMap() {
                         <animate
                           attributeName="r"
                           from={r}
-                          to={r * 2.4}
+                          to={r * 2.5}
                           dur="2s"
                           begin={`${idx * 0.4}s`}
                           repeatCount="indefinite"
