@@ -1,4 +1,4 @@
-export type GlossaryTermId = 'sroi' | 'multiplier' | 'diminishing' | 'opportunity';
+export type GlossaryTermId = 'sroi' | 'multiplier' | 'diminishing' | 'opportunity' | 'resilience';
 
 export interface GlossaryTerm {
   id: GlossaryTermId;
@@ -39,6 +39,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     labelEn: 'Opportunity Cost',
     body:
       'قيمة أفضل بديل تُتخلى عنه عند اتخاذ القرار. تخصيص 1M ريال للتعليم يعني التخلي عن ما كان يمكن تحقيقه بنفس الريال في الإسكان أو التوظيف — لذلك يُقارن العائد الحدي بين القطاعات.',
+  },
+  {
+    id: 'resilience',
+    labelAr: 'مؤشر المرونة',
+    labelEn: 'Resilience Score',
+    body:
+      'يقيس مدى صمود محفظة الاستثمارات الاجتماعي أمام الصدمات الاقتصادية أو تقلبات السوق. يُحسب من تركّز التخصيص (HHI) والاعتماد على قطاع واحد، وقدرة القطاعات على الأداء أثناء الأزمات. محفظة متنوعة تحقق مرونة أعلى.',
+    formula: 'Resilience = 0.3×(1−HHI) + 0.3×(1−Dependency) + 0.2×CounterCyclicality + 0.2×(1−λ)',
   },
 ];
 

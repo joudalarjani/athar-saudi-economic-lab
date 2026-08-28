@@ -7,6 +7,7 @@ import { computePortfolioMetrics } from '../../engine/portfolio';
 import { computeAllMultipliers } from '../../engine/multiplier';
 import { formatSAR, formatSROIRange, formatNumber } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
+import { GlossaryTag } from '../shared/GlossaryModal';
 
 const SECTOR_ICONS: Record<string, string> = {
   education: '📚',
@@ -112,10 +113,10 @@ export function Lab() {
           Remaining: <span className="text-[#10b981]">{formatSAR(Math.max(0, TOTAL_BUDGET - allocated), { compact: true })}</span>
         </span>
         <span className="text-[rgba(240,230,211,0.7)]">
-          Resilience: <span className={metrics.resilienceScore >= 60 ? 'text-[#10b981]' : 'text-[#ef4444]'}>{metrics.resilienceScore.toFixed(0)}/100</span>
+          <GlossaryTag id="resilience">Resilience</GlossaryTag>: <span className={metrics.resilienceScore >= 60 ? 'text-[#10b981]' : 'text-[#ef4444]'}>{metrics.resilienceScore.toFixed(0)}/100</span>
         </span>
         <span className="text-[rgba(240,230,211,0.7)]">
-          SROI: <span className="text-[#d4a017]">{formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}</span>
+          <GlossaryTag id="sroi">SROI</GlossaryTag>: <span className="text-[#d4a017]">{formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}</span>
         </span>
       </div>
 
@@ -229,7 +230,10 @@ export function Lab() {
               {unfunded.map((s) => (
                 <div key={s.id} className="flex items-center gap-2">
                   <span>⚠</span>
-                  <span>{s.arName} غير ممول — تكلفة الفرصة البديلة</span>
+                  <span>
+                    {s.arName} غير ممول —{' '}
+                    <GlossaryTag id="opportunity">تكلفة الفرصة البديلة</GlossaryTag>
+                  </span>
                 </div>
               ))}
             </div>
