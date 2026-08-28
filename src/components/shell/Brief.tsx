@@ -79,12 +79,24 @@ export function Brief() {
 
           {/* 2. Allocation */}
           <Section title="02 / Allocation" ar="التخصيص">
-            <div className="space-y-1.5">
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={{ show: { transition: { staggerChildren: 0.08 } } }}
+              className="space-y-1.5"
+            >
               {SECTORS.map((s) => {
                 const a = allocations[s.id] ?? 0;
                 const share = a / 100_000_000;
                 return (
-                  <div key={s.id} className="flex items-center gap-2 text-xs">
+                  <motion.div
+                    key={s.id}
+                    variants={{
+                      hidden: { opacity: 0, y: 12 },
+                      show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
+                    }}
+                    className="flex items-center gap-2 text-xs"
+                  >
                     <div
                       className="w-2 h-2 rounded-sm flex-shrink-0"
                       style={{ backgroundColor: s.color }}
@@ -96,10 +108,10 @@ export function Brief() {
                     <div className="font-mono text-gold w-12 text-right">
                       {formatPercent(share, 1)}
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           </Section>
 
           {/* 3. Expected Impact */}

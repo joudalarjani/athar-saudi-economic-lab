@@ -132,7 +132,7 @@ export function Lab() {
                 key={s.id}
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.35, delay: i * 0.05 }}
+                transition={{ duration: 0.35, delay: i * 0.08 }}
                 className="rounded-lg bg-[#0d1527] border border-[rgba(212,160,23,0.12)] p-3"
               >
                 <div className="flex items-center justify-between">

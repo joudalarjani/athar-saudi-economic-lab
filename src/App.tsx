@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLabStore } from './state/labStore';
 import { Hero } from './components/shell/Hero';
 import { SaudiMap } from './components/shell/SaudiMap';
@@ -40,17 +42,21 @@ function App() {
   return (
     <div className="min-h-screen bg-midnight-900 text-ivory">
       {stage !== 'hero' && stage !== 'map' && <GlobalNav />}
-      {stage === 'hero' && <Hero />}
-      {stage === 'map' && <SaudiMap />}
-      {stage === 'lab' && <Lab />}
-      {stage === 'analysis' && <Analysis />}
-      {stage === 'optimization' && <Optimization />}
-      {stage === 'stress' && <StressTest />}
-      {stage === 'sensitivity' && <Sensitivity />}
-      {stage === 'capitalStack' && <CapitalStack />}
-      {stage === 'regional' && <Regional />}
-      {stage === 'critique' && <Critique />}
-      {stage === 'brief' && <Brief />}
+      <AnimatePresence mode="wait">
+        <StageTransition key={stage}>
+          {stage === 'hero' && <Hero />}
+          {stage === 'map' && <SaudiMap />}
+          {stage === 'lab' && <Lab />}
+          {stage === 'analysis' && <Analysis />}
+          {stage === 'optimization' && <Optimization />}
+          {stage === 'stress' && <StressTest />}
+          {stage === 'sensitivity' && <Sensitivity />}
+          {stage === 'capitalStack' && <CapitalStack />}
+          {stage === 'regional' && <Regional />}
+          {stage === 'critique' && <Critique />}
+          {stage === 'brief' && <Brief />}
+        </StageTransition>
+      </AnimatePresence>
       <Signature />
       <ModelExplainer
         open={showModelExplainer}
@@ -63,3 +69,16 @@ function App() {
 }
 
 export default App;
+
+function StageTransition({ children }: { children: ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+    >
+      {children}
+    </motion.div>
+  );
+}

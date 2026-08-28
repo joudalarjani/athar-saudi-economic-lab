@@ -122,6 +122,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 3.9 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => setStage('map')}
             className="mx-auto mt-12 cursor-pointer rounded-md px-12 py-4 font-semibold text-[#0a0e1a] tracking-widest uppercase text-sm hover:opacity-95 transition-opacity shadow-[0_0_30px_rgba(212,160,23,0.35)]"
             style={{ background: 'linear-gradient(135deg, #d4a017, #b8860b)' }}
