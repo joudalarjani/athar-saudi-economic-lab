@@ -6,6 +6,7 @@ import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { computeAllMultipliers } from '../../engine/multiplier';
 import { formatSAR, formatSROIRange, formatNumber } from '../../lib/format';
+import { EvidenceBadge } from '../shared/EvidenceBadge';
 
 const SECTOR_ICONS: Record<string, string> = {
   education: '📚',
@@ -158,11 +159,14 @@ export function Lab() {
                   className="mt-3 w-full h-1.5 appearance-none cursor-pointer accent-[#10b981]"
                 />
 
-                <div className="mt-2 flex items-center justify-between text-[10px] font-mono">
-                  <span className="text-[rgba(240,230,211,0.45)]">
-                    SROI {formatSROIRange(s.sroiRange.min, s.sroiRange.max)}
-                  </span>
-                  <span className="text-[#10b981]">{pct.toFixed(1)}%</span>
+                <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-mono">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="text-[rgba(240,230,211,0.45)] whitespace-nowrap">
+                      SROI {formatSROIRange(s.sroiRange.min, s.sroiRange.max)}
+                    </span>
+                    <EvidenceBadge level={s.sroiRange.evidence.level} size="xs" showLabel={false} />
+                  </div>
+                  <span className="text-[#10b981] whitespace-nowrap">{pct.toFixed(1)}%</span>
                 </div>
                 <div className="mt-1 h-1 rounded-sm bg-[#1a2138] overflow-hidden">
                   <div
@@ -221,14 +225,11 @@ export function Lab() {
 
           {/* Opportunity cost alert */}
           {unfunded.length > 0 && (
-            <div className="rounded-md px-4 py-3 bg-[#d4a017]/10 border border-[#d4a017]/30 text-sm text-[#d4a017]">
+            <div className="rounded-md px-4 py-3 bg-[#d4a017] text-[#0a0e1a] text-sm font-semibold shadow-[0_0_18px_rgba(212,160,23,0.25)]">
               {unfunded.map((s) => (
                 <div key={s.id} className="flex items-center gap-2">
                   <span>⚠</span>
-                  <span>
-                    {s.arName} غير ممول — تكلفة الفرصة: {formatSAR(TOTAL_BUDGET - allocated, { compact: true })}{' '}
-                    ذهب لقطاع آخر
-                  </span>
+                  <span>{s.arName} غير ممول — تكلفة الفرصة البديلة</span>
                 </div>
               ))}
             </div>
