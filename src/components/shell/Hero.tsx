@@ -1,203 +1,211 @@
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
 import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
-import { formatSAR } from '../../lib/format';
+import { formatNumber } from '../../lib/format';
 
 const SECTOR_ICONS: Record<string, string> = {
-  education: '🎓',
+  education: '📚',
   health: '🏥',
-  housing: '🏠',
+  housing: '🏘️',
   employment: '💼',
-  women: '👩',
-  environment: '🌱',
-  hajj: '🕌',
-  hajjServices: '🕋',
+  women: '⚡',
+  environment: '🌿',
+  hajj: '🕋',
 };
 
-const FEATURES = [
-  { icon: '📊', ar: 'تحليل SROI و Multiplier' },
-  { icon: '🧪', ar: 'محاكاة صدمات وسيناريوهات' },
-  { icon: '🗺️', ar: 'توزيع إقليمي حسب 13 منطقة' },
-  { icon: '⚖️', ar: 'توليد تخصيص أمثل موضوعي' },
-  { icon: '🎯', ar: 'مراجعة سياقية للمحفظة' },
-  { icon: '📄', ar: 'مولّد موجز السياسة (Policy Brief)' },
-];
+const STARS = Array.from({ length: 200 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 100,
+  y: Math.random() * 100,
+  size: Math.random() * 1.8 + 0.5,
+  delay: Math.random() * 3,
+  duration: 2 + Math.random() * 3,
+  opacity: 0.3 + Math.random() * 0.6,
+}));
+
+function useCountUp(target: number, duration: number): number {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / (duration * 1000), 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setValue(Math.round(target * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+  return value;
+}
 
 export function Hero() {
   const setStage = useLabStore((s) => s.setStage);
+  const count = useCountUp(TOTAL_BUDGET, 2.5);
+  const countStr = useMemo(() => formatNumber(count), [count]);
 
   return (
-    <div className="relative min-h-screen px-6 py-20 grid-bg overflow-hidden">
-      {/* Background glows */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-deep/10 rounded-full blur-3xl" />
+    <div className="relative min-h-screen bg-[#0a0e1a] text-[#f0e6d3] overflow-hidden">
+      {/* Star field */}
+      <div className="absolute inset-0 overflow-hidden">
+        {STARS.map((s) => (
+          <motion.span
+            key={s.id}
+            className="absolute rounded-full bg-white"
+            style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
+            animate={{ opacity: [s.opacity * 0.4, s.opacity, s.opacity * 0.4] }}
+            transition={{ duration: s.duration, delay: s.delay, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        ))}
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto">
-        {/* Top row: branding + capital card */}
-        <div className="flex flex-col-reverse md:flex-row md:items-start md:justify-between gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="inline-flex items-center gap-3 px-4 py-2 glass-panel border-gold/30 w-fit"
-          >
-            <div className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
-            <span className="text-[10px] tracking-[0.3em] uppercase text-gold font-mono">
-              ATHAR | أثر
-            </span>
-          </motion.div>
+      {/* Ambient glows */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/3 w-[40rem] h-[40rem] bg-[#d4a017]/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#10b981]/10 rounded-full blur-3xl" />
+      </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.1 }}
-            className="glass-panel terminal-border p-5 md:w-[320px] relative overflow-hidden"
-          >
-            <div className="absolute -inset-px bg-gold/20 blur-2xl opacity-40 pointer-events-none" />
-            <div className="text-[10px] tracking-[0.25em] uppercase text-ivory/50 font-mono">
-              رأس مالك
-            </div>
-            <div className="text-3xl md:text-4xl text-gold font-mono tabular-nums mt-2">
-              {formatSAR(TOTAL_BUDGET)}
-            </div>
-            <div className="text-[10px] text-ivory/40 font-mono mt-1">
-              100,000,000 ريال سعودي
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Headline */}
+      <div className="relative z-10 min-h-screen flex flex-col px-6 py-14 max-w-6xl mx-auto">
+        {/* Top label */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="mt-16 max-w-3xl"
+          transition={{ duration: 0.8 }}
+          className="text-center text-[11px] tracking-[0.4em] text-[#d4a017] uppercase font-mono"
         >
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight text-ivory">
-            لو كنت المستثمر
-            <br />
-            الاجتماعي للسعودية
-            <span className="text-gold">...</span>
-          </h1>
-          <p className="text-2xl md:text-3xl text-ivory/70 font-light mt-6">
-            كيف ستخصص موارد محدودة لتحقيق أكبر أثر ممكن؟
-          </p>
+          تجربة اقتصادية تفاعلية
         </motion.div>
 
-        {/* Main grid: features right + quote bottom-left */}
-        <div className="grid md:grid-cols-[1fr_320px] gap-8 mt-14 items-start">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="space-y-3"
-          >
-            {FEATURES.map((f) => (
-              <div
-                key={f.ar}
-                className="flex items-center gap-3 glass-panel px-4 py-3"
-              >
-                <span className="text-lg">{f.icon}</span>
-                <span className="text-sm text-ivory/80">{f.ar}</span>
-              </div>
-            ))}
-          </motion.div>
-
-          <motion.blockquote
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
-            className="glass-panel terminal-border p-6 text-right"
-          >
-            <div className="text-gold text-2xl mb-2">“</div>
-            <p className="text-lg text-ivory/80 leading-relaxed">
-              الأثر لا يُقاس بحجم الاستثمار فقط، بل بمدى ذكاء القرار
-            </p>
-          </motion.blockquote>
-        </div>
-
-        {/* Sector icons row */}
+        {/* Center counter */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.75 }}
-          className="mt-14"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex flex-col items-center justify-center mt-auto pt-10"
         >
-          <div className="text-[10px] tracking-[0.25em] uppercase text-ivory/40 font-mono mb-4">
-            القطاعات الاجتماعية
+          <div
+            className="font-mono tabular-nums font-bold leading-none text-[#d4a017]"
+            style={{ fontSize: 'clamp(3rem, 8vw, 6rem)' }}
+          >
+            {countStr}
           </div>
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-            {SECTORS.map((s) => (
-              <div
-                key={s.id}
-                className="glass-panel flex flex-col items-center gap-2 px-2 py-4 text-center"
+          <div className="text-2xl sm:text-3xl text-[#f0e6d3] mt-3 tracking-wide">
+            ريال سعودي
+          </div>
+
+          {/* Staggered subtitle */}
+          <div className="mt-6 flex flex-col items-center gap-1.5 text-[rgba(240,230,211,0.65)]">
+            {['موارد محدودة — احتياجات أكبر — كيف ستختار؟'].map((line, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 2.6 + i * 0.25 }}
+                className="text-lg sm:text-xl text-center"
               >
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-lg"
-                  style={{ backgroundColor: `${s.color}1A`, border: `1px solid ${s.color}55` }}
-                >
-                  {SECTOR_ICONS[s.iconKey] ?? s.iconKey}
-                </div>
-                <div className="text-[10px] text-ivory/70 leading-tight">
+                {line}
+              </motion.p>
+            ))}
+          </div>
+
+          {/* Sector icons */}
+          <div className="mt-10 grid grid-cols-4 sm:grid-cols-7 gap-3 w-full max-w-4xl">
+            {SECTORS.map((s, i) => (
+              <motion.div
+                key={s.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 3 + i * 0.1 }}
+                className="flex flex-col items-center gap-2 rounded-lg px-2 py-3 bg-[#0d1527] border border-[rgba(212,160,23,0.12)] hover:border-[#d4a017] hover:shadow-[0_0_14px_rgba(212,160,23,0.3)] transition-all"
+              >
+                <div className="text-2xl">{SECTOR_ICONS[s.iconKey] ?? s.iconKey}</div>
+                <div className="text-[9px] text-[rgba(240,230,211,0.7)] text-center leading-tight">
                   {s.arName}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
+        <motion.button
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="mt-14 flex flex-col items-center gap-4"
+          transition={{ duration: 0.6, delay: 3.9 }}
+          onClick={() => setStage('map')}
+          className="mx-auto mt-10 cursor-pointer rounded-md px-12 py-4 font-semibold text-[#0a0e1a] tracking-widest uppercase text-sm hover:opacity-95 transition-opacity shadow-[0_0_30px_rgba(212,160,23,0.35)]"
+          style={{ background: 'linear-gradient(135deg, #d4a017, #b8860b)' }}
         >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={() => setStage('lab')}
-              className="group relative px-10 py-4 bg-gold text-midnight-900 font-bold tracking-widest uppercase text-sm hover:bg-gold-light transition-all hover:shadow-[0_0_30px_rgba(212,160,23,0.4)]"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                ENTER THE LAB
-                <span className="text-lg">→</span>
-              </span>
-            </button>
-            <div className="text-[10px] text-ivory/40 font-mono tracking-wider">
-              مختبر تفاعلي • 3D • بيانات موثقة
-            </div>
-          </div>
-          <p className="text-sm md:text-base text-ivory/70 font-light">
-            خصّص 100M SAR بين 7 قطاعات اجتماعية وشاهد الأثر الاقتصادي
-          </p>
-        </motion.div>
+          ادخل المختبر — ENTER THE LAB →
+        </motion.button>
 
-        {/* Footer: disclaimer + attribution */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 4.05 }}
+          className="text-center text-sm text-[rgba(240,230,211,0.7)] font-light mt-4"
+        >
+          خصّص 100M SAR بين 7 قطاعات اجتماعية وشاهد الأثر الاقتصادي
+        </motion.p>
+
+        {/* Bottom row */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.3 }}
-          className="mt-16 pt-6 border-t border-gold/15 text-center"
+          transition={{ duration: 0.8, delay: 4.2 }}
+          className="mt-auto pt-12 flex flex-col-reverse md:flex-row items-center justify-between gap-6"
         >
-          <div className="text-[10px] text-ivory/40 font-mono tracking-wider leading-relaxed">
-            Simulation based on parameterized assumptions — not financial advice
-            <br />
-            ATHAR | أثر — Saudi Social Investment &amp; Economic Policy Lab
+          <motion.blockquote
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 4.3 }}
+            className="max-w-sm text-right"
+          >
+            <div className="text-5xl text-[#d4a017] leading-none">“</div>
+            <p className="text-lg text-[#f0e6d3]/90 leading-relaxed">
+              الأثر لا يُقاس بحجم الاستثمار فقط،
+              <br />
+              بل بمدى ذكاء القرار
+            </p>
+          </motion.blockquote>
+
+          <div className="text-center md:text-right">
+            <div className="text-3xl font-bold text-[#d4a017] tracking-wide">ATHAR</div>
+            <div className="text-2xl font-bold text-[#d4a017] mb-1">أثر</div>
+            <div className="text-[10px] text-[rgba(240,230,211,0.5)] tracking-widest uppercase font-mono">
+              Saudi Social Investment &amp; Economic Policy Lab
+            </div>
           </div>
-          <div className="mt-4 text-xs text-ivory/50">
-            Joud Abdullah Al-Arjani / Economics Student
-            <span className="mx-2 text-gold/40">•</span>
-            <a
-              href="https://www.linkedin.com/in/joud-al-arjani"
-              target="_blank"
-              rel="noreferrer"
-              className="text-gold/80 hover:text-gold"
-            >
-              LinkedIn
-            </a>
-          </div>
+        </motion.div>
+
+        {/* Attribution */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 4.35 }}
+          className="flex items-center justify-center gap-2 text-xs text-[rgba(240,230,211,0.6)] mt-6"
+        >
+          <span>Joud Abdullah Al-Arjani / Economics Student</span>
+          <a
+            href="https://www.linkedin.com/in/joud-al-arjani"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#d4a017]/80 hover:text-[#d4a017] font-medium"
+          >
+            LinkedIn
+          </a>
+        </motion.div>
+
+        {/* Disclaimer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 4.45 }}
+          className="text-center text-[9px] text-[rgba(240,230,211,0.35)] font-mono tracking-wider mt-2"
+        >
+          Simulation based on parameterized assumptions — not financial advice
         </motion.div>
       </div>
     </div>

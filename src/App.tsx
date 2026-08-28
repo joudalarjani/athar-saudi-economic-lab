@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLabStore } from './state/labStore';
 import { Hero } from './components/shell/Hero';
+import { SaudiMap } from './components/shell/SaudiMap';
 import { Lab } from './components/shell/Lab';
 import { Analysis } from './components/shell/Analysis';
 import { Optimization } from './components/shell/Optimization';
@@ -38,8 +39,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-midnight-900 text-ivory">
-      {stage !== 'hero' && <GlobalNav />}
+      {stage !== 'hero' && stage !== 'map' && <GlobalNav />}
       {stage === 'hero' && <Hero />}
+      {stage === 'map' && <SaudiMap />}
       {stage === 'lab' && <Lab />}
       {stage === 'analysis' && <Analysis />}
       {stage === 'optimization' && <Optimization />}

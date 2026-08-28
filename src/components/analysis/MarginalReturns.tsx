@@ -12,8 +12,7 @@ const SECTOR_ICONS: Record<string, string> = {
   employment: '💼',
   women: '👩',
   environment: '🌱',
-  hajj: '🕌',
-  hajjServices: '🕋',
+  hajj: '🕋',
 };
 
 interface CurveProps {

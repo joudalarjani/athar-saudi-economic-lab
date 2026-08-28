@@ -14,7 +14,7 @@ export function Signature({ minimal = false }: { minimal?: boolean }) {
       className="fixed bottom-4 left-4 z-40 pointer-events-none select-none"
       dir="ltr"
     >
-      <div className="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-ivory/40 font-mono">
+      <div className="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[rgba(212,160,23,0.4)] font-mono">
         <div className="w-1 h-1 rounded-full bg-gold/60" />
         <span>Joud</span>
         {!minimal && (

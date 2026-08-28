@@ -52,7 +52,6 @@ export const SHOCKS: Shock[] = [
       women: 0.92,
       environment: 0.94,
       hajj: 0.93,
-      hajjServices: 0.90,
     },
     budgetMultiplier: 0.95, // real budget shrinks
     multiplierMultiplier: 0.95,
@@ -73,7 +72,6 @@ export const SHOCKS: Shock[] = [
       women: 0.85,
       environment: 0.95,
       hajj: 0.85,
-      hajjServices: 0.82,
     },
     budgetMultiplier: 0.70, // budget cut to 70%
     multiplierMultiplier: 0.85,
@@ -93,7 +91,6 @@ export const SHOCKS: Shock[] = [
       women: 0.95,
       environment: 1.0,
       hajj: 1.0,
-      hajjServices: 1.0,
     },
     budgetMultiplier: 1.0,
     multiplierMultiplier: 0.95,
@@ -114,7 +111,6 @@ export const SHOCKS: Shock[] = [
       women: 0.70,     // disproportionate impact
       environment: 0.85,
       hajj: 0.40,      // Hajj severely limited
-      hajjServices: 0.35,
     },
     budgetMultiplier: 0.85,
     multiplierMultiplier: 0.70,
@@ -135,7 +131,6 @@ export const SHOCKS: Shock[] = [
       women: 0.85,
       environment: 0.90,
       hajj: 0.90,
-      hajjServices: 0.86,
     },
     budgetMultiplier: 0.90,
     multiplierMultiplier: 0.75,
@@ -156,7 +151,6 @@ export const SHOCKS: Shock[] = [
       women: 0.85,
       environment: 0.90,
       hajj: 0.88,
-      hajjServices: 0.84,
     },
     budgetMultiplier: 0.80,
     multiplierMultiplier: 0.80,

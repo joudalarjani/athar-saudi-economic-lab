@@ -12,6 +12,7 @@ import type { GlossaryTermId } from '../data/glossary';
 
 export type Stage =
   | 'hero'
+  | 'map'
   | 'lab'
   | 'analysis'
   | 'optimization'
