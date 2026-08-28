@@ -92,8 +92,10 @@ export function SaudiMap() {
     return map;
   }, [allocations]);
 
-  const cityCoords: Record<CityId, { x: number; y: number }> = {};
-  for (const c of CITIES) cityCoords[c.id] = { x: c.x, y: c.y };
+  const cityCoords = CITIES.reduce((acc, c) => {
+    acc[c.id] = { x: c.x, y: c.y };
+    return acc;
+  }, {} as Record<CityId, { x: number; y: number }>);
 
   const activeCity = (id: CityId) => cityAllocation[id].active;
   const isHajj = (id: CityId) =>
