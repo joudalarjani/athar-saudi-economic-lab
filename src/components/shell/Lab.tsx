@@ -4,6 +4,7 @@ import { AllocationPanel } from '../controls/AllocationPanel';
 import { ImpactPanel } from '../analysis/ImpactPanel';
 import { TimeSlider } from '../controls/TimeSlider';
 import { useLabStore } from '../../state/labStore';
+import { SECTORS } from '../../data/sectors';
 import { detectLowEndDevice } from '../../lib/perf';
 
 export function Lab() {
@@ -105,7 +106,7 @@ function Lab2DPlaceholder() {
             </div>
           </div>
           {Object.entries(allocations).map(([id, val], i) => {
-            const angle = (i / 7) * Math.PI * 2 - Math.PI / 2;
+            const angle = (i / SECTORS.length) * Math.PI * 2 - Math.PI / 2;
             const r = 130;
             return (
               <div

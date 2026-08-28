@@ -760,6 +760,108 @@ export const SECTORS: Sector[] = [
       },
     },
   },
+
+  {
+    id: 'hajjServices',
+    arName: 'خدمات الحج والمعتمر',
+    enName: 'Hajj & Umrah Services',
+    shortDesc: 'خدمة ضيوف الرحمن، إسكان الحجاج، التنقل، التموين، منصات الخدمات',
+    iconKey: 'kaaba',
+    color: '#fbbf24',
+
+    costPerBeneficiary: {
+      value: 2400,
+      evidence: {
+        level: 'SIMULATION_ASSUMPTION',
+        source: {
+          name: 'Ministry of Hajj / Simulation Estimate',
+          year: 2025,
+          accessDate: '2025-08-24',
+        },
+        note: 'Per-pilgrim service cost estimate (housing, transport, catering, digital services)',
+      },
+    },
+
+    sroiRange: {
+      min: 1.2,
+      max: 2.0,
+      median: 1.5,
+      caseStudyIds: [],
+      evidence: {
+        level: 'SIMULATION_ASSUMPTION',
+        source: {
+          name: 'Ministry of Hajj / Simulation Estimate',
+          year: 2025,
+          accessDate: '2025-08-24',
+        },
+        note: 'Simulation estimate — seasonal services yield moderate short-term social value',
+      },
+    },
+
+    multiplier: {
+      direct: 0.85,
+      indirect: 0.5,
+      induced: 0.42,
+      leakage: 0.15,
+      evidence: {
+        level: 'SIMULATION_ASSUMPTION',
+        source: {
+          name: 'Ministry of Hajj / Simulation Estimate',
+          year: 2025,
+          accessDate: '2025-08-24',
+        },
+        note: 'Hajj services have strong local consumption and logistics ripple (~1.5 effective multiplier)',
+      },
+    },
+
+    timeProfile: {
+      y1: 0.28,
+      y3: 0.55,
+      y5: 0.78,
+      y10: 1.0,
+      evidence: {
+        level: 'SIMULATION_ASSUMPTION',
+        source: {
+          name: 'Hajj & Umrah services — medium impact profile',
+          year: 2025,
+          accessDate: '2025-08-24',
+        },
+        note: 'Seasonal services build cumulative value as capacity and repeat host experience compound',
+      },
+    },
+
+    diminishingLambda: {
+      value: 0.000016,
+      evidence: {
+        level: 'SIMULATION_ASSUMPTION',
+        source: { name: 'Parameterized', year: 2025, accessDate: '2025-08-24' },
+        note: 'Saturates around SAR 110M',
+      },
+    },
+
+    jobsPerMSAR: {
+      value: 12,
+      evidence: {
+        level: 'SIMULATION_ASSUMPTION',
+        source: { name: 'Hajj season services — moderate labor intensity', year: 2025, accessDate: '2025-08-24' },
+      },
+    },
+
+    minAllocation: 3_000_000,
+    maxAllocation: 45_000_000,
+
+    sustainabilityScore: {
+      value: 0.65,
+      evidence: {
+        level: 'SIMULATION_ASSUMPTION',
+        source: {
+          name: 'Hajj & Umrah services — medium persistence',
+          year: 2025,
+          accessDate: '2025-08-24',
+        },
+      },
+    },
+  },
 ];
 
 export const TOTAL_BUDGET = 100_000_000; // 100M SAR

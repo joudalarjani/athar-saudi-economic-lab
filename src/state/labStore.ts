@@ -8,6 +8,7 @@ import { SECTORS, TOTAL_BUDGET } from '../data/sectors';
 import { DEFAULT_OBJECTIVE_WEIGHTS } from '../data/objectives';
 import { FUNDING_INSTRUMENTS } from '../data/fundingInstruments';
 import type { ObjectiveWeights } from '../engine/optimizer';
+import type { GlossaryTermId } from '../data/glossary';
 
 export type Stage =
   | 'hero'
@@ -73,6 +74,14 @@ interface LabState {
   // Model explainer modal
   showModelExplainer: boolean;
   setShowModelExplainer: (b: boolean) => void;
+
+  // Glossary modal
+  glossaryTerm: GlossaryTermId | null;
+  setGlossaryTerm: (t: GlossaryTermId | null) => void;
+
+  // Sources panel
+  showSources: boolean;
+  setShowSources: (b: boolean) => void;
 }
 
 /**
@@ -200,4 +209,10 @@ export const useLabStore = create<LabState>((set, get) => ({
 
   showModelExplainer: false,
   setShowModelExplainer: (b) => set({ showModelExplainer: b }),
+
+  glossaryTerm: null,
+  setGlossaryTerm: (t) => set({ glossaryTerm: t }),
+
+  showSources: false,
+  setShowSources: (b) => set({ showSources: b }),
 }));

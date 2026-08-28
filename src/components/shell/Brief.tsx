@@ -4,7 +4,7 @@ import { useLabStore } from '../../state/labStore';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { critiquePortfolio } from '../../engine/critique';
 import { SECTORS } from '../../data/sectors';
-import { formatSAR, formatMultiplier, formatNumber, formatPercent } from '../../lib/format';
+import { formatSAR, formatMultiplier, formatNumber, formatPercent, formatSROIRange } from '../../lib/format';
 
 export function Brief() {
   const allocations = useLabStore((s) => s.allocations);
@@ -108,7 +108,7 @@ export function Brief() {
               <div>
                 <div className="text-[10px] text-ivory/50 font-mono">SROI (Social)</div>
                 <div className="text-lg text-emerald-300 font-mono">
-                  {formatMultiplier(metrics.portfolioSROI)}
+                  {formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}
                 </div>
               </div>
               <div>

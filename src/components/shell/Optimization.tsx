@@ -4,7 +4,7 @@ import { useLabStore } from '../../state/labStore';
 import { optimizeAllocation, compareToUser } from '../../engine/optimizer';
 import { SECTORS } from '../../data/sectors';
 import { computePortfolioMetrics } from '../../engine/portfolio';
-import { formatSAR, formatPercent, formatNumber, formatMultiplier } from '../../lib/format';
+import { formatSAR, formatPercent, formatNumber, formatSROIRange } from '../../lib/format';
 
 export function Optimization() {
   const allocations = useLabStore((s) => s.allocations);
@@ -202,12 +202,12 @@ export function Optimization() {
             </div>
             <div>
               <div className="text-[10px] text-ivory/50 font-mono">SROI</div>
-              <div className="text-lg text-ivory font-mono">
-                {formatMultiplier(userMetrics.portfolioSROI)}
+              <div className="text-base text-ivory font-mono">
+                {formatSROIRange(userMetrics.portfolioSROIMin, userMetrics.portfolioSROIMax)}
               </div>
               <div className="text-[10px] text-ivory/30 my-1">→</div>
-              <div className="text-lg text-emerald-300 font-mono">
-                {formatMultiplier(optMetrics.portfolioSROI)}
+              <div className="text-base text-emerald-300 font-mono">
+                {formatSROIRange(optMetrics.portfolioSROIMin, optMetrics.portfolioSROIMax)}
               </div>
             </div>
             <div>

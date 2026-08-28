@@ -17,6 +17,7 @@ export function GlobalNav() {
   const stage = useLabStore((s) => s.stage);
   const setStage = useLabStore((s) => s.setStage);
   const setShowModelExplainer = useLabStore((s) => s.setShowModelExplainer);
+  const setShowSources = useLabStore((s) => s.setShowSources);
 
   return (
     <motion.div
@@ -60,6 +61,13 @@ export function GlobalNav() {
             ))}
           </div>
         </div>
+
+        <button
+          onClick={() => setShowSources(true)}
+          className="text-[10px] tracking-widest text-gold/80 hover:text-gold uppercase font-mono border border-gold/30 px-2 py-1 flex-shrink-0"
+        >
+          المصادر
+        </button>
 
         <button
           onClick={() => setShowModelExplainer(true)}

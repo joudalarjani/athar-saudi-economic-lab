@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { SECTORS } from '../../data/sectors';
-import { formatSAR, formatMultiplier, formatNumber } from '../../lib/format';
+import { formatSAR, formatMultiplier, formatNumber, formatSROIRange } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
+import { MarginalReturns } from '../analysis/MarginalReturns';
+import { GlossaryTag } from '../shared/GlossaryModal';
 
 export function Analysis() {
   const allocations = useLabStore((s) => s.allocations);
@@ -44,17 +46,20 @@ export function Analysis() {
             animate={{ opacity: 1, x: 0 }}
             className="glass-panel terminal-border p-6"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-[10px] tracking-widest uppercase text-emerald-400 font-mono">
-                SROI / العائد الاجتماعي
-              </div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] tracking-widest uppercase text-emerald-400 font-mono">
+                  <GlossaryTag id="sroi">SROI / العائد الاجتماعي</GlossaryTag>
+                </div>
               <EvidenceBadge level="CASE_STUDY" size="xs" />
             </div>
-            <div className="text-6xl text-emerald-300 font-mono tabular-nums">
-              {formatMultiplier(metrics.portfolioSROI)}
+            <div className="text-5xl text-emerald-300 font-mono tabular-nums">
+              {formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}
             </div>
-            <div className="text-ivory/60 text-sm mt-2">
+            <div className="text-ivory/60 text-sm mt-1">
               Social Return on Investment
+            </div>
+            <div className="text-[10px] text-ivory/40 font-mono">
+              نطاق تقديري (متوسط {formatMultiplier(metrics.portfolioSROI)})
             </div>
             <div className="mt-4 pt-4 border-t border-emerald-700/30 space-y-2 text-xs text-ivory/70">
               <div className="flex justify-between">
@@ -85,10 +90,10 @@ export function Analysis() {
             animate={{ opacity: 1, x: 0 }}
             className="glass-panel terminal-border p-6"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-[10px] tracking-widest uppercase text-blue-400 font-mono">
-                Economic Multiplier / المضاعف
-              </div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] tracking-widest uppercase text-blue-400 font-mono">
+                  <GlossaryTag id="multiplier">Economic Multiplier / المضاعف</GlossaryTag>
+                </div>
               <EvidenceBadge level="SIMULATION_ASSUMPTION" size="xs" />
             </div>
             <div className="text-6xl text-blue-300 font-mono tabular-nums">
@@ -167,7 +172,7 @@ export function Analysis() {
                       {formatNumber(s.directBeneficiaries)}
                     </td>
                     <td className="py-2 px-2 text-right font-mono text-emerald-300">
-                      {formatMultiplier(s.sroi)}
+                      {formatSROIRange(s.sroiMin, s.sroiMax)}
                     </td>
                     <td className="py-2 px-2 text-right font-mono text-emerald-300/70">
                       {(s.socialValue / 1_000_000).toFixed(1)}M
@@ -257,6 +262,9 @@ export function Analysis() {
             })}
           </div>
         </motion.div>
+
+        {/* Marginal returns section */}
+        <MarginalReturns />
 
         {/* Nav buttons */}
         <div className="flex gap-3 mt-8">

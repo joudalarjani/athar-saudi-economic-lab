@@ -16,4 +16,5 @@ export const SUSTAINABILITY_UNDER_SHOCK: Record<string, number[]> = {
   women: [0.92, 0.85, 0.95, 0.70, 0.85, 0.85],
   environment: [0.94, 0.95, 1.0, 0.85, 0.90, 0.90],
   hajj: [0.93, 0.85, 1.0, 0.40, 0.90, 0.88],
+  hajjServices: [0.90, 0.82, 1.0, 0.45, 0.85, 0.86],
 };

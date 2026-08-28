@@ -32,3 +32,8 @@ export function formatPercent(value: number, decimals: number = 1): string {
 export function formatMultiplier(value: number): string {
   return `${value.toFixed(2)}×`;
 }
+
+/** Format an SROI range as "1.5×–2.5×" (min–max). Rounds to 1 decimal for readability. */
+export function formatSROIRange(min: number, max: number, decimals: number = 1): string {
+  return `${min.toFixed(decimals)}×–${max.toFixed(decimals)}×`;
+}

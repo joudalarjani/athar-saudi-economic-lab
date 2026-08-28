@@ -19,6 +19,8 @@ export interface PortfolioMetrics {
   totalGdpImpact: number;
   totalEmployment: number;
   portfolioSROI: number;
+  portfolioSROIMin: number;
+  portfolioSROIMax: number;
   portfolioMultiplier: number;
   npvSocial: number;
   npvGdp: number;
@@ -34,6 +36,8 @@ export interface PortfolioMetrics {
     allocation: number;
     directBeneficiaries: number;
     sroi: number;
+    sroiMin: number;
+    sroiMax: number;
     socialValue: number;
     gdpImpact: number;
     employment: number;
@@ -60,6 +64,10 @@ export function computePortfolioMetrics(
   const sroiResults = computeAllSROI(sectors, allocations, directBySector);
   const totalSocialValue = sroiResults.reduce((s, r) => s + r.totalSocialValue, 0);
   const portSROI = portfolioSROI(sroiResults);
+  // Portfolio-level SROI range: aggregate min/max social value over total investment
+  const totInvest = Math.max(Object.values(allocations).reduce((s, v) => s + v, 0), 1);
+  const portSROIMin = sroiResults.reduce((s, r) => s + r.socialValueMin, 0) / totInvest;
+  const portSROIMax = sroiResults.reduce((s, r) => s + r.socialValueMax, 0) / totInvest;
   const sroiBySector: Record<string, number> = {};
   for (const r of sroiResults) {
     sroiBySector[r.sectorId] = r.totalSocialValue;
@@ -101,13 +109,16 @@ export function computePortfolioMetrics(
   // Per-sector metrics
   const sectorMetrics = sectors.map((s) => {
     const a = allocations[s.id] ?? 0;
+    const sroiRes = sroiResults.find((r) => r.sectorId === s.id);
     return {
       sectorId: s.id,
       arName: s.arName,
       color: s.color,
       allocation: a,
       directBeneficiaries: directBySector[s.id] ?? 0,
-      sroi: sroiResults.find((r) => r.sectorId === s.id)?.sroi ?? 0,
+      sroi: sroiRes?.sroi ?? 0,
+      sroiMin: sroiRes?.sroiMin ?? 0,
+      sroiMax: sroiRes?.sroiMax ?? 0,
       socialValue: sroiBySector[s.id] ?? 0,
       gdpImpact: gdpBySector[s.id] ?? 0,
       employment: empBySector[s.id] ?? 0,
@@ -121,6 +132,8 @@ export function computePortfolioMetrics(
     totalGdpImpact: totalGdp,
     totalEmployment,
     portfolioSROI: portSROI,
+    portfolioSROIMin: portSROIMin,
+    portfolioSROIMax: portSROIMax,
     portfolioMultiplier: portMult,
     npvSocial: timeProfile.npvSocial,
     npvGdp: timeProfile.npvGdp,

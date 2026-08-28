@@ -5,23 +5,23 @@ export default {
     extend: {
       colors: {
         midnight: {
-          900: '#0A0E1A',
-          800: '#10162A',
-          700: '#1A2138',
-          600: '#232C4A',
+          900: '#0a0e1a',
+          800: '#0f1629',
+          700: '#1a2138',
+          600: '#232c4a',
         },
         gold: {
-          DEFAULT: '#C7A04A',
-          light: '#FFD580',
-          dark: '#9A7A2E',
+          DEFAULT: '#d4a017',
+          light: '#f0d67c',
+          dark: '#9a7a2e',
         },
         emerald: {
-          deep: '#0F6E4F',
-          accent: '#15A578',
+          deep: '#10b981',
+          accent: '#10b981',
         },
         ivory: {
-          DEFAULT: '#E8E9F0',
-          dim: '#A8ABBA',
+          DEFAULT: '#f0e6d3',
+          dim: '#c3b8a0',
         },
         sector: {
           education: '#2DD4BF',
@@ -31,6 +31,7 @@ export default {
           women: '#F472B6',
           environment: '#22C55E',
           hajj: '#818CF8',
+          hajjservices: '#fbbf24',
         },
       },
       fontFamily: {

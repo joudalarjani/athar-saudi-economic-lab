@@ -10,7 +10,48 @@ export function Critique() {
   const allocations = useLabStore((s) => s.allocations);
   const setStage = useLabStore((s) => s.setStage);
 
+  const totalAllocated = useMemo(
+    () => Object.values(allocations).reduce((s, v) => s + v, 0),
+    [allocations]
+  );
+
   const result = useMemo(() => critiquePortfolio(SECTORS, allocations), [allocations]);
+
+  if (totalAllocated <= 0) {
+    return (
+      <div className="min-h-screen pt-20 px-4 md:px-8 pb-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <div className="text-[10px] tracking-[0.3em] uppercase text-gold font-mono">
+              Stage 04 / Policy Critique
+            </div>
+            <h1 className="text-3xl md:text-4xl text-ivory font-light mt-2">
+              مراجعة السياسة
+            </h1>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-panel terminal-border p-10 text-center"
+          >
+            <div className="text-gold text-4xl mb-4">⚠</div>
+            <div className="text-2xl text-ivory font-medium">
+              خصّص الميزانية أولاً قبل التحليل
+            </div>
+            <div className="text-sm text-ivory/60 mt-2">
+              عد إلى المختبر ووزّع رأس المال بين القطاعات ثم عُد للمراجعة.
+            </div>
+            <button
+              onClick={() => setStage('lab')}
+              className="mt-6 px-6 py-3 border border-gold/40 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
+            >
+              ← العودة إلى المختبر
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-20 px-4 md:px-8 pb-12">

@@ -12,6 +12,8 @@ import { Critique } from './components/shell/Critique';
 import { Brief } from './components/shell/Brief';
 import { Signature } from './components/shared/Signature';
 import { ModelExplainer } from './components/shared/ModelExplainer';
+import { GlossaryModal } from './components/shared/GlossaryModal';
+import { SourcesPanel } from './components/shared/SourcesPanel';
 import { GlobalNav } from './components/shell/GlobalNav';
 
 function App() {
@@ -52,6 +54,8 @@ function App() {
         open={showModelExplainer}
         onClose={() => setShowModelExplainer(false)}
       />
+      <GlossaryModal />
+      <SourcesPanel />
     </div>
   );
 }

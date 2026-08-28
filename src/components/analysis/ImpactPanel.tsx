@@ -3,8 +3,9 @@ import { useLabStore } from '../../state/labStore';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { SECTORS } from '../../data/sectors';
 import { Stat } from '../shared/Stat';
-import { formatSAR, formatMultiplier } from '../../lib/format';
+import { formatSAR, formatMultiplier, formatSROIRange } from '../../lib/format';
 import { motion } from 'framer-motion';
+import { GlossaryTag } from '../shared/GlossaryModal';
 
 export function ImpactPanel() {
   const allocations = useLabStore((s) => s.allocations);
@@ -68,11 +69,16 @@ export function ImpactPanel() {
           {/* SROI Box */}
           <div className="border border-emerald-700/30 rounded-sm p-3 bg-emerald-900/10">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-[10px] text-emerald-400 font-mono tracking-wider">SROI</div>
+              <div className="text-[10px] text-emerald-400 font-mono tracking-wider">
+                <GlossaryTag id="sroi">SROI</GlossaryTag>
+              </div>
               <div className="text-[9px] text-ivory/40 font-mono">CASE STUDY</div>
             </div>
-            <div className="text-3xl font-mono text-emerald-300 tabular-nums">
-              {formatMultiplier(metrics.portfolioSROI)}
+            <div className="text-2xl font-mono text-emerald-300 tabular-nums">
+              {formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}
+            </div>
+            <div className="text-[9px] text-ivory/50 font-mono mt-0.5">
+              نطاق تقديري ({formatMultiplier(metrics.portfolioSROI)} متوسط)
             </div>
             <div className="text-[10px] text-ivory/60 mt-1">
               {formatSAR(metrics.totalSocialValue, { compact: true })} قيمة اجتماعية
@@ -85,7 +91,9 @@ export function ImpactPanel() {
           {/* Multiplier Box */}
           <div className="border border-blue-700/30 rounded-sm p-3 bg-blue-900/10">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-[10px] text-blue-400 font-mono tracking-wider">Multipler</div>
+              <div className="text-[10px] text-blue-400 font-mono tracking-wider">
+                <GlossaryTag id="multiplier">Multiplier</GlossaryTag>
+              </div>
               <div className="text-[9px] text-ivory/40 font-mono">SIM ASSUMPTION</div>
             </div>
             <div className="text-3xl font-mono text-blue-300 tabular-nums">
