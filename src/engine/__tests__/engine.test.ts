@@ -20,7 +20,6 @@ import { esgComposite, buildConsequenceProfile } from '../consequence';
 import { buildChallenges, analyzeDefense } from '../reviewer';
 import { clampBudget, BUDGET_MIN, BUDGET_MAX, sectorMin, sectorMax, SYSTEM_BUDGET } from '../../lib/budget';
 import { buildProposedAllocation, computeTradeOff } from '../tradeoff';
-import { computeTradeOff, buildProposedAllocation } from '../tradeoff';
 
 describe('Impact Calculator', () => {
   it('should return zero for zero allocation', () => {
