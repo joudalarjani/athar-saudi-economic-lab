@@ -2,7 +2,10 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
 import { SHOCKS, getShock, type ShockId } from '../../data/shocks';
-import { runStressTest } from '../../engine/stress';
+import { runStressTest, applyShock } from '../../engine/stress';
+import { computePortfolioMetrics } from '../../engine/portfolio';
+import { getSectorSROI } from '../../engine/sroi';
+import { computeMultiplier } from '../../engine/multiplier';
 import { SECTORS } from '../../data/sectors';
 import { formatNumber, formatSAR, formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
@@ -19,9 +22,41 @@ export function StressTest() {
     return runStressTest(SECTORS, allocations, shock);
   }, [shock, allocations]);
 
+  const baseMetrics = useMemo(
+    () => computePortfolioMetrics(SECTORS, allocations, 0.03, 10),
+    [allocations]
+  );
+  const baseResilience = baseMetrics.resilienceScore;
+
+  const sectorRows = useMemo(() => {
+    if (!shock) return [];
+    return SECTORS.map((sector) => {
+      const a = allocations[sector.id] ?? 0;
+      if (a <= 0) return null;
+      const beforeSroi = getSectorSROI(sector);
+      const beforeSocial = a * beforeSroi.median;
+      const { sector: shockedSector, adjustedAllocation } = applyShock(sector, a, shock);
+      const afterSroi = getSectorSROI(shockedSector);
+      const afterSocial = adjustedAllocation * afterSroi.median;
+      const eff = shock.sectorEffectivenessMultiplier[sector.id] ?? 1.0;
+      return {
+        id: sector.id,
+        arName: sector.arName,
+        color: sector.color,
+        beforeSocial,
+        afterSocial,
+        eff,
+      };
+    }).filter((r): r is NonNullable<typeof r> => r !== null);
+  }, [allocations, shock]);
+
   if (!shock || !result) return null;
 
   const retentionPct = result.retentionRate * 100;
+  const lostPct =
+    ((result.before.socialValue - result.after.socialValue) / (result.before.socialValue || 1)) * 100;
+  const postResilience = baseResilience * (result.retentionRate ?? 1);
+  const maxSectorBar = Math.max(1, ...sectorRows.map((r) => r.beforeSocial));
 
   return (
     <div className="min-h-screen pt-20 px-4 md:px-8 pb-12">
@@ -139,6 +174,107 @@ export function StressTest() {
                 </div>
               );
             })}
+          </div>
+        </motion.div>
+
+        {/* Resilience + lost impact + before/after sector bars */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="glass-panel terminal-border p-6 mb-6"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="text-[10px] tracking-widest uppercase text-gold font-mono">
+              Resilience & Lost Impact / المرونة والأثر المفقود
+            </div>
+            <EvidenceBadge level="SIMULATION_ASSUMPTION" size="xs" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-2">
+            <div>
+              <div className="text-[10px] text-ivory/50 font-mono mb-1">Resilience قبل</div>
+              <div className={`text-3xl font-mono tabular-nums ${baseResilience > 0.6 ? 'text-[#10b981]' : 'text-yellow-400'}`}>
+                {formatPercent(baseResilience, 0)}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] text-ivory/50 font-mono mb-1">Resilience بعد الصدمة</div>
+              <div className={`text-3xl font-mono tabular-nums ${postResilience > 0.6 ? 'text-[#10b981]' : postResilience > 0.4 ? 'text-yellow-400' : 'text-red-400'}`}>
+                {formatPercent(postResilience, 0)}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] text-ivory/50 font-mono mb-1">الخسارة في الأثر</div>
+              <div className="text-3xl font-mono tabular-nums text-red-400">
+                −{formatPercent(lostPct / 100, 0)}
+              </div>
+            </div>
+          </div>
+          <div className="text-xs text-ivory/70 mb-5">
+            {lostPct > 0.5 ? (
+              <>
+                خسرت <span className="text-red-400 font-mono">{lostPct.toFixed(1)}%</span> من الأثر المتوقع بفعل هذه الصدمة.
+              </>
+            ) : (
+              'محفظتك حافظت على أثرها المتوقع أمام هذه الصدمة.'
+            )}
+            <span className="text-ivory/40 font-mono"> (Simulation based on stated assumptions)</span>
+          </div>
+
+          {/* Two side-by-side bar panels */}
+          <div className="grid md:grid-cols-2 gap-4" role="img" aria-label="مقارنة الأثر قبل وبعد الصدمة">
+            <div className="lux-glass p-4">
+              <div className="text-[10px] tracking-widest uppercase text-[#10b981] font-mono mb-3">
+                قبل الصدمة
+              </div>
+              <div className="space-y-2">
+                {sectorRows.map((r) => (
+                  <div key={r.id} className="flex items-center gap-2 text-xs">
+                    <div
+                      className="w-2 h-2 rounded-sm flex-shrink-0"
+                      style={{ backgroundColor: r.color }}
+                    />
+                    <div className="w-20 md:w-28 text-ivory/70 truncate flex-shrink-0">
+                      {r.arName}
+                    </div>
+                    <div className="flex-1 h-2.5 bg-midnight-700 rounded-sm overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500"
+                        style={{ width: `${(r.beforeSocial / maxSectorBar) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="lux-glass p-4">
+              <div className="text-[10px] tracking-widest uppercase text-[#ef4444] font-mono mb-3">
+                بعد الصدمة
+              </div>
+              <div className="space-y-2">
+                {sectorRows.map((r) => (
+                  <div key={r.id} className="flex items-center gap-2 text-xs">
+                    <div
+                      className="w-2 h-2 rounded-sm flex-shrink-0"
+                      style={{ backgroundColor: r.color }}
+                    />
+                    <div className="w-20 md:w-28 text-ivory/70 truncate flex-shrink-0">
+                      {r.arName}
+                    </div>
+                    <div className="flex-1 h-2.5 bg-midnight-700 rounded-sm overflow-hidden">
+                      <div
+                        className="h-full bg-red-500"
+                        style={{ width: `${(r.afterSocial / maxSectorBar) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 text-[9px] font-mono text-gold/50 uppercase text-center" style={{ letterSpacing: '0.3em' }}>
+            Joud Al-Arjani
           </div>
         </motion.div>
 

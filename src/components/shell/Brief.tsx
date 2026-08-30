@@ -3,13 +3,19 @@ import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { critiquePortfolio } from '../../engine/critique';
+import { evaluateCapitalStack } from '../../engine/capitalStack';
+import { buildPPFDataset } from '../../engine/ppf';
+import { runSensitivity } from '../../engine/sensitivity';
+import { FUNDING_INSTRUMENTS } from '../../data/fundingInstruments';
 import { SECTORS } from '../../data/sectors';
 import { formatSAR, formatMultiplier, formatNumber, formatPercent, formatSROIRange } from '../../lib/format';
+import { jsPDF } from 'jspdf';
 
 export function Brief() {
   const allocations = useLabStore((s) => s.allocations);
   const discountRate = useLabStore((s) => s.discountRate);
   const horizon = useLabStore((s) => s.horizon);
+  const fundingMix = useLabStore((s) => s.fundingMix);
   const setStage = useLabStore((s) => s.setStage);
   const resetProgress = useLabStore((s) => s.resetProgress);
 
@@ -22,6 +28,143 @@ export function Brief() {
     () => critiquePortfolio(SECTORS, allocations),
     [allocations]
   );
+
+  const funding = useMemo(
+    () => evaluateCapitalStack(FUNDING_INSTRUMENTS, fundingMix),
+    [fundingMix]
+  );
+
+  const ppf = useMemo(
+    () => buildPPFDataset(SECTORS, 100_000_000, allocations, 300, 7),
+    [allocations]
+  );
+
+  const sensBars = useMemo(
+    () => runSensitivity(SECTORS, allocations, 'socialValue', discountRate, horizon),
+    [allocations, discountRate, horizon]
+  );
+
+  const userEfficiency = useMemo(() => {
+    const userSv = ppf.userPoint.socialValue;
+    const candidate = ppf.frontier
+      .filter((p) => p.socialValue <= userSv * 1.05)
+      .sort((a, b) => b.economicImpact - a.economicImpact)[0];
+    if (!candidate || candidate.economicImpact === 0) return 100;
+    return (ppf.userPoint.economicImpact / candidate.economicImpact) * 100;
+  }, [ppf]);
+
+  const topSensitive = sensBars.slice(0, 2);
+
+  const generatePDF = () => {
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const width = doc.internal.pageSize.getWidth();
+    const margin = 48;
+    let y = 60;
+    const lineH = 15;
+
+    const header = () => {
+      doc.setFontSize(18);
+      doc.setTextColor(212, 160, 23);
+      doc.text('ATHAR | أثر', margin, y);
+      y += 18;
+      doc.setFontSize(12);
+      doc.setTextColor(15, 23, 42);
+      doc.text('Saudi Social Investment Policy Brief', margin, y);
+      y += 14;
+      doc.setFontSize(10);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Generated: ${new Date().toISOString().split('T')[0]}`, margin, y);
+      y += 22;
+    };
+    const ensure = (extra = 60) => {
+      if (y > doc.internal.pageSize.getHeight() - 80) {
+        doc.addPage();
+        y = 60;
+      }
+      y += extra;
+    };
+    const section = (title: string) => {
+      ensure();
+      doc.setFontSize(13);
+      doc.setTextColor(212, 160, 23);
+      doc.text(title, margin, y);
+      y += 8;
+      doc.setDrawColor(212, 160, 23);
+      doc.setLineWidth(1);
+      doc.line(margin, y, width - margin, y);
+      y += 16;
+      doc.setFontSize(10.5);
+      doc.setTextColor(30, 41, 59);
+    };
+    const kv = (k: string, v: string) => {
+      doc.text(k, margin, y);
+      doc.text(v, width - margin - doc.getTextWidth(v), y, { align: 'right' });
+      y += lineH;
+    };
+
+    header();
+
+    section('01 / Executive Summary');
+    doc.setFontSize(10);
+    kv('Total Budget', formatSAR(metrics.totalBudget, { compact: true }));
+    kv('Beneficiaries', formatNumber(metrics.totalBeneficiaries));
+    kv('Social Value (SROI)', formatSAR(metrics.totalSocialValue, { compact: true }));
+    kv('GDP Impact', formatSAR(metrics.totalGdpImpact, { compact: true }));
+
+    section('02 / Allocation');
+    SECTORS.forEach((s) => {
+      kv(s.arName, formatSAR(allocations[s.id] ?? 0, { compact: true }));
+    });
+
+    section('03 / Expected Impact');
+    kv('SROI (Social)', formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax));
+    kv('Multiplier (Market)', formatMultiplier(metrics.portfolioMultiplier));
+    kv('Jobs Created', formatNumber(Math.round(metrics.totalEmployment)));
+    kv('NPV', formatSAR(metrics.npvTotal, { compact: true }));
+
+    section('04 / Risk & Sustainability');
+    kv('Resilience Score', formatPercent(metrics.resilienceScore, 0));
+    kv('Health Score', formatPercent(critique.healthScore, 0));
+
+    section('07 / Funding Structure');
+    if (funding.totalMix > 0) {
+      kv('Sustainability', formatPercent(funding.sustainabilityScore, 0));
+      kv('Risk', formatPercent(funding.riskScore, 0));
+      kv('Viability', formatPercent(funding.blendedViability, 0));
+      kv('Dependency', formatPercent(funding.governmentDependency, 0));
+    } else {
+      doc.text('not specified', margin, y);
+      y += lineH;
+    }
+
+    section('09 / PPF Position');
+    kv('Social Value', formatSAR(ppf.userPoint.socialValue, { compact: true }));
+    kv('Economic Impact', formatSAR(ppf.userPoint.economicImpact, { compact: true }));
+    kv('Frontier Efficiency', `${userEfficiency.toFixed(0)}%`);
+
+    section('10 / Sensitivity Summary');
+    topSensitive.forEach((b) => {
+      kv(b.parameterAr, formatSAR(b.range, { compact: true }));
+    });
+
+    section('Recommendations');
+    (critique.critiques.length ? critique.critiques.slice(0, 5) : []).forEach((c) => {
+      doc.setFontSize(9.5);
+      doc.text(`- ${c.titleAr}`, margin, y);
+      y += lineH - 2;
+    });
+
+    // Footer
+    const footerY = doc.internal.pageSize.getHeight() - 40;
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Simulation based on stated assumptions. Not a forecast. Not investment advice.', margin, footerY);
+    doc.setFontSize(10);
+    doc.setTextColor(212, 160, 23);
+    doc.text('Joud Abdullah Al-Arjani — Economics Student', margin, footerY + 16);
+
+    doc.save(`ATHAR-Policy-Brief-${new Date().toISOString().split('T')[0]}.pdf`);
+  };
 
   return (
     <div className="min-h-screen pt-20 px-4 md:px-8 pb-12">
@@ -59,11 +202,24 @@ export function Brief() {
                   Saudi Social Investment Policy Brief
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-[10px] text-ivory/50 font-mono">Generated</div>
-                <div className="text-xs text-ivory/70 font-mono">
-                  {new Date().toISOString().split('T')[0]}
+              <div className="text-right flex flex-col items-end gap-2">
+                <div>
+                  <div className="text-[10px] text-ivory/50 font-mono">Generated</div>
+                  <div className="text-xs text-ivory/70 font-mono">
+                    {new Date().toISOString().split('T')[0]}
+                  </div>
                 </div>
+                <button
+                  onClick={generatePDF}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-[#0A0E1A] rounded-sm shadow-lg hover:brightness-110 transition"
+                  style={{
+                    background: 'linear-gradient(135deg, #d4a017 0%, #f0c14b 55%, #ffe08a 100%)',
+                  }}
+                  title="تحميل PDF"
+                >
+                  <span aria-hidden="true">⬇</span>
+                  <span>تحميل PDF</span>
+                </button>
               </div>
             </div>
           </div>
@@ -208,6 +364,100 @@ export function Brief() {
             </div>
           </Section>
 
+          {/* 7. Funding Structure */}
+          <Section title="07 / Funding Structure" ar="هيكل التمويل">
+            {funding.totalMix > 0 ? (
+              <>
+                <div className="grid grid-cols-4 gap-2 mb-3">
+                  <BriefStat label="Sustainability" value={formatPercent(funding.sustainabilityScore, 0)} />
+                  <BriefStat label="Risk" value={formatPercent(funding.riskScore, 0)} />
+                  <BriefStat label="Viability" value={formatPercent(funding.blendedViability, 0)} />
+                  <BriefStat label="Dependency" value={formatPercent(funding.governmentDependency, 0)} />
+                </div>
+                <div className="h-3 flex rounded-sm overflow-hidden border border-ivory/15">
+                  {FUNDING_INSTRUMENTS.map((inst) => {
+                    const share = fundingMix[inst.id] ?? 0;
+                    return (
+                      <div
+                        key={inst.id}
+                        style={{ width: `${share * 100}%`, backgroundColor: fundingColor(inst.id) }}
+                        title={`${inst.arName}: ${(share * 100).toFixed(0)}%`}
+                      />
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <div className="text-xs text-ivory/50">not specified</div>
+            )}
+          </Section>
+
+          {/* 8. Shock Resilience */}
+          <Section title="08 / Shock Resilience" ar="مجابهة الصدمات">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <div className="text-[10px] text-ivory/50 font-mono">Resilience Score</div>
+                <div className="text-lg text-gold font-mono">
+                  {formatPercent(metrics.resilienceScore, 0)}
+                </div>
+              </div>
+              <div>
+                <div className="text-[10px] text-ivory/50 font-mono">Multiplier (Market)</div>
+                <div className="text-lg text-blue-300 font-mono">
+                  {formatMultiplier(metrics.portfolioMultiplier)}
+                </div>
+              </div>
+            </div>
+            <div className="mt-2 text-[10px] text-ivory/50 leading-relaxed">
+              أُجري اختبار الصدمات في مرحلة "اختبار الصدمات" — المرونة الأقل تعني هشاشة أمام السيناريوهات المفترضة.
+            </div>
+          </Section>
+
+          {/* 9. PPF Position */}
+          <Section title="09 / PPF Position" ar="موقعك على حدود الإمكانية">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <div className="text-[10px] text-ivory/50 font-mono">Social Value</div>
+                <div className="text-lg text-[#10b981] font-mono">
+                  {formatSAR(ppf.userPoint.socialValue, { compact: true })}
+                </div>
+              </div>
+              <div>
+                <div className="text-[10px] text-ivory/50 font-mono">Economic Impact</div>
+                <div className="text-lg text-blue-300 font-mono">
+                  {formatSAR(ppf.userPoint.economicImpact, { compact: true })}
+                </div>
+              </div>
+            </div>
+            <div className="mt-2 text-[10px] text-ivory/50 leading-relaxed">
+              كفاءة مقابل الحد: {userEfficiency.toFixed(0)}% —{' '}
+              {userEfficiency > 90
+                ? 'قريب من الحد الأمثل'
+                : userEfficiency > 70
+                ? 'يمكن تحسينه'
+                : 'بعيد عن الكفاءة القصوى'}
+            </div>
+          </Section>
+
+          {/* 10. Sensitivity Summary */}
+          <Section title="10 / Sensitivity Summary" ar="حساسية الافتراضات">
+            {topSensitive.length > 0 ? (
+              <div className="space-y-1.5">
+                {topSensitive.map((b) => (
+                  <div key={b.parameter} className="flex items-center gap-2 text-xs">
+                    <span className="text-gold">→</span>
+                    <span className="text-ivory/80 flex-1">{b.parameterAr}</span>
+                    <span className="font-mono text-ivory/60">
+                      {formatSAR(b.range, { compact: true })} أثر
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-ivory/50">no sensitive assumptions</div>
+            )}
+          </Section>
+
           {/* Disclaimer */}
           <div className="mt-6 pt-4 border-t border-ivory/10 text-[10px] text-ivory/40 font-mono italic">
             ⚠ Simulation based on stated assumptions and available evidence.
@@ -301,4 +551,16 @@ function BriefStat({ label, value }: { label: string; value: string }) {
       <div className="text-lg text-gold font-mono tabular-nums mt-0.5">{value}</div>
     </div>
   );
+}
+
+function fundingColor(id: string): string {
+  const colors: Record<string, string> = {
+    government_grants: '#3B82F6',
+    waqf: '#10b981',
+    social_investment: '#d4a017',
+    outcome_finance: '#8b5cf6',
+    csr: '#F472B6',
+    crowdfunding: '#22C55E',
+  };
+  return colors[id] ?? '#888';
 }

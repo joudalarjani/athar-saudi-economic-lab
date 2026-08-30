@@ -30,6 +30,16 @@ export function CapitalStack() {
     share: normalizedMix[inst.id] ?? 0,
   }));
 
+  const hhi = 1 - result.diversification;
+  const viabilityRating =
+    result.blendedViability > 0.75
+      ? 'Excellent'
+      : result.blendedViability > 0.6
+      ? 'Good'
+      : result.blendedViability > 0.45
+      ? 'Moderate'
+      : 'Weak';
+
   return (
     <div className="min-h-screen pt-20 px-4 md:px-8 pb-12">
       <motion.div
@@ -149,12 +159,18 @@ export function CapitalStack() {
           <div className="text-[10px] tracking-widest uppercase text-gold font-mono mb-4">
             Blended Capital Stack Profile
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <ScoreCard
               label="Blended Viability"
               value={formatPercent(result.blendedViability, 0)}
               color="text-gold"
               hint="0.4×sustainability + 0.25×(1-risk) + 0.2×liquidity + 0.15×(1-govDep)"
+            />
+            <ScoreCard
+              label="Long-term Viability"
+              value={viabilityRating}
+              color={viabilityRating === 'Excellent' ? 'text-[#10b981]' : viabilityRating === 'Good' ? 'text-gold' : viabilityRating === 'Moderate' ? 'text-yellow-400' : 'text-red-400'}
+              hint="تصنيف الاستدامة طويلة الأجل"
             />
             <ScoreCard
               label="Sustainability"
@@ -174,7 +190,15 @@ export function CapitalStack() {
             />
           </div>
           <div className="mt-4 text-[10px] text-ivory/40 font-mono">
-            Diversification (1-HHI): {formatPercent(result.diversification, 0)}
+            Diversification (1-HHI): {formatPercent(result.diversification, 0)} —{" "}
+            Dependency Index (HHI): {hhi.toFixed(2)}
+          </div>
+          <div className="mt-2 text-[10px] text-ivory/40 leading-relaxed">
+            هيكل التمويل يؤثر على استدامة المشروع واستقلاليته — مبني على افتراضات نمذجة
+            <span className="font-mono text-ivory/30"> (Simulation based on stated assumptions)</span>
+          </div>
+          <div className="mt-3 text-[9px] font-mono text-gold/50 uppercase text-center" style={{ letterSpacing: '0.3em' }}>
+            Joud Al-Arjani
           </div>
         </motion.div>
 
@@ -219,9 +243,9 @@ function ScoreCard({ label, value, color, hint }: { label: string; value: string
 function instrumentColor(id: string): string {
   const colors: Record<string, string> = {
     government_grants: '#3B82F6',
-    waqf: '#0F6E4F',
+    waqf: '#10b981',
     social_investment: '#d4a017',
-    outcome_finance: '#A78BFA',
+    outcome_finance: '#8b5cf6',
     csr: '#F472B6',
     crowdfunding: '#22C55E',
   };

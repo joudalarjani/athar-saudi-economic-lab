@@ -166,9 +166,16 @@ export function Sensitivity() {
         </motion.div>
 
         {/* Methodology */}
-        <div className="flex items-center gap-2 mb-6 text-[10px] text-ivory/40 font-mono">
+        <div className="flex items-center gap-2 mb-2 text-[10px] text-ivory/40 font-mono">
           <EvidenceBadge level="SIMULATION_ASSUMPTION" size="xs" />
           <span>±10% perturbation on each parameter. All others held constant (ceteris paribus).</span>
+        </div>
+        <div className="mb-6 text-[11px] text-ivory/60">
+          يوضح هذا التحليل مدى حساسية نتائج المحفظة للتغيرات في الافتراضات الأساسية.
+          <span className="font-mono text-ivory/30"> (Simulation based on stated assumptions)</span>
+        </div>
+        <div className="mb-6 text-[9px] font-mono text-gold/50 uppercase text-center" style={{ letterSpacing: '0.3em' }}>
+          Joud Al-Arjani
         </div>
 
         {/* Sequential journey nav */}

@@ -7,6 +7,7 @@ import { formatSAR, formatMultiplier, formatNumber, formatSROIRange } from '../.
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { MarginalReturns } from '../analysis/MarginalReturns';
 import { RiyalToImpact } from '../analysis/RiyalToImpact';
+import { Timeline } from '../analysis/Timeline';
 import { GlossaryTag } from '../shared/GlossaryModal';
 import { LevelHud } from '../shared/LevelHud';
 import { StageNav } from '../shared/StageNav';
@@ -229,40 +230,10 @@ export function Analysis() {
           </div>
         </motion.div>
 
-        {/* Time profile chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="glass-panel terminal-border p-6 mt-4"
-        >
-          <div className="text-[10px] tracking-widest uppercase text-gold font-mono mb-4">
-            Time Profile / الزمن
-          </div>
-          <div className="space-y-2">
-            {metrics.timeProfile.years.map((y) => {
-              const total = y.totalSocialValue + y.totalGdpImpact;
-              const max = Math.max(
-                ...metrics.timeProfile.years.map((p) => p.totalSocialValue + p.totalGdpImpact)
-              );
-              const pct = max > 0 ? (total / max) * 100 : 0;
-              return (
-                <div key={y.year} className="flex items-center gap-3 text-xs">
-                  <div className="w-12 text-ivory/50 font-mono">Y{y.year}</div>
-                  <div className="flex-1 h-4 bg-midnight-700 rounded-sm overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-l from-emerald to-blue-500"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <div className="w-24 text-right text-ivory/70 font-mono tabular-nums">
-                    {(total / 1_000_000).toFixed(0)}M
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
+        {/* Timeline — per-sector impact over years (slider-driven) */}
+        <div className="mt-4">
+          <Timeline />
+        </div>
 
         {/* From Riyal to Impact */}
         <div className="mt-4">

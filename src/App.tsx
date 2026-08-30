@@ -10,6 +10,7 @@ import { Optimization } from './components/shell/Optimization';
 import { StressTest } from './components/shell/StressTest';
 import { Sensitivity } from './components/shell/Sensitivity';
 import { CapitalStack } from './components/shell/CapitalStack';
+import { SankeyStage } from './components/shell/SankeyStage';
 import { Regional } from './components/shell/Regional';
 import { PPF } from './components/shell/PPF';
 import { MarginalReturns } from './components/shell/MarginalReturns';
@@ -55,6 +56,7 @@ function App() {
           {stage === 'stress' && <StressTest />}
           {stage === 'sensitivity' && <Sensitivity />}
           {stage === 'capitalStack' && <CapitalStack />}
+          {stage === 'sankey' && <SankeyStage />}
           {stage === 'regional' && <Regional />}
           {stage === 'ppf' && <PPF />}
           {stage === 'marginalReturns' && <MarginalReturns />}

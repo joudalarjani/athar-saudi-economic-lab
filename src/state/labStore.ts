@@ -20,6 +20,7 @@ export type Stage =
   | 'stress'
   | 'sensitivity'
   | 'capitalStack'
+  | 'sankey'
   | 'regional'
   | 'ppf'
   | 'marginalReturns'

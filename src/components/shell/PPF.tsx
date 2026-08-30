@@ -25,7 +25,7 @@ export function PPF() {
   const [showAllPoints, setShowAllPoints] = useState(true);
 
   const dataset = useMemo(
-    () => buildPPFDataset(SECTORS, 100_000_000, allocations, 250, seed),
+    () => buildPPFDataset(SECTORS, 100_000_000, allocations, 300, seed),
     [allocations, seed]
   );
 
@@ -90,7 +90,7 @@ export function PPF() {
         <div className="mb-6">
           <LevelHud />
           <h1 className="text-3xl md:text-4xl text-ivory font-light mt-2">
-            منحنى إمكانيات الإنتاج
+            حدود الإمكانية
           </h1>
           <p className="text-ivory/60 mt-2 text-sm">
             The trade-off frontier between Social Value (SROI) and Economic Impact (Multiplier).
@@ -269,7 +269,7 @@ export function PPF() {
                     cx={xScale(p.socialValue)}
                     cy={yScale(p.economicImpact)}
                     r="2.5"
-                    fill="rgba(199, 160, 74, 0.5)"
+                    fill="rgba(16, 185, 129, 0.3)"
                   />
                 ))}
 
@@ -351,8 +351,8 @@ export function PPF() {
                 <circle
                   cx={xScale(dataset.userPoint.socialValue)}
                   cy={yScale(dataset.userPoint.economicImpact)}
-                  r="8"
-                  fill="#0F6E4F"
+                  r="9"
+                  fill="#d4a017"
                   stroke="#0A0E1A"
                   strokeWidth="2"
                   filter="url(#glow)"
@@ -362,7 +362,7 @@ export function PPF() {
                 <text
                   x={xScale(dataset.userPoint.socialValue) + 18}
                   y={yScale(dataset.userPoint.economicImpact) - 12}
-                  fill="#15A578"
+                  fill="#d4a017"
                   fontSize="11"
                   fontFamily="JetBrains Mono, monospace"
                   fontWeight="bold"
@@ -553,11 +553,11 @@ export function PPF() {
         </motion.div>
 
         {/* Methodology */}
-        <div className="flex items-center gap-2 mb-6 text-[10px] text-ivory/40 font-mono">
+        <div className="flex items-center gap-2 mb-6 text-[11px] text-ivory/60">
           <EvidenceBadge level="SIMULATION_ASSUMPTION" size="xs" />
           <span>
-            250 Monte Carlo portfolios. SROI from real case studies, multipliers parameterized.
-            Click any frontier point to apply.
+            النقاط على الحد الأعلى تمثل أكفأ المحافظ — المنحنى مبني على 300 محاكاة عشوائية بافتراضات النموذج.
+            <span className="text-ivory/40 font-mono"> (Simulation based on stated assumptions)</span>
           </span>
         </div>
 

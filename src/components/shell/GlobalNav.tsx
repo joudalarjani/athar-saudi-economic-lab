@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLabStore, type Stage } from '../../state/labStore';
-import { getLevelForStage, isStageUnlocked, LEVEL_STAGES } from '../../lib/levels';
+import { getLevelForStage, isStageUnlocked, LEVEL_STAGES, stageLabel } from '../../lib/levels';
 import { BrandTag } from '../shared/LevelHud';
 
 export function GlobalNav() {
@@ -86,7 +86,7 @@ export function GlobalNav() {
                             style={active ? { boxShadow: `0 0 10px ${group.level.color}40`, border: `1px solid ${group.level.color}60` } : { border: '1px solid transparent' }}
                           >
                             {!unlocked && !active ? <span className="mr-0.5">🔒</span> : null}
-                            {sid === 'marginalReturns' ? 'marginal' : sid}
+                            {stageLabel(sid).ar}
                           </button>
                         );
                       })}

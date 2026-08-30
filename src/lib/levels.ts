@@ -71,6 +71,7 @@ const STAGE_LEVEL: Record<Stage, LevelId> = {
   stress: 4, // Stress Test
   regional: 5, // Policy Review
   capitalStack: 5,
+  sankey: 5,
   critique: 5,
   brief: 5,
   credits: 5,
@@ -87,7 +88,7 @@ export const LEVEL_STAGES: Array<{ level: LevelMeta; stages: Stage[] }> = [
   { level: LEVELS[1], stages: ['analysis'] },
   { level: LEVELS[2], stages: ['optimization', 'ppf', 'marginalReturns', 'sensitivity'] },
   { level: LEVELS[3], stages: ['stress'] },
-  { level: LEVELS[4], stages: ['regional', 'capitalStack', 'critique', 'brief'] },
+  { level: LEVELS[4], stages: ['regional', 'capitalStack', 'sankey', 'critique', 'brief'] },
 ];
 
 export const JOURNEY_STAGES: Array<{ id: Stage; label: string; ar: string }> = [
@@ -100,6 +101,7 @@ export const JOURNEY_STAGES: Array<{ id: Stage; label: string; ar: string }> = [
   { id: 'stress', label: 'Stress', ar: 'صدمات' },
   { id: 'regional', label: 'Regional', ar: 'إقليمي' },
   { id: 'capitalStack', label: 'Capital', ar: 'تمويل' },
+  { id: 'sankey', label: 'Flow', ar: 'تدفق' },
   { id: 'critique', label: 'Critique', ar: 'مراجعة' },
   { id: 'brief', label: 'Brief', ar: 'موجز' },
 ];
@@ -120,6 +122,7 @@ export const STAGE_SEQUENCE: Stage[] = [
   'stress',
   'regional',
   'capitalStack',
+  'sankey',
   'critique',
   'brief',
 ];
@@ -177,6 +180,7 @@ const STAGE_LABEL: Record<Stage, { en: string; ar: string }> = {
   stress: { en: 'Stress', ar: 'صدمات' },
   regional: { en: 'Regional', ar: 'إقليمي' },
   capitalStack: { en: 'Capital', ar: 'تمويل' },
+  sankey: { en: 'Flow', ar: 'تدفق' },
   critique: { en: 'Critique', ar: 'مراجعة' },
   brief: { en: 'Brief', ar: 'موجز' },
   credits: { en: 'Credits', ar: 'شكرًا' },
