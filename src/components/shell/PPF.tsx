@@ -325,6 +325,54 @@ export function PPF() {
                 />
               )}
 
+              {/* Knée / optimal elbow point */}
+              <motion.g
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', delay: 0.75 }}
+              >
+                <line
+                  x1={xScale(dataset.knee.point.socialValue)}
+                  y1={PAD_T}
+                  x2={xScale(dataset.knee.point.socialValue)}
+                  y2={VIEW_H - PAD_B}
+                  stroke="#C7A04A"
+                  strokeWidth="1"
+                  strokeDasharray="2,3"
+                  opacity="0.35"
+                />
+                <circle
+                  cx={xScale(dataset.knee.point.socialValue)}
+                  cy={yScale(dataset.knee.point.economicImpact)}
+                  r="16"
+                  fill="none"
+                  stroke="#C7A04A"
+                  strokeWidth="1.5"
+                  strokeDasharray="4,3"
+                  opacity="0.7"
+                />
+                <circle
+                  cx={xScale(dataset.knee.point.socialValue)}
+                  cy={yScale(dataset.knee.point.economicImpact)}
+                  r="7"
+                  fill="#C7A04A"
+                  stroke="#0A0E1A"
+                  strokeWidth="2"
+                  filter="url(#glow)"
+                />
+                <text
+                  x={xScale(dataset.knee.point.socialValue) - 18}
+                  y={yScale(dataset.knee.point.economicImpact) - 22}
+                  textAnchor="end"
+                  fill="#C7A04A"
+                  fontSize="11"
+                  fontFamily="JetBrains Mono, monospace"
+                  fontWeight="bold"
+                >
+                  KNEE
+                </text>
+              </motion.g>
+
               {/* User's current point - the star of the show */}
               <motion.g
                 initial={{ scale: 0 }}
@@ -419,6 +467,10 @@ export function PPF() {
               <div className="w-2.5 h-2.5 rounded-full bg-gold/40" />
               <span className="text-ivory/70">Random Portfolios</span>
             </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-gold border border-gold" style={{ background: '#C7A04A' }} />
+              <span className="text-ivory/70">Knee (optimal balance)</span>
+            </div>
           </div>
         </motion.div>
 
@@ -483,6 +535,97 @@ export function PPF() {
             </div>
           </motion.div>
         </div>
+
+        {/* Knee / optimal balance panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="glass-panel terminal-border p-6 mb-6"
+        >
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <div className="text-[10px] tracking-widest uppercase text-gold font-mono">
+              Optimal Balance — Knee Point
+            </div>
+            <EvidenceBadge level="SIMULATION_ASSUMPTION" size="xs" />
+          </div>
+
+          <div className="text-sm text-ivory/80 leading-relaxed mb-4">
+            <p>
+              <span className="text-gold font-medium">الكوع (Knee)</span> هو نقطة التوازن المثلى على منحنى
+              الـPPF — حيث يكون{' '}
+              <span className="text-emerald-300">العائد الاجتماعي</span> و{' '}
+              <span className="text-blue-300">الأثر الاقتصادي</span> متوازنين، وبعدها تفوق{' '}
+              <span className="text-gold">تكلفة الفرصة</span> أيّ مكسب إضافي. تم تحديدها بأكبر مسافة عمودية من
+              الخط الواصل بين طرفَي المنحنى (elbow / max-curvature). تعرض المحفظة المالكة للكوع.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4 mb-4">
+            <div className="glass-panel p-4">
+              <div className="text-[10px] tracking-widest uppercase text-emerald-400 font-mono mb-1">
+                Social Value
+              </div>
+              <div className="text-xl text-emerald-300 font-mono tabular-nums">
+                {formatSAR(dataset.knee.point.socialValue, { compact: true })}
+              </div>
+            </div>
+            <div className="glass-panel p-4">
+              <div className="text-[10px] tracking-widest uppercase text-blue-400 font-mono mb-1">
+                Economic Impact
+              </div>
+              <div className="text-xl text-blue-300 font-mono tabular-nums">
+                {formatSAR(dataset.knee.point.economicImpact, { compact: true })}
+              </div>
+            </div>
+            <div className="glass-panel p-4">
+              <div className="text-[10px] tracking-widest uppercase text-gold font-mono mb-1">
+                Opportunity Cost
+              </div>
+              <div className="text-xl text-gold font-mono tabular-nums">
+                {(dataset.knee.opportunityCostRatio * 100).toFixed(1)}%
+              </div>
+              <div className="text-[10px] text-ivory/50 mt-1">أثر اقتصادي مُضحّى به لكل 1 ر.س عائد اجتماعي</div>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <div className="text-[10px] text-ivory/60 uppercase tracking-wider mb-2">
+              Knee Allocation Breakdown
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {SECTORS.map((s) => {
+                const a = dataset.knee.point.allocation[s.id] ?? 0;
+                const share = a / totalBudget;
+                return (
+                  <div
+                    key={s.id}
+                    className="flex items-center gap-2 bg-white/[0.02] border border-ivory/10 px-2 py-1.5 rounded-sm"
+                  >
+                    <div
+                      className="w-2 h-2 rounded-sm flex-shrink-0"
+                      style={{ backgroundColor: s.color }}
+                    />
+                    <span className="text-ivory/60 text-[11px] flex-1 truncate">{s.arName}</span>
+                    <span className="font-mono text-ivory/40 text-[10px]">
+                      {formatPercent(share, 0)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              if (dataset.knee.point.isOptimal) return;
+              setAllAllocations(dataset.knee.point.allocation);
+            }}
+            className="w-full py-2.5 bg-gold/10 border border-gold/40 text-gold text-xs font-mono uppercase tracking-widest hover:bg-gold/20"
+          >
+            ← Apply optimal balance allocation
+          </button>
+        </motion.div>
 
         {/* Hover tooltip card */}
         {hoveredPoint && hoveredPoint.id !== 'user' && (

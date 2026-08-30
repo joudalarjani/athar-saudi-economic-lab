@@ -145,17 +145,33 @@ export function findParetoFrontier(points: PPFPoint[]): PPFPoint[] {
   return frontier;
 }
 
+export interface KneeInfo {
+  point: PPFPoint;
+  /** Max perpendicular distance from the extremes diagonal (the "elbow" signal). */
+  distance: number;
+  /** How far along the frontier (0 = pure social, 1 = pure economic) the knee sits. */
+  position: number;
+  /** Opportunity cost ratio at the knee: economic impact given up per 1 SAR of social value. */
+  opportunityCostRatio: number;
+}
+
 /**
  * Find the "knee" of the frontier — the point with maximum
  * distance from the diagonal between extremes.
- * This is a common heuristic for the "best balanced" allocation.
+ * This is a common heuristic for the "best balanced" allocation
+ * (the elbow where pushing further in either dimension yields rapidly
+ * diminishing gains for the other).
  */
-export function findKnee(frontier: PPFPoint[]): PPFPoint {
+export function findKnee(frontier: PPFPoint[]): KneeInfo {
   if (frontier.length === 0) {
     throw new Error('Empty frontier');
   }
-  if (frontier.length === 1) return frontier[0];
-  if (frontier.length === 2) return frontier[0];
+  if (frontier.length === 1) {
+    return { point: frontier[0], distance: 0, position: 0, opportunityCostRatio: 0 };
+  }
+  if (frontier.length === 2) {
+    return { point: frontier[0], distance: 0, position: 0, opportunityCostRatio: 0 };
+  }
 
   const first = frontier[0];
   const last = frontier[frontier.length - 1];
@@ -163,12 +179,14 @@ export function findKnee(frontier: PPFPoint[]): PPFPoint {
   // Line from first to last
   const dx = last.socialValue - first.socialValue;
   const dy = last.economicImpact - first.economicImpact;
-  const lineLen = Math.sqrt(dx * dx + dy * dy);
+  const lineLen = Math.sqrt(dx * dx + dy * dy) || 1;
 
   let maxDist = 0;
   let knee = first;
+  let kIdx = 0;
 
-  for (const p of frontier) {
+  for (let i = 0; i < frontier.length; i++) {
+    const p = frontier[i];
     // Perpendicular distance from p to the line
     const cross = Math.abs(
       dx * (first.economicImpact - p.economicImpact) -
@@ -178,10 +196,25 @@ export function findKnee(frontier: PPFPoint[]): PPFPoint {
     if (dist > maxDist) {
       maxDist = dist;
       knee = p;
+      kIdx = i;
     }
   }
 
-  return knee;
+  // Position along the frontier in [0,1].
+  const spanX = Math.max(last.socialValue - first.socialValue, 1e-9);
+  const position = (knee.socialValue - first.socialValue) / spanX;
+
+  // Local opportunity cost ratio: compare the point after the knee to the knee.
+  // economicImpact given up per SAR of social value gained as we leave the elbow.
+  let opportunityCostRatio = 0;
+  const next = frontier[kIdx + 1];
+  if (next && next.socialValue > knee.socialValue) {
+    const sGain = next.socialValue - knee.socialValue;
+    const eLoss = knee.economicImpact - next.economicImpact;
+    if (sGain > 0) opportunityCostRatio = Math.max(0, eLoss / sGain);
+  }
+
+  return { point: knee, distance: maxDist, position, opportunityCostRatio };
 }
 
 /**
@@ -211,7 +244,7 @@ export function buildPPFDataset(
   allPoints: PPFPoint[];
   frontier: PPFPoint[];
   userPoint: PPFPoint;
-  kneePoint: PPFPoint;
+  knee: KneeInfo;
   maxX: number;
   maxY: number;
   minX: number;
@@ -235,7 +268,7 @@ export function buildPPFDataset(
 
   // Find knee
   const knee = findKnee(frontier);
-  knee.isOptimal = true;
+  knee.point.isOptimal = true;
 
   // Compute axis bounds (with some padding)
   const allX = allForAnalysis.map((p) => p.socialValue);
@@ -253,7 +286,7 @@ export function buildPPFDataset(
     allPoints: random,
     frontier,
     userPoint,
-    kneePoint: knee,
+    knee,
     maxX: maxX + xRange * 0.05,
     maxY: maxY + yRange * 0.05,
     minX: Math.max(0, minX - xRange * 0.05),

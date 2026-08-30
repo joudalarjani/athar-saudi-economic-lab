@@ -21,6 +21,7 @@ import { buildChallenges, analyzeDefense } from '../reviewer';
 import { clampBudget, BUDGET_MIN, BUDGET_MAX, sectorMin, sectorMax, SYSTEM_BUDGET } from '../../lib/budget';
 import { buildProposedAllocation, computeTradeOff } from '../tradeoff';
 import { runMonteCarlo, evaluateDeterministic } from '../monteCarlo';
+import { buildPPFDataset, findKnee, findParetoFrontier } from '../ppf';
 
 describe('Impact Calculator', () => {
   it('should return zero for zero allocation', () => {
@@ -416,5 +417,48 @@ describe('Monte-Carlo simulation', () => {
       expect(r.downsideProbability[metric]).toBeLessThanOrEqual(1);
       expect(r.mean[metric]).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('PPF knee point', () => {
+  const alloc: Record<string, number> = {};
+  SECTORS.forEach((s) => {
+    const equal = TOTAL_BUDGET / SECTORS.length;
+    alloc[s.id] = Math.max(s.minAllocation, Math.min(s.maxAllocation, equal));
+  });
+
+  it('builds a dataset with a knee on the frontier', () => {
+    const ds = buildPPFDataset(SECTORS, TOTAL_BUDGET, alloc, 200, 7);
+    expect(ds.frontier.length).toBeGreaterThan(0);
+    expect(ds.knee.point).toBeDefined();
+    expect(ds.knee.point.isOptimal).toBe(true);
+    // The knee must be a frontier point.
+    const onFrontier = ds.frontier.some((p) => p.id === ds.knee.point.id);
+    expect(onFrontier).toBe(true);
+  });
+
+  it('knee position sits within [0,1] and distance is non-negative', () => {
+    const ds = buildPPFDataset(SECTORS, TOTAL_BUDGET, alloc, 200, 7);
+    expect(ds.knee.position).toBeGreaterThanOrEqual(0);
+    expect(ds.knee.position).toBeLessThanOrEqual(1);
+    expect(ds.knee.distance).toBeGreaterThanOrEqual(0);
+    expect(ds.knee.opportunityCostRatio).toBeGreaterThanOrEqual(0);
+  });
+
+  it('knee allocation sums to the total budget', () => {
+    const ds = buildPPFDataset(SECTORS, TOTAL_BUDGET, alloc, 200, 7);
+    const sum = Object.values(ds.knee.point.allocation).reduce((s, v) => s + v, 0);
+    expect(sum).toBeCloseTo(TOTAL_BUDGET, 0);
+  });
+
+  it('findKnee on a synthetic frontier returns the maximally-distant point', () => {
+    const pts = [
+      { id: 'A', allocation: {}, socialValue: 0, economicImpact: 0, beneficiaries: 0 },
+      { id: 'B', allocation: {}, socialValue: 1, economicImpact: 1, beneficiaries: 0 },
+      { id: 'C', allocation: {}, socialValue: 2, economicImpact: 0.1, beneficiaries: 0 },
+    ];
+    const frontier = findParetoFrontier(pts);
+    const knee = findKnee(frontier).point;
+    expect(knee.id).toBe('B');
   });
 });
