@@ -5,6 +5,7 @@ import { SECTORS } from '../../data/sectors';
 import { buildPPFDataset, type PPFPoint } from '../../engine/ppf';
 import { formatSAR, formatNumber, formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
+import { LevelHud } from '../shared/LevelHud';
 
 const VIEW_W = 900;
 const VIEW_H = 540;
@@ -86,9 +87,7 @@ export function PPF() {
       >
         {/* Header */}
         <div className="mb-6">
-          <div className="text-[10px] tracking-[0.3em] uppercase text-gold font-mono">
-            Stage 10 / Production Possibility Frontier
-          </div>
+          <LevelHud />
           <h1 className="text-3xl md:text-4xl text-ivory font-light mt-2">
             منحنى إمكانيات الإنتاج
           </h1>

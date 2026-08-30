@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-
-const GOLD = '#d4a017';
+import { BrandTag } from '../shared/LevelHud';
 
 const container = {
   hidden: {},
@@ -16,17 +15,26 @@ const item = {
 
 export function Credits() {
   return (
-    <div className="relative min-h-screen bg-[#0a0e1a] text-[#f0e6d3] flex items-center justify-center px-6 py-16">
+    <div className="relative min-h-screen lux-shell text-[#f0e6d3] flex items-center justify-center px-6 py-16 overflow-hidden">
+      {/* Ambient orbs */}
+      <div className="orb" style={{ top: '5%', left: '12%', width: 360, height: 360, background: '#d4a017' }} />
+      <div className="orb" style={{ bottom: '10%', right: '8%', width: 320, height: 320, background: '#10b981' }} />
+
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="w-full max-w-2xl mx-auto flex flex-col items-center text-center"
+        className="w-full max-w-2xl mx-auto flex flex-col items-center text-center relative"
       >
+        {/* Brand tag */}
+        <motion.div variants={item} className="mb-10">
+          <BrandTag />
+        </motion.div>
+
         {/* Title */}
         <motion.h1
           variants={item}
-          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#d4a017]"
+          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight lux-title"
         >
           ATHAR <span className="text-[#d4a017]">|</span> أثر
         </motion.h1>
@@ -64,34 +72,32 @@ export function Credits() {
           style={{ backgroundColor: 'rgba(212,160,23,0.2)' }}
         />
 
-        {/* Built by */}
-        <motion.div variants={item} className="mt-10 flex flex-col items-center gap-1.5">
+        {/* Built by — signature card */}
+        <motion.div variants={item} className="mt-10 lux-glass lux-hairline px-8 py-7 flex flex-col items-center gap-1.5">
           <div className="text-[10px] tracking-[0.3em] uppercase text-[rgba(240,230,211,0.45)] font-mono">
             BUILT BY
           </div>
-          <div className="text-2xl md:text-3xl font-medium text-[#d4a017]">
+          <div className="text-2xl md:text-3xl font-medium lux-title">
             Joud Abdullah Al-Arjani
           </div>
           <div className="text-sm text-[rgba(240,230,211,0.6)]">Economics Student</div>
           <div className="text-xs text-[rgba(240,230,211,0.4)] text-center">
             Imam Mohammad Ibn Saud Islamic University
           </div>
-        </motion.div>
 
-        {/* LinkedIn */}
-        <motion.div variants={item} className="mt-8">
+          {/* LinkedIn */}
           <a
             href="https://www.linkedin.com/in/joud-al-arjani"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-2.5 text-sm tracking-widest font-mono transition-colors"
+            className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 text-sm tracking-widest font-mono rounded-full border transition-colors"
             style={{
-              border: '1px solid #d4a017',
-              color: '#d4a017',
-              backgroundColor: 'transparent',
+              borderColor: '#d4a017',
+              color: '#f0d67c',
+              backgroundColor: 'rgba(212,160,23,0.08)',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(212,160,23,0.1)')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#f0d67c')}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#d4a017')}
           >
             <span>LinkedIn</span>
             <span>↗</span>
@@ -101,7 +107,7 @@ export function Credits() {
         {/* Disclaimer */}
         <motion.div
           variants={item}
-          className="mt-16 text-center text-[10px] leading-relaxed text-[rgba(240,230,211,0.35)] font-mono"
+          className="mt-12 text-center text-[10px] leading-relaxed text-[rgba(240,230,211,0.35)] font-mono"
         >
           Interactive Saudi-Focused Social Investment &amp; Economic Policy Simulation
           <br />

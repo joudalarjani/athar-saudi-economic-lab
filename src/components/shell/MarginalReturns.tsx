@@ -4,6 +4,7 @@ import { useLabStore } from '../../state/labStore';
 import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
 import { formatNumber, formatSAR } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
+import { LevelHud } from '../shared/LevelHud';
 
 /**
  * Sector Marginal Returns — 7 diminishing returns curves
@@ -298,9 +299,7 @@ export function MarginalReturns() {
       >
         {/* Header */}
         <div className="mb-6">
-          <div className="text-[10px] tracking-[0.3em] uppercase text-gold font-mono">
-            Stage 11 / Marginal Returns
-          </div>
+          <LevelHud />
           <h1 className="text-3xl md:text-4xl text-ivory font-light mt-2">
             منحنيات العوائد الحدية
           </h1>

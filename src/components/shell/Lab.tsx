@@ -5,10 +5,12 @@ import { useLabStore } from '../../state/labStore';
 import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { computeAllMultipliers } from '../../engine/multiplier';
-import { formatSAR, formatSROIRange, formatNumber } from '../../lib/format';
+import { formatSAR, formatSROIRange, formatNumber, formatMultiplier } from '../../lib/format';
+import { useAnimatedValue } from '../../lib/useAnimatedValue';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { GlossaryTag } from '../shared/GlossaryModal';
 import { PortfolioUniverse } from '../3d/PortfolioUniverse';
+import { LevelHud, BrandTag } from '../shared/LevelHud';
 
 const SECTOR_ICONS: Record<string, string> = {
   education: '📚',
@@ -96,31 +98,63 @@ export function Lab() {
   const unfunded = SECTORS.filter((s) => (allocations[s.id] ?? 0) === 0);
 
   return (
-    <div className="min-h-screen bg-[#0a0e1a] text-[#f0e6d3] p-3 md:p-4">
-      {/* Bloomberg top bar */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2 rounded-md bg-[#0d1527] border border-[rgba(212,160,23,0.12)] text-xs font-mono mb-3">
-        <span className="text-[#d4a017] font-bold tracking-wider">[ATHAR POLICY LAB]</span>
-        <span className="text-[rgba(240,230,211,0.7)]">
-          Budget: <span className="text-[#d4a017]">{formatSAR(TOTAL_BUDGET, { compact: true })}</span>
-        </span>
-        <span className="text-[rgba(240,230,211,0.7)] flex items-center gap-2">
-          Allocated: <span className="text-[#d4a017]">{formatSAR(allocated, { compact: true })}</span>
-          <span className="inline-block w-24 h-2 rounded-sm bg-[#1a2138] overflow-hidden">
-            <span
-              className="block h-full bg-[#10b981]"
-              style={{ width: `${(allocated / TOTAL_BUDGET) * 100}%` }}
+    <div className="min-h-screen lux-shell text-[#f0e6d3] p-3 md:p-6">
+      {/* Immersive header — big numbers first */}
+      <div className="lux-glass lux-hairline p-5 md:p-6 mb-4 relative overflow-hidden">
+        <div
+          className="absolute -top-16 right-0 w-72 h-72 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(212,160,23,0.12), transparent 70%)' }}
+        />
+        <div className="relative flex flex-col lg:flex-row lg:items-end gap-6 justify-between">
+          <div className="min-w-[260px]">
+            <LevelHud compact />
+            <div className="text-[9px] tracking-[0.35em] uppercase font-mono text-[rgba(240,230,211,0.35)] mt-2">
+              Display Economic Policy Lab
+            </div>
+            <div className="mt-3 flex items-end gap-3">
+              <span className="lux-big-number" style={{ fontSize: 'clamp(2.4rem, 6vw, 4rem)' }}>
+                {formatSAR(TOTAL_BUDGET, { compact: false })}
+              </span>
+              <span className="pb-1 text-sm text-[rgba(240,230,211,0.6)] font-light">ريال للقطاعات</span>
+            </div>
+            <div className="text-xs text-[rgba(240,230,211,0.55)] mt-1 font-light">
+              القرار أولاً — ثم راقب كيف يتحرك رأس المال ويتحول إلى أثر.
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4 w-full lg:w-auto">
+            <div className="px-2">
+              <div className="text-[9px] tracking-widest uppercase font-mono text-[rgba(240,230,211,0.4)]">
+                <GlossaryTag id="sroi">SROI</GlossaryTag>
+              </div>
+              <AnimatedNumber value={metrics.portfolioSROI} formatter={(v) => formatMultiplier(v)} className="text-2xl md:text-3xl text-[#10b981]" />
+            </div>
+            <div className="px-2">
+              <div className="text-[9px] tracking-widest uppercase font-mono text-[rgba(240,230,211,0.4)]">Direct Impact</div>
+              <AnimatedNumber value={directImpact} formatter={(v) => formatSAR(v, { compact: true })} className="text-2xl md:text-3xl text-[#f0d67c]" />
+            </div>
+            <div className="px-2">
+              <div className="text-[9px] tracking-widest uppercase font-mono text-[rgba(240,230,211,0.4)]">Induced Impact</div>
+              <AnimatedNumber value={inducedImpact} formatter={(v) => formatSAR(v, { compact: true })} className="text-2xl md:text-3xl text-[#2dd4bf]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Allocation progress strip */}
+        <div className="relative mt-5">
+          <div className="flex items-center justify-between text-[10px] font-mono mb-1.5">
+            <span className="text-[rgba(240,230,211,0.45)]">ALLOCATED</span>
+            <span className="text-[#d4a017]">{formatSAR(allocated, { compact: true })} / {formatSAR(TOTAL_BUDGET, { compact: true })}</span>
+          </div>
+          <div className="h-1.5 rounded-full bg-[rgba(255,255,255,0.05)] overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: 'linear-gradient(90deg, #10b981, #2dd4bf, #d4a017)' }}
+              animate={{ width: `${Math.min(100, (allocated / TOTAL_BUDGET) * 100)}%` }}
+              transition={{ type: 'spring', stiffness: 120, damping: 20 }}
             />
-          </span>
-        </span>
-        <span className="text-[rgba(240,230,211,0.7)]">
-          Remaining: <span className="text-[#10b981]">{formatSAR(Math.max(0, TOTAL_BUDGET - allocated), { compact: true })}</span>
-        </span>
-        <span className="text-[rgba(240,230,211,0.7)]">
-          <GlossaryTag id="resilience">Resilience</GlossaryTag>: <span className={metrics.resilienceScore >= 60 ? 'text-[#10b981]' : 'text-[#ef4444]'}>{metrics.resilienceScore.toFixed(0)}/100</span>
-        </span>
-        <span className="text-[rgba(240,230,211,0.7)]">
-          <GlossaryTag id="sroi">SROI</GlossaryTag>: <span className="text-[#d4a017]">{formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}</span>
-        </span>
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-3">
@@ -148,8 +182,16 @@ export function Lab() {
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.35, delay: i * 0.08 }}
-                className="rounded-lg bg-[#0d1527] border border-[rgba(212,160,23,0.12)] p-3"
+                className="lux-glass p-3.5 transition-all relative overflow-hidden"
               >
+                <motion.div
+                  key={Math.round(val)}
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ background: `radial-gradient(60% 60% at 50% 0%, ${s.color}22, transparent 70%)` }}
+                  initial={{ opacity: 0.6 }}
+                  animate={{ opacity: 0 }}
+                  transition={{ duration: 0.9 }}
+                />
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div
@@ -160,9 +202,7 @@ export function Lab() {
                     </div>
                     <span className="text-sm">{s.arName}</span>
                   </div>
-                  <span className="text-[#d4a017] font-mono font-semibold text-sm">
-                    {formatSAR(val, { compact: true })}
-                  </span>
+                  <AnimatedNumber value={val} formatter={(v) => formatSAR(v, { compact: true })} className="text-[#f0d67c] text-sm" />
                 </div>
 
                 <input
@@ -255,16 +295,24 @@ export function Lab() {
           )}
 
           {/* Footer actions */}
-          <div className="flex items-center justify-between">
+          <div className="mt-2 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             <button
               onClick={() => setStage('analysis')}
-              className="rounded-md px-5 py-2.5 font-semibold text-[#0a0e1a] text-sm"
-              style={{ background: 'linear-gradient(135deg, #d4a017, #b8860b)' }}
+              className="lux-btn !px-8 cursor-pointer"
             >
-              تحليل متقدم →
+              <span>LEVEL 02 — راقب الأثر</span>
+              <span>→</span>
             </button>
-            <div className="text-xs text-[rgba(240,230,211,0.4)]">
-              المستفيدون الكلي: <span className="text-[#10b981] font-mono">{formatNumber(metrics.totalBeneficiaries)}</span>
+            <div className="flex items-center gap-5 text-xs text-[rgba(240,230,211,0.5)]">
+              <span>
+                المستفيدون: <span className="text-[#10b981] font-mono">{formatNumber(metrics.totalBeneficiaries)}</span>
+              </span>
+              <span>
+                <GlossaryTag id="resilience">Resilience</GlossaryTag>:{' '}
+                <span className={metrics.resilienceScore >= 60 ? 'text-[#10b981]' : 'text-[#ef4444]'} font-mono>
+                  {metrics.resilienceScore.toFixed(0)}
+                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -275,14 +323,19 @@ export function Lab() {
 
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
-    <div className="text-[#d4a017] font-semibold tracking-wide text-sm mb-1">{children}</div>
+    <div className="flex items-center gap-2.5 mb-2">
+      <span className="w-1 h-4 rounded-sm bg-gradient-to-b from-[#f0d67c] to-[#d4a017]" />
+      <div className="text-[#f0d67c] font-mono text-[11px] tracking-[0.2em] uppercase">
+        {children}
+      </div>
+    </div>
   );
 }
 
 function Panel({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="rounded-lg bg-[#0d1527] border border-[rgba(212,160,23,0.12)] p-3">
-      <div className="text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.45)] font-mono mb-2">
+    <div className="lux-glass p-4">
+      <div className="text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.45)] font-mono mb-3 border-b border-[rgba(212,160,23,0.1)] pb-2">
         {label}
       </div>
       {children}
@@ -292,14 +345,18 @@ function Panel({ label, children }: { label: string; children: ReactNode }) {
 
 function MetricCard({ label, sub, value, color }: { label: string; sub: string; value: number; color: string }) {
   return (
-    <div className="rounded-lg bg-[#0d1527] border border-[rgba(212,160,23,0.12)] p-4">
-      <div className="text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.45)] font-mono">
+    <div className="lux-glass p-4 relative overflow-hidden">
+      <div
+        className="absolute -top-10 -right-10 w-28 h-28 rounded-full pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${color}22, transparent 70%)` }}
+      />
+      <div className="relative text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.45)] font-mono">
         {label}
       </div>
-      <div className="text-2xl md:text-3xl text-[#d4a017] font-mono font-bold mt-1 tabular-nums">
+      <div className="relative text-2xl md:text-3xl text-[#f0d67c] font-mono font-bold mt-1 tabular-nums">
         {formatSAR(value, { compact: true })}
       </div>
-      <div className="text-[9px] text-[rgba(240,230,211,0.35)] font-mono mt-1">{sub}</div>
+      <div className="relative text-[9px] text-[rgba(240,230,211,0.35)] font-mono mt-1">{sub}</div>
     </div>
   );
 }
@@ -402,5 +459,27 @@ function MarginalMini({
         {Math.round((impact(Math.min(allocation, maxX)) * 100))}%
       </div>
     </div>
+  );
+}
+
+/** Number that smoothly animates to its target value. */
+function AnimatedNumber({
+  value,
+  formatter,
+  className = '',
+}: {
+  value: number;
+  formatter: (v: number) => string;
+  className?: string;
+}) {
+  const display = useAnimatedValue(value, 500);
+  return (
+    <motion.div
+      key={Math.round(value)}
+      animate={{ opacity: 1 }}
+      className={`font-mono tabular-nums font-semibold ${className}`}
+    >
+      {formatter(display)}
+    </motion.div>
   );
 }

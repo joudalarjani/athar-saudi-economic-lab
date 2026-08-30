@@ -43,7 +43,7 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-midnight-900 text-ivory">
+    <div className="min-h-screen bg-midnight-900 text-ivory lux-shell">
       {stage !== 'hero' && stage !== 'map' && <GlobalNav />}
       <AnimatePresence mode="wait">
         <StageTransition key={stage}>

@@ -175,6 +175,197 @@
   }
 }
 
+/* =========================================================
+   ATHAR Design System — Dark Luxury Economic Laboratory
+   ========================================================= */
+
+@layer base {
+  :root {
+    --lux-bg: #05070f;
+    --lux-navy: #070b18;
+    --lux-panel: rgba(13, 20, 38, 0.55);
+    --lux-gold: #d4a017;
+    --lux-gold-soft: #f0d67c;
+    --lux-emerald: #10b981;
+    --lux-teal: #2dd4bf;
+    --lux-ivory: #f0e6d3;
+    --lux-line: rgba(212, 160, 23, 0.14);
+    --lux-glow-gold: rgba(212, 160, 23, 0.22);
+    --lux-glow-emerald: rgba(16, 185, 129, 0.16);
+  }
+}
+
+@layer components {
+  /* Deep luxury backdrop */
+  .lux-shell {
+    background:
+      radial-gradient(1200px 600px at 70% -10%, rgba(212, 160, 23, 0.08), transparent 60%),
+      radial-gradient(1000px 700px at 10% 110%, rgba(16, 185, 129, 0.05), transparent 60%),
+      linear-gradient(180deg, #05070f 0%, #070b18 55%, #05070f 100%);
+  }
+
+  /* Glassmorphic float panel */
+  .lux-glass {
+    background: linear-gradient(160deg, rgba(18, 26, 48, 0.6), rgba(9, 14, 28, 0.45));
+    backdrop-filter: blur(18px) saturate(1.15);
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    border: 1px solid rgba(212, 160, 23, 0.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 20px 60px -30px rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+  }
+
+  /* Hairline gold top accent */
+  .lux-hairline {
+    position: relative;
+  }
+  .lux-hairline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 160, 23, 0.5), transparent);
+  }
+
+  /* Big SAR number */
+  .lux-big-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-feature-settings: 'tnum';
+    color: var(--lux-gold);
+    text-shadow: 0 0 40px rgba(212, 160, 23, 0.35);
+    line-height: 1;
+  }
+
+  /* Repetitive brand tag */
+  .brand-tag {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.35em;
+    font-size: 9px;
+    color: rgba(240, 230, 211, 0.4);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .brand-tag em {
+    font-style: normal;
+    color: var(--lux-gold);
+  }
+
+  /* Level HUD pill */
+  .level-hud {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(240, 230, 211, 0.55);
+    position: relative;
+  }
+  .level-hud .level-num {
+    color: var(--lux-gold);
+    font-weight: 500;
+  }
+  .level-hud .level-bar {
+    width: 44px;
+    height: 2px;
+    background: rgba(212, 160, 23, 0.16);
+    position: relative;
+    overflow: hidden;
+  }
+  .level-hud .level-bar > span {
+    position: absolute;
+    inset: 0;
+    transform-origin: left;
+    background: linear-gradient(90deg, var(--lux-gold), var(--lux-gold-soft));
+  }
+
+  /* Gold gradient text for key headlines */
+  .lux-title {
+    background: linear-gradient(120deg, #fff8e6 0%, #f0d67c 38%, #d4a017 70%, #b8860b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Pill button */
+  .lux-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 34px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(212, 160, 23, 0.16), rgba(212, 160, 23, 0.05));
+    border: 1px solid rgba(212, 160, 23, 0.4);
+    color: var(--lux-gold-soft);
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.15s;
+    box-shadow: 0 0 0 rgba(212, 160, 23, 0);
+  }
+  .lux-btn:hover {
+    border-color: rgba(212, 160, 23, 0.8);
+    box-shadow: 0 8px 40px -8px rgba(212, 160, 23, 0.5);
+  }
+  .lux-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 80%
+    );
+    transform: translateX(-120%);
+    animation: lux-shine 5s ease-in-out infinite;
+  }
+  @keyframes lux-shine {
+    0%, 60% { transform: translateX(-120%); }
+    100% { transform: translateX(120%); }
+  }
+
+  /* Animated capital-flow background */
+  .capital-flow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+  .capital-flow .flow-line {
+    stroke-dasharray: 4 8;
+    animation: flow-dash 3s linear infinite;
+  }
+  .capital-flow .flow-node {
+    animation: flow-pulse 3.2s ease-in-out infinite;
+  }
+  @keyframes flow-dash {
+    to { stroke-dashoffset: -48; }
+  }
+  @keyframes flow-pulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.9; }
+  }
+
+  /* Ambient floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

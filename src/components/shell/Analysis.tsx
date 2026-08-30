@@ -7,6 +7,7 @@ import { formatSAR, formatMultiplier, formatNumber, formatSROIRange } from '../.
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { MarginalReturns } from '../analysis/MarginalReturns';
 import { GlossaryTag } from '../shared/GlossaryModal';
+import { LevelHud } from '../shared/LevelHud';
 
 export function Analysis() {
   const allocations = useLabStore((s) => s.allocations);
@@ -28,10 +29,8 @@ export function Analysis() {
       >
         {/* Header */}
         <div className="mb-8">
-          <div className="text-[10px] tracking-[0.3em] uppercase text-gold font-mono">
-            Stage 02 / Analysis
-          </div>
-          <h1 className="text-3xl md:text-4xl text-ivory font-light mt-2">
+          <LevelHud />
+          <h1 className="text-3xl md:text-4xl text-ivory font-light mt-3">
             التحليل الاقتصادي
           </h1>
           <p className="text-ivory/60 mt-2 text-sm">

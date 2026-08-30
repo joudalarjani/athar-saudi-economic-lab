@@ -14,13 +14,13 @@ export function Signature({ minimal = false }: { minimal?: boolean }) {
       className="fixed bottom-4 left-4 z-40 pointer-events-none select-none"
       dir="ltr"
     >
-      <div className="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-[rgba(212,160,23,0.4)] font-mono">
-        <div className="w-1 h-1 rounded-full bg-gold/60" />
-        <span>Joud</span>
+      <div className="flex items-center gap-2 font-mono uppercase" style={{ letterSpacing: '0.35em', fontSize: '9px', color: 'rgba(240,230,211,0.38)' }}>
+        <span className="text-gold/70">/</span>
+        <span className="text-gold/90">J O U D</span>
         {!minimal && (
           <>
-            <span className="text-gold/30">/</span>
-            <span>Economic Policy Lab</span>
+            <span className="text-gold/30">—</span>
+            <span>ECONOMIC POLICY LAB</span>
           </>
         )}
       </div>

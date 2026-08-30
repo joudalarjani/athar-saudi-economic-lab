@@ -102,7 +102,7 @@ export function SaudiMap() {
     cityAllocation[id].amount > 0 && (id === 'mecca' || id === 'medina');
 
   return (
-    <div className="relative min-h-screen bg-[#0a0e1a] text-[#f0e6d3] overflow-hidden">
+    <div className="relative min-h-screen lux-shell text-[#f0e6d3] overflow-hidden">
       <div className="max-w-5xl mx-auto px-6 py-16 flex flex-col min-h-screen">
         {/* Header */}
         <motion.div
@@ -117,13 +117,16 @@ export function SaudiMap() {
           >
             ← عودة
           </button>
-          <h2 className="text-[#d4a017] uppercase tracking-[0.3em] font-mono text-sm">
-            7 قطاعات تصنع الأثر
-          </h2>
+          <div className="flex items-center gap-3">
+            <span className="level-hud">
+              <span className="level-num">LVL 01</span>
+              <span className="level-bar"><span style={{ backgroundColor: '#d4a017' }} /></span>
+              <span>OBSERVE THE NETWORK</span>
+            </span>
+          </div>
           <button
             onClick={() => setStage('lab')}
-            className="text-xs px-4 py-2 rounded-md text-[#0a0e1a] font-semibold"
-            style={{ background: 'linear-gradient(135deg, #d4a017, #b8860b)' }}
+            className="lux-btn !px-6 !py-2 cursor-pointer"
           >
             ادخل المختبر →
           </button>
@@ -277,15 +280,15 @@ export function SaudiMap() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-6 grid md:grid-cols-3 gap-4"
         >
-          <div className="rounded-lg bg-[#0d1527] border border-[rgba(212,160,23,0.12)] p-4">
+          <div className="lux-glass p-4">
             <div className="text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.4)] font-mono">
               الإجمالي المخصص
             </div>
-            <div className="text-2xl text-[#d4a017] font-mono mt-1 font-semibold">
+            <div className="text-2xl text-[#f0d67c] font-mono mt-1 font-semibold">
               {formatSAR(metrics.totalBudget, { compact: true })}
             </div>
           </div>
-          <div className="rounded-lg bg-[#0d1527] border border-[rgba(212,160,23,0.12)] p-4">
+          <div className="lux-glass p-4">
             <div className="text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.4)] font-mono">
               الأثر الإقليمي
             </div>
@@ -295,7 +298,7 @@ export function SaudiMap() {
                 : 'ابدأ التخصيص في المختبر لتشاهد الأثر على المدن.'}
             </div>
           </div>
-          <div className="rounded-lg bg-[#0d1527] border border-[rgba(212,160,23,0.12)] p-4">
+          <div className="lux-glass p-4">
             <div className="text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.4)] font-mono">
               المستفيدون
             </div>
