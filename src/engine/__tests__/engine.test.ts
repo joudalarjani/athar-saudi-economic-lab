@@ -18,6 +18,7 @@ import { runSensitivity } from '../sensitivity';
 import { computePortfolioMetrics } from '../portfolio';
 import { esgComposite, buildConsequenceProfile } from '../consequence';
 import { buildChallenges, analyzeDefense } from '../reviewer';
+import { computeTradeOff, buildProposedAllocation } from '../tradeoff';
 
 describe('Impact Calculator', () => {
   it('should return zero for zero allocation', () => {
@@ -278,5 +279,40 @@ describe('Defend Your Decision — Reviewer', () => {
       'اخترت التعليم رغم التركيز لأنه رأس مال بشري أولوية، وأعترف أن الصحة تحتاج حصة أكبر، وأخطط لتنويع المخاطر في المرحلة الثانية'
     );
     expect(articulate.score).toBeGreaterThan(silent.score);
+  });
+});
+
+describe('The Trade-Off — two-sector reallocation', () => {
+  const alloc: Record<string, number> = {};
+  SECTORS.forEach((s) => (alloc[s.id] = 1_000_000 + (100_000_000 - SECTORS.length * 1_000_000) / SECTORS.length));
+
+  it('should never withdraw more than the from-sector holds', () => {
+    const proposed = buildProposedAllocation(SECTORS, alloc, 'education', 'health', 999_999_999);
+    expect(Object.values(proposed).reduce((s, v) => s + v, 0)).toBeCloseTo(100_000_000, 0);
+    const from = proposed['education'] ?? 0;
+    expect(from).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should return direction of movement for distinct sectors', () => {
+    const r = computeTradeOff({ sectors: SECTORS, allocations: alloc, fromId: 'education', toId: 'environment', shift: 5_000_000 });
+    expect(r.proposedAllocation['education']).toBeLessThan(alloc['education']);
+    expect(r.proposedAllocation['environment']).toBeGreaterThan(alloc['environment']);
+  });
+
+  it('should preserve total budget exactly', () => {
+    const r = computeTradeOff({ sectors: SECTORS, allocations: alloc, fromId: 'health', toId: 'education', shift: 3_000_000 });
+    const sum = Object.values(r.proposedAllocation).reduce((s, v) => s + v, 0);
+    expect(sum).toBeCloseTo(100_000_000, 0);
+  });
+
+  it('should produce an opportunity-cost narrative', () => {
+    const r = computeTradeOff({ sectors: SECTORS, allocations: alloc, fromId: 'education', toId: 'health', shift: 2_000_000 });
+    expect(r.opportunityCost.en.length).toBeGreaterThan(0);
+    expect(r.opportunityCost.ar.length).toBeGreaterThan(0);
+  });
+
+  it('should report an even favor when no shift is possible (same sector)', () => {
+    const r = computeTradeOff({ sectors: SECTORS, allocations: alloc, fromId: 'education', toId: 'education', shift: 5_000_000 });
+    expect(r.favor.socialValue).toBe('even');
   });
 });

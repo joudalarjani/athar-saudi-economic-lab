@@ -20,6 +20,7 @@ export type Stage =
   | 'consequence'
   | 'stress'
   | 'sensitivity'
+  | 'trade'
   | 'capitalStack'
   | 'sankey'
   | 'regional'

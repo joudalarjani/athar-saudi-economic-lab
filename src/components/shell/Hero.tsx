@@ -44,7 +44,11 @@ function useDigitSlots(target: number, durationMs: number): string[] {
 export function Hero() {
   const setStage = useLabStore((s) => s.setStage);
   const allocations = useLabStore((s) => s.allocations);
+  const setShowModelExplainer = useLabStore((s) => s.setShowModelExplainer);
   const dispatchCta = () => setStage('lab');
+
+  const [logoClicks, setLogoClicks] = useState(0);
+  const secret = logoClicks >= 5;
 
   const digits = useDigitSlots(TOTAL_BUDGET, 2600);
 
@@ -68,7 +72,13 @@ export function Hero() {
       {/* Brand tag top */}
       <div className="relative z-10 flex items-center justify-between px-6 md:px-10 pt-7">
         <div className="flex items-center gap-3">
-          <span className="text-xl text-[#d4a017] leading-none">أثر</span>
+          <button
+            onClick={() => setLogoClicks((c) => (secret ? 0 : c + 1))}
+            className="text-xl text-[#d4a017] leading-none transition-transform hover:scale-110 cursor-pointer"
+            title="أثر"
+          >
+            أثر
+          </button>
           <span className="h-4 w-px bg-[rgba(212,160,23,0.3)]" />
           <span className="text-[10px] tracking-[0.3em] uppercase font-mono text-[rgba(240,230,211,0.5)]">
             Saudi Social Investment & Economic Policy Lab
@@ -171,6 +181,16 @@ export function Hero() {
           100 مليون ريال · قرار واحد · احتمالات لا نهائية
         </motion.p>
 
+        {secret && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-3 text-xs font-mono text-[#10b981] border border-[#10b981]/30 rounded-full px-4 py-1.5 lux-glass"
+          >
+            ◈ &quot;العائد الحقيقي قرارٌ ذكي، لا مبلغٌ كبير.&quot; — ATHAR
+          </motion.div>
+        )}
+
         {/* Sector chips */}
         <div className="mt-10 flex flex-wrap justify-center gap-2.5 w-full max-w-4xl">
           {SECTORS.map((s, i) => (
@@ -199,6 +219,18 @@ export function Hero() {
         >
           <span>ادخل المختبر — ENTER THE LAB</span>
           <span>→</span>
+        </motion.button>
+
+        {/* Secondary CTA — straight to the model */}
+        <motion.button
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 3.7 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => setShowModelExplainer(true)}
+          className="mt-4 text-[10px] tracking-[0.3em] uppercase font-mono text-[rgba(240,230,211,0.5)] hover:text-[#f4d27a] transition-colors cursor-pointer"
+        >
+          explore the model — استكشف النموذج ›
         </motion.button>
       </div>
 

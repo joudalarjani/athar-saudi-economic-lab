@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
 import { computePortfolioMetrics } from '../../engine/portfolio';
@@ -19,6 +19,7 @@ export function Brief() {
   const fundingMix = useLabStore((s) => s.fundingMix);
   const setStage = useLabStore((s) => s.setStage);
   const resetProgress = useLabStore((s) => s.resetProgress);
+  const [copied, setCopied] = useState(false);
 
   const metrics = useMemo(
     () => computePortfolioMetrics(SECTORS, allocations, discountRate, horizon),
@@ -167,6 +168,43 @@ export function Brief() {
     doc.save(`ATHAR-Policy-Brief-${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
+  const copyBrief = async () => {
+    const lines: string[] = [];
+    lines.push('ATHAR | أثر — Saudi Social Investment Policy Brief');
+    lines.push(`Generated: ${new Date().toISOString().split('T')[0]}`);
+    lines.push('');
+    lines.push('01 / Executive Summary');
+    lines.push(`Total Budget: ${formatSAR(metrics.totalBudget, { compact: true })}`);
+    lines.push(`Beneficiaries: ${formatNumber(metrics.totalBeneficiaries)}`);
+    lines.push(`Social Value (SROI): ${formatSAR(metrics.totalSocialValue, { compact: true })}`);
+    lines.push(`GDP Impact: ${formatSAR(metrics.totalGdpImpact, { compact: true })}`);
+    lines.push('');
+    lines.push('02 / Allocation');
+    SECTORS.forEach((s) => lines.push(`${s.arName}: ${formatSAR(allocations[s.id] ?? 0, { compact: true })}`));
+    lines.push('');
+    lines.push('03 / Expected Impact');
+    lines.push(`SROI: ${formatSROIRange(metrics.portfolioSROIMin, metrics.portfolioSROIMax)}`);
+    lines.push(`Multiplier: ${formatMultiplier(metrics.portfolioMultiplier)}`);
+    lines.push(`Jobs Created: ${formatNumber(Math.round(metrics.totalEmployment))}`);
+    lines.push(`NPV: ${formatSAR(metrics.npvTotal, { compact: true })}`);
+    lines.push('');
+    lines.push('04 / Risk & Sustainability');
+    lines.push(`Resilience Score: ${formatPercent(metrics.resilienceScore, 0)}`);
+    lines.push(`Health Score: ${formatPercent(critique.healthScore, 0)}`);
+    lines.push('');
+    lines.push('06 / Methodology & Limitations');
+    lines.push('Simulation based on stated assumptions and available evidence. Not a forecast. Not investment advice.');
+    lines.push('');
+    lines.push('— Joud Abdullah Al-Arjani, Economics Student');
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
     <div className="min-h-screen pt-20 px-4 md:px-8 pb-12">
       <motion.div
@@ -213,6 +251,14 @@ export function Brief() {
                     {new Date().toISOString().split('T')[0]}
                   </div>
                 </div>
+                <button
+                  onClick={copyBrief}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-ivory/80 rounded-sm border border-gold/30 hover:bg-gold/10 transition cursor-pointer"
+                  title="نسخ الموجز"
+                >
+                  <span aria-hidden="true">{copied ? '✓' : '⧉'}</span>
+                  <span>{copied ? 'Copied' : 'Copy'}</span>
+                </button>
                 <button
                   onClick={generatePDF}
                   className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-[#0A0E1A] rounded-sm shadow-lg hover:brightness-110 transition"
