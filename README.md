@@ -9,19 +9,27 @@
 
 ## 🎯 الفكرة
 
-المستخدم يحصل على **100 مليون ريال** ويتحول إلى **Social Investor**. يخصص الميزانية بين 7 قطاعات، ثم يستكشف:
+المستخدم يحصل على **رأس مال قابل للتعديل** (افتراضيًا **100 مليون ريال**) ويتحول إلى **Social Investor**. يخصص الميزانية بين 7 قطاعات، ثم يستكشف:
 
 | المرحلة | الوصف |
 |---|---|
 | **Lab** | محاكي 3D تفاعلي — Capital Pool مركزي مع 7 Sector Nodes + Money Flow |
 | **Analysis** | SROI vs Economic Multiplier — فصل صارم بين القيمة الاجتماعية والأثر السوقي |
 | **Optimize** | Multi-Objective Optimization مع 5 أوزان قابلة للتعديل |
-| **Stress Test** | 6 سيناريوهات صدمات تاريخية (Inflation, Pandemic, Oil Shock, etc.) |
+| **PPF** | منحنى إمكانية الإنتاج + **Knee Point** (نقطة التوازن المثلى) |
+| **Marginal Returns** | تحليل العائد الحدي لكل قطاع |
 | **Sensitivity** | Tornado chart — أي افتراض يؤثر أكثر |
+| **Trade-off** | المفاضلة بين الأهداف مع قياس تكلفة الفرصة |
+| **Monte-Carlo** | توزيع النتائج المحتملة — P5/P50/P95 + احتمال الهبوط |
+| **Stress Test** | 6 سيناريوهات صدمات تاريخية (Inflation, Pandemic, Oil Shock, etc.) |
 | **Capital Stack** | بناء هيكل التمويل (Grants, Waqf, Impact Investment, CSR, Crowdfunding) |
 | **Regional** | مقارنة Population-based vs Gap-based لـ 13 منطقة سعودية |
+| **Consequence Lab** | محاكاة عواقب القرار (Gain/Effect/Side) |
+| **Defend Decision** | مراجعة نقدية للقرار مع أسئلة محكمة |
 | **Critique** | Economic Policy Review بقواعد بنيوية |
 | **Brief** | Policy Brief مولّد — جاهز للمشاركة |
+
+> **الميزانية قابلة للتعديل** — لا تقتصر على 100 مليون ثابت؛ يختار المستخدم من عرض مسبق (SME / ترليون) أو قيمة مخصصة، وتُعاد معايرة كل الحسابات والحدود والمحسّن تلقائيًا.
 
 ---
 
@@ -35,6 +43,8 @@
 | **Diminishing Returns** | Saturation function: D = D_max × (1 - e^(-λx)) | Parameterized |
 | **Resilience** | HHI + Dependency + Counter-cyclicality + σ | Composite formula موثقة |
 | **Tornado** | Sensitivity to ±10% parameter changes | All scenarios |
+| **Monte-Carlo** | Seeded mulberry32 — SROI داخل نطاق دراسات الحالة الحقيقية + ضجيج مضاعِف σ≈10% | Case-study ranges + stated assumptions |
+| **Opportunity Cost** | Trade-off engine + PPF knee point (أقصى مسافة من خط الأطراف) | Frontier geometry |
 
 **مبدأ حاكم:** SROI ≠ Economic Multiplier. كل رقم له Evidence Badge مرئي:
 - 🟢 **VERIFIED** — من تقرير رسمي سعودي
@@ -71,11 +81,11 @@ npm run build
 athar/
 ├── src/
 │   ├── data/          # مصادر البيانات (7 ملفات)
-│   ├── engine/        # Economic Engine (14 ملف pure functions)
+│   ├── engine/        # Economic Engine (21 ملف pure functions)
 │   ├── state/         # Zustand state
 │   ├── components/
 │   │   ├── 3d/        # React Three Fiber (4 ملفات)
-│   │   ├── shell/     # 11 شاشة رئيسية
+│   │   ├── shell/     # 21 شاشة رئيسية
 │   │   ├── controls/  # Sliders
 │   │   ├── analysis/  # Impact panels
 │   │   └── shared/    # EvidenceBadge, Signature, Stat, ModelExplainer
