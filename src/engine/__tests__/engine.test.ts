@@ -17,6 +17,7 @@ import { optimizeAllocation } from '../optimizer';
 import { runSensitivity } from '../sensitivity';
 import { computePortfolioMetrics } from '../portfolio';
 import { esgComposite, buildConsequenceProfile } from '../consequence';
+import { buildChallenges, analyzeDefense } from '../reviewer';
 
 describe('Impact Calculator', () => {
   it('should return zero for zero allocation', () => {
@@ -248,5 +249,34 @@ describe('Consequence Lab', () => {
       const p = buildConsequenceProfile(SECTORS, alloc, { governance: 0.7, environmental: 0.6, social: 0.7 }, k);
       expect(p.retention).toBeGreaterThanOrEqual(0);
     });
+  });
+});
+
+describe('Defend Your Decision — Reviewer', () => {
+  const concentrated: Record<string, number> = {};
+  SECTORS.forEach((s) => (concentrated[s.id] = s.id === 'education' ? 80_000_000 : 4_000_000));
+
+  it('should raise challenges backed by real user shares', () => {
+    const challenges = buildChallenges(SECTORS, concentrated);
+    expect(challenges.some((c) => c.category === 'concentration')).toBe(true);
+    expect(challenges.some((c) => c.category === 'single-sector')).toBe(true);
+    challenges.forEach((c) => expect(c.figure.length).toBeGreaterThan(0));
+  });
+
+  it('should score empty allocation as clean (no challenges)', () => {
+    const empty: Record<string, number> = {};
+    const v = analyzeDefense(SECTORS, empty, 'anything');
+    expect(v.total).toBe(0);
+    expect(v.score).toBe(1);
+  });
+
+  it('should reward a defense that articulates the real trade-offs', () => {
+    const silent = analyzeDefense(SECTORS, concentrated, 'ميزانية فقط');
+    const articulate = analyzeDefense(
+      SECTORS,
+      concentrated,
+      'اخترت التعليم رغم التركيز لأنه رأس مال بشري أولوية، وأعترف أن الصحة تحتاج حصة أكبر، وأخطط لتنويع المخاطر في المرحلة الثانية'
+    );
+    expect(articulate.score).toBeGreaterThan(silent.score);
   });
 });

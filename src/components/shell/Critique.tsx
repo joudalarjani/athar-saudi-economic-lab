@@ -6,6 +6,7 @@ import { SECTORS } from '../../data/sectors';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { formatPercent } from '../../lib/format';
 import { StageNav } from '../shared/StageNav';
+import { DefendDecision } from '../shared/DefendDecision';
 
 export function Critique() {
   const allocations = useLabStore((s) => s.allocations);
@@ -188,6 +189,11 @@ export function Critique() {
           </div>
         )}
 
+        {/* DEFEND YOUR DECISION — data-anchored AI reviewer */}
+        <div className="mt-6">
+          <DefendDecision />
+        </div>
+
         {/* Methodology note */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -199,8 +205,9 @@ export function Critique() {
           2030، KKF). كل قاعدة موثقة بـ Source. هذا تحليل بنيوي، لا تنبؤ.
           <br />
           <br />
-          ✦ DEFEND YOUR POLICY: المستخدم يستطيع تقديم تبرير لكل قرار.
-          السؤال: لماذا اخترت هذا التخصيص؟ هل تتفق أو تختلف؟
+          🔍 Defend Your Decision: اكتب تبريرك أمام المراجع الاقتصادي — تحليل
+          تغطية مباشر يعتمد على أرقام محفظتك الفعلية (لن يصدر حكمًا على صدق
+          تبريرك).
         </motion.div>
 
         {/* Sequential journey nav */}
