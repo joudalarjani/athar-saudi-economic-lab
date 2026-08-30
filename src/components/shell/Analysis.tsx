@@ -6,6 +6,7 @@ import { SECTORS } from '../../data/sectors';
 import { formatSAR, formatMultiplier, formatNumber, formatSROIRange } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { MarginalReturns } from '../analysis/MarginalReturns';
+import { RiyalToImpact } from '../analysis/RiyalToImpact';
 import { GlossaryTag } from '../shared/GlossaryModal';
 import { LevelHud } from '../shared/LevelHud';
 import { StageNav } from '../shared/StageNav';
@@ -262,6 +263,11 @@ export function Analysis() {
             })}
           </div>
         </motion.div>
+
+        {/* From Riyal to Impact */}
+        <div className="mt-4">
+          <RiyalToImpact />
+        </div>
 
         {/* Marginal returns section */}
         <MarginalReturns />

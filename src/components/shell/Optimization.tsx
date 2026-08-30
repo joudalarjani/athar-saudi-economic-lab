@@ -6,6 +6,8 @@ import { SECTORS } from '../../data/sectors';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { formatSAR, formatPercent, formatNumber, formatSROIRange } from '../../lib/format';
 import { StageNav } from '../shared/StageNav';
+import { AdvisorPanel } from '../analysis/AdvisorPanel';
+import { ScenarioLab } from '../analysis/ScenarioLab';
 
 export function Optimization() {
   const allocations = useLabStore((s) => s.allocations);
@@ -101,6 +103,11 @@ export function Optimization() {
             })}
           </div>
         </motion.div>
+
+        {/* ATHAR INTELLIGENCE — decision-support advisor */}
+        <div className="mb-6">
+          <AdvisorPanel />
+        </div>
 
         {/* Comparison: Your vs Optimized */}
         <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -271,6 +278,11 @@ export function Optimization() {
             );
           })}
         </motion.div>
+
+        {/* What-if scenario simulator + Policy Verdict */}
+        <div className="mt-6">
+          <ScenarioLab />
+        </div>
 
         {/* Sequential journey nav */}
         <StageNav />
