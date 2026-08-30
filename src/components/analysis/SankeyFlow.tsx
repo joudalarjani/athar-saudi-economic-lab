@@ -190,7 +190,7 @@ export function SankeyFlow() {
         {renderedLinks.map((l, i) => (
           <path
             key={i}
-            d={l.path}
+            d={l.path ?? undefined}
             fill="none"
             stroke="url(#sankeyLinkGrad)"
             strokeOpacity={0.35}
