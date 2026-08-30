@@ -8,6 +8,7 @@ import { Lab } from './components/shell/Lab';
 import { Analysis } from './components/shell/Analysis';
 import { Optimization } from './components/shell/Optimization';
 import { StressTest } from './components/shell/StressTest';
+import { ConsequenceLab } from './components/shell/ConsequenceLab';
 import { Sensitivity } from './components/shell/Sensitivity';
 import { CapitalStack } from './components/shell/CapitalStack';
 import { SankeyStage } from './components/shell/SankeyStage';
@@ -79,6 +80,7 @@ function App() {
           {stage === 'analysis' && <Analysis />}
           {stage === 'optimization' && <Optimization />}
           {stage === 'stress' && <StressTest />}
+          {stage === 'consequence' && <ConsequenceLab />}
           {stage === 'sensitivity' && <Sensitivity />}
           {stage === 'capitalStack' && <CapitalStack />}
           {stage === 'sankey' && <SankeyStage />}

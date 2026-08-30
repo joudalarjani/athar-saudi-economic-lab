@@ -16,6 +16,7 @@ import { populationBasedAllocation } from '../regional';
 import { optimizeAllocation } from '../optimizer';
 import { runSensitivity } from '../sensitivity';
 import { computePortfolioMetrics } from '../portfolio';
+import { esgComposite, buildConsequenceProfile } from '../consequence';
 
 describe('Impact Calculator', () => {
   it('should return zero for zero allocation', () => {
@@ -214,5 +215,38 @@ describe('Portfolio Aggregator', () => {
     expect(m.totalBeneficiaries).toBeGreaterThan(0);
     expect(m.totalSocialValue).toBeGreaterThan(0);
     expect(m.totalGdpImpact).toBeGreaterThan(0);
+  });
+});
+
+describe('Consequence Lab', () => {
+  const alloc: Record<string, number> = {};
+  SECTORS.forEach((s) => (alloc[s.id] = TOTAL_BUDGET / SECTORS.length));
+
+  it('should fold ESG levers into a bounded composite', () => {
+    expect(esgComposite({ governance: 1, environmental: 0.5, social: 0.5 })).toBeCloseTo(0.7, 2);
+    expect(esgComposite({ governance: 0, environmental: 0, social: 0 })).toBe(0);
+    expect(esgComposite({ governance: 1, environmental: 1, social: 1 })).toBe(1);
+  });
+
+  it('should build a full 6-dimension profile', () => {
+    const p = buildConsequenceProfile(SECTORS, alloc, { governance: 0.7, environmental: 0.6, social: 0.7 }, 'governance');
+    expect(p.dimensions).toHaveLength(6);
+    expect(p.strategyLabel.length).toBeGreaterThan(0);
+    expect(p.retention).toBeGreaterThanOrEqual(0);
+    expect(p.retention).toBeLessThanOrEqual(100);
+  });
+
+  it('should raise resilience as governance improves (illustrative only)', () => {
+    const low = buildConsequenceProfile(SECTORS, alloc, { governance: 0.1, environmental: 0.1, social: 0.1 }, 'economic');
+    const high = buildConsequenceProfile(SECTORS, alloc, { governance: 1, environmental: 0.1, social: 0.1 }, 'economic');
+    expect(high.resilienceWithEsg).toBeGreaterThanOrEqual(low.resilienceWithEsg);
+  });
+
+  it('should reuse every archetype without error', () => {
+    const keys = ['economic', 'funding', 'employment', 'governance'] as const;
+    keys.forEach((k) => {
+      const p = buildConsequenceProfile(SECTORS, alloc, { governance: 0.7, environmental: 0.6, social: 0.7 }, k);
+      expect(p.retention).toBeGreaterThanOrEqual(0);
+    });
   });
 });

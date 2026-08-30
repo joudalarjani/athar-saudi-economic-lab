@@ -17,6 +17,7 @@ export type Stage =
   | 'lab'
   | 'analysis'
   | 'optimization'
+  | 'consequence'
   | 'stress'
   | 'sensitivity'
   | 'capitalStack'
@@ -96,6 +97,14 @@ interface LabState {
   // Saved strategy name (policy card)
   strategyName: string;
   setStrategyName: (name: string) => void;
+
+  // Consequence Lab — ESG levers (0-1, illustrative, only used in the Consequence view)
+  governance: number;
+  setGovernance: (v: number) => void;
+  environmental: number;
+  setEnvironmental: (v: number) => void;
+  social: number;
+  setSocial: (v: number) => void;
 }
 
 /**
@@ -240,4 +249,11 @@ export const useLabStore = create<LabState>((set, get) => ({
 
   strategyName: 'Your Strategy • استراتيجيتي',
   setStrategyName: (name) => set({ strategyName: name }),
+
+  governance: 0.7,
+  setGovernance: (v) => set({ governance: Math.max(0, Math.min(1, v)) }),
+  environmental: 0.6,
+  setEnvironmental: (v) => set({ environmental: Math.max(0, Math.min(1, v)) }),
+  social: 0.7,
+  setSocial: (v) => set({ social: Math.max(0, Math.min(1, v)) }),
 }));

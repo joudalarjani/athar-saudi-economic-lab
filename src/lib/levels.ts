@@ -68,6 +68,7 @@ const STAGE_LEVEL: Record<Stage, LevelId> = {
   ppf: 3,
   marginalReturns: 3,
   sensitivity: 3,
+  consequence: 4, // The Consequence Lab — gateway into shocks
   stress: 4, // Stress Test
   regional: 5, // Policy Review
   capitalStack: 5,
@@ -87,7 +88,7 @@ export const LEVEL_STAGES: Array<{ level: LevelMeta; stages: Stage[] }> = [
   { level: LEVELS[0], stages: ['lab'] },
   { level: LEVELS[1], stages: ['analysis'] },
   { level: LEVELS[2], stages: ['optimization', 'ppf', 'marginalReturns', 'sensitivity'] },
-  { level: LEVELS[3], stages: ['stress'] },
+  { level: LEVELS[3], stages: ['consequence', 'stress'] },
   { level: LEVELS[4], stages: ['regional', 'capitalStack', 'sankey', 'critique', 'brief'] },
 ];
 
@@ -119,6 +120,7 @@ export const STAGE_SEQUENCE: Stage[] = [
   'ppf',
   'marginalReturns',
   'sensitivity',
+  'consequence',
   'stress',
   'regional',
   'capitalStack',
@@ -177,6 +179,7 @@ const STAGE_LABEL: Record<Stage, { en: string; ar: string }> = {
   ppf: { en: 'PPF', ar: 'PPF' },
   marginalReturns: { en: 'Marginal', ar: 'عائد' },
   sensitivity: { en: 'Sensitivity', ar: 'حساسية' },
+  consequence: { en: 'Consequence', ar: 'عواقب' },
   stress: { en: 'Stress', ar: 'صدمات' },
   regional: { en: 'Regional', ar: 'إقليمي' },
   capitalStack: { en: 'Capital', ar: 'تمويل' },

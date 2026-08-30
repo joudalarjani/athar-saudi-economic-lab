@@ -18,7 +18,8 @@ export type ShockId =
   | 'sector_crisis_health'
   | 'pandemic'
   | 'economic_downturn'
-  | 'oil_price_shock';
+  | 'oil_price_shock'
+  | 'governance';
 
 export interface Shock {
   id: ShockId;
@@ -156,6 +157,27 @@ export const SHOCKS: Shock[] = [
     multiplierMultiplier: 0.80,
     deadweightMultiplier: 1.20,
     evidenceSource: SOURCES.SAMA_REPORTS,
+  },
+  {
+    id: 'governance',
+    arName: 'صدمة الحوكمة',
+    enName: 'Governance Shock',
+    description:
+      'ضعف الحوكمة أو ارتفاع مخاطر سوء التخصيص والتراخي الإداري — يرفع نسبة الأثر المتسرب دون قيمة فعلية',
+    historicalInspiration: 'Institutional quality & allocation-efficiency risk',
+    sectorEffectivenessMultiplier: {
+      education: 0.75,
+      health: 0.80,
+      housing: 0.78,
+      employment: 0.82,
+      women: 0.85,
+      environment: 0.80,
+      hajj: 0.88,
+    },
+    budgetMultiplier: 1.0,
+    multiplierMultiplier: 0.90,
+    deadweightMultiplier: 1.35,
+    evidenceSource: SOURCES.KKF_OUTLOOK_2025,
   },
 ];
 
