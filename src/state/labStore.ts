@@ -5,9 +5,10 @@
 
 import { create } from 'zustand';
 import { isStageUnlocked } from '../lib/levels';
-import { SECTORS, TOTAL_BUDGET } from '../data/sectors';
+import { SECTORS } from '../data/sectors';
 import { DEFAULT_OBJECTIVE_WEIGHTS } from '../data/objectives';
 import { FUNDING_INSTRUMENTS } from '../data/fundingInstruments';
+import { clampBudget, defaultBudget, sectorMin, sectorMax } from '../lib/budget';
 import type { ObjectiveWeights } from '../engine/optimizer';
 import type { GlossaryTermId } from '../data/glossary';
 
@@ -44,6 +45,10 @@ interface LabState {
   setAllocation: (sectorId: string, amount: number) => void;
   setAllAllocations: (allocations: Record<string, number>) => void;
   resetAllocations: () => void;
+
+  // Adjustable total capital
+  totalBudget: number;
+  setTotalBudget: (budget: number) => void;
 
   // Parameters
   discountRate: number;
@@ -109,16 +114,15 @@ interface LabState {
 }
 
 /**
- * Compute initial equal allocation within min/max bounds.
+ * Compute initial equal allocation within min/max bounds for a given budget.
  */
-function initialAllocations(): Record<string, number> {
-  const total = TOTAL_BUDGET;
+function initialAllocations(budget: number): Record<string, number> {
+  const total = budget;
   const allocations: Record<string, number> = {};
-  let remaining = total;
 
   for (const sector of SECTORS) {
     const equalShare = total / SECTORS.length;
-    const a = Math.max(sector.minAllocation, Math.min(sector.maxAllocation, equalShare));
+    const a = Math.max(sectorMin(sector, budget), Math.min(sectorMax(sector, budget), equalShare));
     allocations[sector.id] = a;
   }
 
@@ -129,7 +133,7 @@ function initialAllocations(): Record<string, number> {
     // Distribute diff to flexible sectors
     for (const sector of SECTORS) {
       const a = allocations[sector.id];
-      const room = sector.maxAllocation - a;
+      const room = sectorMax(sector, budget) - a;
       if (room > 0) {
         const adjustment = Math.min(room, diff / SECTORS.length);
         allocations[sector.id] = a + adjustment;
@@ -170,17 +174,17 @@ export const useLabStore = create<LabState>((set, get) => ({
   },
   resetProgress: () => set({ visited: [] }),
 
-  allocations: initialAllocations(),
+  allocations: initialAllocations(defaultBudget()),
   setAllocation: (sectorId, amount) => {
-    const { allocations } = get();
+    const { allocations, totalBudget } = get();
     const sector = SECTORS.find((s) => s.id === sectorId);
     if (!sector) return;
-    const clamped = Math.max(sector.minAllocation, Math.min(sector.maxAllocation, amount));
+    const clamped = Math.max(sectorMin(sector, totalBudget), Math.min(sectorMax(sector, totalBudget), amount));
     const newAllocations = { ...allocations, [sectorId]: clamped };
 
-    // Rebalance: ensure total is exactly TOTAL_BUDGET
+    // Rebalance: ensure total is exactly totalBudget
     const currentSum = Object.values(newAllocations).reduce((s, v) => s + v, 0);
-    const diff = TOTAL_BUDGET - currentSum;
+    const diff = totalBudget - currentSum;
     if (Math.abs(diff) > 0.01) {
       // Distribute diff to other sectors
       for (const s of SECTORS) {
@@ -188,7 +192,7 @@ export const useLabStore = create<LabState>((set, get) => ({
         const current = newAllocations[s.id] ?? 0;
         const adjustment = diff / (SECTORS.length - 1);
         const newVal = current + adjustment;
-        const clampedVal = Math.max(s.minAllocation, Math.min(s.maxAllocation, newVal));
+        const clampedVal = Math.max(sectorMin(s, totalBudget), Math.min(sectorMax(s, totalBudget), newVal));
         newAllocations[s.id] = clampedVal;
       }
     }
@@ -196,7 +200,13 @@ export const useLabStore = create<LabState>((set, get) => ({
     set({ allocations: newAllocations });
   },
   setAllAllocations: (allocations) => set({ allocations }),
-  resetAllocations: () => set({ allocations: initialAllocations() }),
+  resetAllocations: () => set((s) => ({ allocations: initialAllocations(s.totalBudget) })),
+
+  totalBudget: defaultBudget(),
+  setTotalBudget: (budget) => {
+    const next = clampBudget(budget);
+    set((s) => ({ totalBudget: next, allocations: initialAllocations(next) }));
+  },
 
   discountRate: 0.03,
   setDiscountRate: (r) => set({ discountRate: Math.max(0, Math.min(0.15, r)) }),

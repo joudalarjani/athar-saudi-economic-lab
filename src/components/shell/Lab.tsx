@@ -1,12 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { computeAllMultipliers } from '../../engine/multiplier';
 import { formatSAR, formatSROIRange, formatNumber, formatMultiplier } from '../../lib/format';
 import { useAnimatedValue } from '../../lib/useAnimatedValue';
+import { BUDGET_PRESETS, sectorMax, sectorMin } from '../../lib/budget';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { GlossaryTag } from '../shared/GlossaryModal';
 import { PortfolioUniverse } from '../3d/PortfolioUniverse';
@@ -32,6 +33,9 @@ export function Lab() {
   const setStage = useLabStore((s) => s.setStage);
   const prefer2D = useLabStore((s) => s.prefer2D);
   const isMobile = useLabStore((s) => s.isMobile);
+  const totalBudget = useLabStore((s) => s.totalBudget);
+  const setTotalBudget = useLabStore((s) => s.setTotalBudget);
+  const [customBudget, setCustomBudget] = useState('');
 
   const metrics = useMemo(
     () => computePortfolioMetrics(SECTORS, allocations, discountRate, horizon),
@@ -155,9 +159,57 @@ export function Lab() {
             </div>
             <div className="mt-3 flex items-end gap-3">
               <span className="lux-big-number" style={{ fontSize: 'clamp(2.4rem, 6vw, 4rem)' }}>
-                {formatSAR(TOTAL_BUDGET, { compact: false })}
+                {formatSAR(totalBudget, { compact: false })}
               </span>
               <span className="pb-1 text-sm text-[rgba(240,230,211,0.6)] font-light">ريال للقطاعات</span>
+            </div>
+
+            {/* Adjustable capital presets */}
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-[9px] uppercase tracking-widest font-mono text-[rgba(240,230,211,0.4)] mr-1">
+                CAPITAL /
+              </span>
+              {BUDGET_PRESETS.map((p) => (
+                <button
+                  key={p.value}
+                  onClick={() => { setTotalBudget(p.value); setCustomBudget(''); }}
+                  className={`px-2.5 py-1 text-[10px] font-mono rounded-sm border transition-colors cursor-pointer ${
+                    totalBudget === p.value
+                      ? 'border-[#d4a017] text-[#f4d27a] bg-[rgba(212,160,23,0.15)]'
+                      : 'border-[rgba(240,230,211,0.15)] text-[rgba(240,230,211,0.55)] hover:border-[rgba(212,160,23,0.4)]'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+              <div className="flex items-center gap-1.5">
+                <input
+                  inputMode="numeric"
+                  placeholder="مخصص"
+                  value={customBudget}
+                  onChange={(e) => setCustomBudget(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const v = parseFloat(customBudget.replace(/[^0-9]/g, ''));
+                      if (!Number.isNaN(v) && v > 0) setTotalBudget(v);
+                    }
+                  }}
+                  className="w-20 bg-midnight-800 border border-[rgba(240,230,211,0.15)] text-ivory text-[10px] font-mono px-2 py-1 rounded-sm focus:border-[#d4a017] outline-none"
+                />
+                <button
+                  onClick={() => {
+                    const v = parseFloat(customBudget.replace(/[^0-9]/g, ''));
+                    if (!Number.isNaN(v) && v > 0) setTotalBudget(v);
+                  }}
+                  className="px-2 py-1 text-[10px] font-mono text-[rgba(240,230,211,0.7)] border border-[rgba(240,230,211,0.15)] rounded-sm hover:border-[#d4a017] cursor-pointer"
+                  title="Set custom capital"
+                >
+                  ✓
+                </button>
+              </div>
+            </div>
+            <div className="text-[9px] text-[rgba(240,230,211,0.3)] font-mono mt-1">
+              Adjust total capital — كل حدود القطاعات تُعاد قياسها تلقائيًا
             </div>
             <div className="text-xs text-[rgba(240,230,211,0.55)] mt-1 font-light">
               القرار أولاً — ثم راقب كيف يتحرك رأس المال ويتحول إلى أثر.
@@ -186,13 +238,13 @@ export function Lab() {
         <div className="relative mt-5">
           <div className="flex items-center justify-between text-[10px] font-mono mb-1.5">
             <span className="text-[rgba(240,230,211,0.45)]">ALLOCATED</span>
-            <span className="text-[#d4a017]">{formatSAR(allocated, { compact: true })} / {formatSAR(TOTAL_BUDGET, { compact: true })}</span>
+            <span className="text-[#d4a017]">{formatSAR(allocated, { compact: true })} / {formatSAR(totalBudget, { compact: true })}</span>
           </div>
           <div className="h-1.5 rounded-full bg-[rgba(255,255,255,0.05)] overflow-hidden">
             <motion.div
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, #10b981, #2dd4bf, #d4a017)' }}
-              animate={{ width: `${Math.min(100, (allocated / TOTAL_BUDGET) * 100)}%` }}
+              animate={{ width: `${Math.min(100, (allocated / totalBudget) * 100)}%` }}
               transition={{ type: 'spring', stiffness: 120, damping: 20 }}
             />
           </div>
@@ -217,7 +269,7 @@ export function Lab() {
           <SectionTitle>التخصيص القطاعي ({SECTORS.length})</SectionTitle>
           {SECTORS.map((s, i) => {
             const val = allocations[s.id] ?? 0;
-            const pct = (val / TOTAL_BUDGET) * 100;
+            const pct = (val / totalBudget) * 100;
             return (
               <motion.div
                 key={s.id}
@@ -249,9 +301,9 @@ export function Lab() {
 
                 <input
                   type="range"
-                  min={s.minAllocation}
-                  max={s.maxAllocation}
-                  step={1_000_000}
+                  min={sectorMin(s, totalBudget)}
+                  max={sectorMax(s, totalBudget)}
+                  step={Math.max(1, Math.round(totalBudget / 100))}
                   value={val}
                   onChange={(e) => setAllocation(s.id, parseInt(e.target.value))}
                   className="mt-3 w-full h-1.5 appearance-none cursor-pointer accent-[#10b981]"

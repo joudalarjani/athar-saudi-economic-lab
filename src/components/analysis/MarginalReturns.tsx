@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { SECTORS } from '../../data/sectors';
 import { useLabStore } from '../../state/labStore';
-import { TOTAL_BUDGET } from '../../data/sectors';
 import { GlossaryTag } from '../shared/GlossaryModal';
 
 const SECTOR_ICONS: Record<string, string> = {
@@ -107,7 +106,7 @@ function SectorCurve({ color, lambda, maxX, allocation, icon, arName }: CurvePro
         <circle cx={cx} cy={cy} r={3.5} fill={color} stroke="#0a0e1a" strokeWidth={1.5} />
         {/* labels */}
         <text x={padX} y={H - 1} fontSize={6} fill="#f0e6d3" opacity={0.5}>
-          {TOTAL_BUDGET / 1_000_000}M
+          {maxX / 1_000_000}M
         </text>
         <text x={W - padX - 12} y={padY - 1} fontSize={6} fill="#f0e6d3" opacity={0.5}>
           {(maxY * 100).toFixed(0)}%
@@ -123,6 +122,7 @@ function SectorCurve({ color, lambda, maxX, allocation, icon, arName }: CurvePro
 
 export function MarginalReturns() {
   const allocations = useLabStore((s) => s.allocations);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   return (
     <motion.div
@@ -143,7 +143,7 @@ export function MarginalReturns() {
             key={s.id}
             color={s.color}
             lambda={s.diminishingLambda.value}
-            maxX={TOTAL_BUDGET}
+            maxX={totalBudget}
             allocation={allocations[s.id] ?? 0}
             icon={SECTOR_ICONS[s.iconKey] ?? s.iconKey}
             arName={s.arName}

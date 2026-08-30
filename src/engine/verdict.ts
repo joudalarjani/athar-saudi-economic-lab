@@ -136,19 +136,20 @@ export function computeVerdict(
   // ---- Recommended adjustment ----
   // Highest marginal social-return sector (highest SROI) with capacity to absorb
   // a 5% reallocation, unless it's already near its max.
+  const step = Math.round(total * 0.05);
   const target = sectors
     .map((s) => ({ sector: s, sroi: getSectorSROI(s).median, alloc: allocations[s.id] ?? 0 }))
-    .filter((x) => x.alloc + 5_000_000 <= 100_000_000)
+    .filter((x) => x.alloc + step <= total)
     .sort((a, b) => b.sroi - a.sroi)[0];
 
   const recommendation = target
     ? {
         sectorId: target.sector.id,
         sectorAr: target.sector.arName,
-        amount: 5_000_000,
+        amount: step,
         reasonAr: `تحويل 5% من المحفظة إلى ${target.sector.arName} يرفع العائد الاجتماعي الهامشي بأعلى معدل ضمن قيود التنويع.`,
       }
-    : { sectorId: eduSector?.id ?? '', sectorAr: eduSector?.arName ?? '', amount: 5_000_000, reasonAr: 'تحويل 5% نحو التعليم لرفع رأس المال البشري.' };
+    : { sectorId: eduSector?.id ?? '', sectorAr: eduSector?.arName ?? '', amount: step, reasonAr: 'تحويل 5% نحو التعليم لرفع رأس المال البشري.' };
 
   // ---- Strategy label ----
   let strategyLabel = 'Balanced';

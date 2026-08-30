@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
 import { formatNumber } from '../../lib/format';
 import { CapitalFlow } from '../shared/CapitalFlow';
 import { BrandTag } from '../shared/LevelHud';
@@ -45,12 +45,13 @@ export function Hero() {
   const setStage = useLabStore((s) => s.setStage);
   const allocations = useLabStore((s) => s.allocations);
   const setShowModelExplainer = useLabStore((s) => s.setShowModelExplainer);
+  const totalBudget = useLabStore((s) => s.totalBudget);
   const dispatchCta = () => setStage('lab');
 
   const [logoClicks, setLogoClicks] = useState(0);
   const secret = logoClicks >= 5;
 
-  const digits = useDigitSlots(TOTAL_BUDGET, 2600);
+  const digits = useDigitSlots(totalBudget, 2600);
 
   return (
     <div className="relative min-h-screen lux-shell text-[#f0e6d3] overflow-hidden flex flex-col">

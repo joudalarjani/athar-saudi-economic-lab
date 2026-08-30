@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
 import { SECTORS } from '../../data/sectors';
+import { sectorMin, sectorMax } from '../../lib/budget';
 import { formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 
@@ -80,17 +81,21 @@ const RULES: AdvisorRule[] = [
   },
 ];
 
-function clampAlloc(alloc: Record<string, number>): Record<string, number> {
+function clampAlloc(alloc: Record<string, number>, budget: number): Record<string, number> {
   const out: Record<string, number> = {};
   for (const s of SECTORS) {
     const raw = alloc[s.id] ?? 0;
-    out[s.id] = Math.max(s.minAllocation, Math.min(s.maxAllocation, raw));
+    out[s.id] = Math.max(sectorMin(s, budget), Math.min(sectorMax(s, budget), raw));
   }
-  // Rebalance to 100M
+  // Rebalance to budget
   let sum = Object.values(out).reduce((a, b) => a + b, 0);
-  const deficit = 100_000_000 - sum;
+  const deficit = budget - sum;
   if (Math.abs(deficit) > 1) {
-    const flexible = SECTORS.filter((s) => (out[s.id] ?? 0) + deficit / SECTORS.length <= s.maxAllocation && (out[s.id] ?? 0) + deficit / SECTORS.length >= s.minAllocation);
+    const flexible = SECTORS.filter(
+      (s) =>
+        (out[s.id] ?? 0) + deficit / SECTORS.length <= sectorMax(s, budget) &&
+        (out[s.id] ?? 0) + deficit / SECTORS.length >= sectorMin(s, budget)
+    );
     const pool = flexible.length ? flexible : SECTORS;
     for (const s of pool) out[s.id] = (out[s.id] ?? 0) + deficit / pool.length;
   }
@@ -103,6 +108,7 @@ function clampAlloc(alloc: Record<string, number>): Record<string, number> {
  */
 export function AdvisorPanel() {
   const setAllAllocations = useLabStore((s) => s.setAllAllocations);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const [input, setInput] = useState('');
   const [active, setActive] = useState<string | null>(null);
@@ -115,8 +121,8 @@ export function AdvisorPanel() {
   }, [input, active]);
 
   const alloc = useMemo(
-    () => (recommendation ? clampAlloc(recommendation.allocation) : null),
-    [recommendation]
+    () => (recommendation ? clampAlloc(recommendation.allocation, totalBudget) : null),
+    [recommendation, totalBudget]
   );
 
   return (
@@ -190,7 +196,7 @@ export function AdvisorPanel() {
                       <div className="w-2 h-2 rounded-sm flex-shrink-0" style={{ backgroundColor: s.color }} />
                       <div className="flex-1 text-ivory/70 truncate">{s.arName}</div>
                       <div className="font-mono text-gold tabular-nums">
-                        {formatPercent(a / 100_000_000, 0)}
+                        {formatPercent(a / totalBudget, 0)}
                       </div>
                     </div>
                   );

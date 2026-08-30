@@ -19,14 +19,15 @@ export function PPF() {
   const allocations = useLabStore((s) => s.allocations);
   const setAllAllocations = useLabStore((s) => s.setAllAllocations);
   const setStage = useLabStore((s) => s.setStage);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const [seed, setSeed] = useState(42);
   const [hoveredPoint, setHoveredPoint] = useState<PPFPoint | null>(null);
   const [showAllPoints, setShowAllPoints] = useState(true);
 
   const dataset = useMemo(
-    () => buildPPFDataset(SECTORS, 100_000_000, allocations, 300, seed),
-    [allocations, seed]
+    () => buildPPFDataset(SECTORS, totalBudget, allocations, 300, seed),
+    [allocations, seed, totalBudget]
   );
 
   // Domain derived from the curve that matters (frontier + user point) so the
@@ -512,7 +513,7 @@ export function PPF() {
                 </div>
                 {SECTORS.map((s) => {
                   const a = hoveredPoint.allocation[s.id] ?? 0;
-                  const share = a / 100_000_000;
+                  const share = a / totalBudget;
                   if (share < 0.01) return null;
                   return (
                     <div key={s.id} className="flex items-center gap-2">

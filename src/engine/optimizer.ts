@@ -19,6 +19,7 @@ import { computeDirectImpact } from './impact';
 import { getSectorSROI } from './sroi';
 import { computeMultiplier } from './multiplier';
 import { computeResilience } from './resilience';
+import { sectorMin, sectorMax } from '../lib/budget';
 
 export interface OptimizationResult {
   allocation: Record<string, number>;
@@ -157,8 +158,8 @@ export function optimizeAllocation(
   let allocation: Record<string, number> = {};
   for (const s of sectors) {
     allocation[s.id] = Math.max(
-      s.minAllocation,
-      Math.min(s.maxAllocation, totalBudget / n)
+      sectorMin(s, totalBudget),
+      Math.min(sectorMax(s, totalBudget), totalBudget / n)
     );
   }
 
@@ -169,8 +170,8 @@ export function optimizeAllocation(
     // Distribute the diff to sectors with capacity
     const flexible = sectors.filter(
       (s) =>
-        (allocation[s.id] ?? 0) + diff / n >= s.minAllocation &&
-        (allocation[s.id] ?? 0) + diff / n <= s.maxAllocation
+        (allocation[s.id] ?? 0) + diff / n >= sectorMin(s, totalBudget) &&
+        (allocation[s.id] ?? 0) + diff / n <= sectorMax(s, totalBudget)
     );
     if (flexible.length > 0) {
       for (const s of flexible) {
@@ -181,7 +182,7 @@ export function optimizeAllocation(
 
   // Coordinate descent: try shifting budget from one sector to another
   const MAX_ITERATIONS = 50;
-  const STEP = 1_000_000; // 1M SAR steps
+  const STEP = Math.max(50_000, Math.round(totalBudget / 40)); // ~40 steps across the range
 
   let currentScore = evaluateObjective(sectors, allocation, weights).total;
   let improved = true;
@@ -199,8 +200,8 @@ export function optimizeAllocation(
         const fromAmount = allocation[from.id] ?? 0;
         const toAmount = allocation[to.id] ?? 0;
 
-        if (fromAmount - STEP < from.minAllocation) continue;
-        if (toAmount + STEP > to.maxAllocation) continue;
+        if (fromAmount - STEP < sectorMin(from, totalBudget)) continue;
+        if (toAmount + STEP > sectorMax(to, totalBudget)) continue;
 
         // Try the swap
         allocation[from.id] = fromAmount - STEP;

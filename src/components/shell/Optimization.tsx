@@ -18,11 +18,12 @@ export function Optimization() {
   const discountRate = useLabStore((s) => s.discountRate);
   const horizon = useLabStore((s) => s.horizon);
   const setStage = useLabStore((s) => s.setStage);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const optimized = useMemo(() => {
-    const result = optimizeAllocation(SECTORS, 100_000_000, objectiveWeights);
+    const result = optimizeAllocation(SECTORS, totalBudget, objectiveWeights);
     return compareToUser(result, allocations);
-  }, [objectiveWeights, allocations]);
+  }, [objectiveWeights, allocations, totalBudget]);
 
   const userMetrics = useMemo(
     () => computePortfolioMetrics(SECTORS, allocations, discountRate, horizon),
@@ -134,7 +135,7 @@ export function Optimization() {
             <div className="mt-4 space-y-1.5">
               {SECTORS.map((s) => {
                 const a = allocations[s.id] ?? 0;
-                const share = a / 100_000_000;
+                const share = a / totalBudget;
                 return (
                   <div key={s.id} className="flex items-center gap-2 text-xs">
                     <div
@@ -176,7 +177,7 @@ export function Optimization() {
             <div className="mt-4 space-y-1.5">
               {SECTORS.map((s) => {
                 const a = optimized.allocation[s.id] ?? 0;
-                const share = a / 100_000_000;
+                const share = a / totalBudget;
                 return (
                   <div key={s.id} className="flex items-center gap-2 text-xs">
                     <div

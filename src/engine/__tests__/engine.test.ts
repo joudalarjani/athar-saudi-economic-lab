@@ -18,6 +18,8 @@ import { runSensitivity } from '../sensitivity';
 import { computePortfolioMetrics } from '../portfolio';
 import { esgComposite, buildConsequenceProfile } from '../consequence';
 import { buildChallenges, analyzeDefense } from '../reviewer';
+import { clampBudget, BUDGET_MIN, BUDGET_MAX, sectorMin, sectorMax, SYSTEM_BUDGET } from '../../lib/budget';
+import { buildProposedAllocation, computeTradeOff } from '../tradeoff';
 import { computeTradeOff, buildProposedAllocation } from '../tradeoff';
 
 describe('Impact Calculator', () => {
@@ -316,3 +318,59 @@ describe('The Trade-Off — two-sector reallocation', () => {
     expect(r.favor.socialValue).toBe('even');
   });
 });
+
+describe('Adjustable Capital — budget scaling', () => {
+  it('clamps budget into the supported range', () => {
+    expect(clampBudget(1)).toBe(BUDGET_MIN);
+    expect(clampBudget(2_000_000_000)).toBe(BUDGET_MAX);
+    expect(clampBudget(SYSTEM_BUDGET)).toBe(SYSTEM_BUDGET);
+  });
+
+  it('scales sector min/max proportionally to budget', () => {
+    for (const s of SECTORS) {
+      // At the system budget, scaled bounds equal the absolute bounds.
+      expect(sectorMin(s, SYSTEM_BUDGET)).toBe(s.minAllocation);
+      expect(sectorMax(s, SYSTEM_BUDGET)).toBe(s.maxAllocation);
+      // At half the budget, bounds halve.
+      expect(sectorMin(s, SYSTEM_BUDGET / 2)).toBe(Div(s.minAllocation, 2));
+      expect(sectorMax(s, SYSTEM_BUDGET / 2)).toBe(Div(s.maxAllocation, 2));
+    }
+  });
+
+  it('keeps min-sum feasible at the smallest budget', () => {
+    const totalMin = SECTORS.reduce((sum, s) => sum + sectorMin(s, BUDGET_MIN), 0);
+    expect(totalMin).toBeLessThanOrEqual(BUDGET_MIN);
+  });
+
+  it('optimizer respects scaled bounds at a small budget', () => {
+    const budget = 25_000_000;
+    const r = optimizeAllocation(SECTORS, budget, { efficiency: 0.3, impact: 0.3, equity: 0.15, sustainability: 0.15, resilience: 0.1 });
+    const sum = Object.values(r.allocation).reduce((s, v) => s + v, 0);
+    expect(Math.abs(sum - budget)).toBeLessThan(1_000_000);
+    for (const s of SECTORS) {
+      const a = r.allocation[s.id] ?? 0;
+      expect(a).toBeGreaterThanOrEqual(sectorMin(s, budget) - 1);
+      expect(a).toBeLessThanOrEqual(sectorMax(s, budget) + 1);
+    }
+  });
+
+  it('trade-off engine clamps with a scaled budget context', () => {
+    const budget = 25_000_000;
+    const alloc: Record<string, number> = {};
+    SECTORS.forEach((s) => {
+      const equal = budget / SECTORS.length;
+      alloc[s.id] = Math.max(sectorMin(s, budget), Math.min(sectorMax(s, budget), equal));
+    });
+    const r = computeTradeOff({ sectors: SECTORS, allocations: alloc, fromId: 'education', toId: 'health', shift: 1_000_000, budget });
+    const sum = Object.values(r.proposedAllocation).reduce((s, v) => s + v, 0);
+    expect(Math.abs(sum - budget)).toBeLessThan(1);
+    // From-sector must never fall below its scaled floor.
+    expect(r.proposedAllocation['education']).toBeGreaterThanOrEqual(sectorMin(SECTORS.find((s) => s.id === 'education')!, budget) - 1);
+    // To-sector must never exceed its scaled ceiling.
+    expect(r.proposedAllocation['health']).toBeLessThanOrEqual(sectorMax(SECTORS.find((s) => s.id === 'health')!, budget) + 1);
+  });
+});
+
+function Div(a: number, b: number): number {
+  return Math.round(a / b);
+}

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
 import { analyzeEconomicGoal, weightsToAllocation } from '../../engine/advisor';
 import { formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
@@ -17,10 +17,11 @@ export function EconomicAdvisor() {
 
   const result = useMemo(() => analyzeEconomicGoal(input), [input]);
   const show = input.trim().length > 2;
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const allocation = useMemo(
-    () => weightsToAllocation(result.recommendedWeights, TOTAL_BUDGET),
-    [result]
+    () => weightsToAllocation(result.recommendedWeights, totalBudget),
+    [result, totalBudget]
   );
 
   const weightsSum = useMemo(

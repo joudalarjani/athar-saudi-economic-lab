@@ -12,6 +12,7 @@ export function CapitalFlow({ sectorAllocations = null }: { sectorAllocations?: 
   const cy = 300;
 
   const nodes = useMemo(() => {
+    const total = sectorAllocations ? Object.values(sectorAllocations).reduce((s, v) => s + v, 0) : 0;
     return SECTORS.map((s, i) => {
       const angle = (i / SECTORS.length) * Math.PI * 2 - Math.PI / 2;
       const r = 240;
@@ -21,7 +22,11 @@ export function CapitalFlow({ sectorAllocations = null }: { sectorAllocations?: 
         y: cy + Math.sin(angle) * r,
         color: s.color,
         label: s.arName,
-        intensity: sectorAllocations ? (sectorAllocations[s.id] ?? 0) / 100_000_000 : 0.35 + 0.3 * ((i % 3) / 2),
+        intensity: sectorAllocations
+          ? total > 0
+            ? (sectorAllocations[s.id] ?? 0) / total
+            : 0
+          : 0.35 + 0.3 * ((i % 3) / 2),
       };
     });
   }, [sectorAllocations]);

@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
+import { sectorMax } from '../../lib/budget';
 import { formatNumber, formatSAR } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { LevelHud } from '../shared/LevelHud';
@@ -30,6 +31,7 @@ interface CurveData {
   sector: typeof SECTORS[number];
   lambda: number;
   dMax: number;
+  xMax: number;
   points: { x: number; y: number; marginal: number }[];
   currentX: number;
   currentY: number;
@@ -39,16 +41,17 @@ interface CurveData {
 function buildCurve(
   sector: typeof SECTORS[number],
   allocation: number,
+  budget: number,
   numPoints: number = 50
 ): CurveData {
   const { value: lambda } = sector.diminishingLambda;
   const { value: costPerBeneficiary } = sector.costPerBeneficiary;
   const reachRate = 0.7;
 
-  const theoreticalMax = sector.maxAllocation / costPerBeneficiary;
+  const xMax = sectorMax(sector, budget);
+  const theoreticalMax = xMax / costPerBeneficiary;
   const dMax = theoreticalMax * reachRate;
 
-  const xMax = sector.maxAllocation;
   const points: { x: number; y: number; marginal: number }[] = [];
 
   for (let i = 0; i <= numPoints; i++) {
@@ -64,7 +67,7 @@ function buildCurve(
   const currentY = dMax * (1 - Math.exp(-lambda * currentX));
   const saturationRatio = currentY / dMax;
 
-  return { sector, lambda, dMax, points, currentX, currentY, saturationRatio };
+  return { sector, lambda, dMax, xMax, points, currentX, currentY, saturationRatio };
 }
 
 const CHART_W = 280;
@@ -75,11 +78,11 @@ const PAD_T = 14;
 const PAD_B = 24;
 
 function SectorChart({ data, isSelected }: { data: CurveData; isSelected: boolean }) {
-  const { sector, points, currentX, currentY, dMax, saturationRatio } = data;
+  const { sector, points, currentX, currentY, dMax, saturationRatio, xMax } = data;
 
   const xScale = (x: number) => {
     const w = CHART_W - PAD_L - PAD_R;
-    return PAD_L + (x / sector.maxAllocation) * w;
+    return PAD_L + (x / xMax) * w;
   };
 
   const yScale = (y: number) => {
@@ -93,7 +96,7 @@ function SectorChart({ data, isSelected }: { data: CurveData; isSelected: boolea
     .join(' ');
 
   // Find saturation zone (>80% of dMax)
-  const saturationX = points.find((p) => p.y >= dMax * 0.8)?.x ?? sector.maxAllocation;
+  const saturationX = points.find((p) => p.y >= dMax * 0.8)?.x ?? xMax;
 
   return (
     <div
@@ -130,7 +133,7 @@ function SectorChart({ data, isSelected }: { data: CurveData; isSelected: boolea
         <rect
           x={xScale(saturationX)}
           y={PAD_T}
-          width={xScale(sector.maxAllocation) - xScale(saturationX)}
+          width={xScale(xMax) - xScale(saturationX)}
           height={CHART_H - PAD_T - PAD_B}
           fill="rgba(255, 200, 100, 0.05)"
         />
@@ -241,7 +244,7 @@ function SectorChart({ data, isSelected }: { data: CurveData; isSelected: boolea
           fontFamily="JetBrains Mono, monospace"
           textAnchor="end"
         >
-          {formatSAR(sector.maxAllocation, { compact: true })}
+          {formatSAR(xMax, { compact: true })}
         </text>
       </svg>
 
@@ -272,12 +275,13 @@ function SectorChart({ data, isSelected }: { data: CurveData; isSelected: boolea
 
 export function MarginalReturns() {
   const allocations = useLabStore((s) => s.allocations);
+  const totalBudget = useLabStore((s) => s.totalBudget);
   const setStage = useLabStore((s) => s.setStage);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const curves = useMemo(
-    () => SECTORS.map((s) => buildCurve(s, allocations[s.id] ?? 0)),
-    [allocations]
+    () => SECTORS.map((s) => buildCurve(s, allocations[s.id] ?? 0, totalBudget)),
+    [allocations, totalBudget]
   );
 
   // Find sectors with highest marginal returns (room to grow)

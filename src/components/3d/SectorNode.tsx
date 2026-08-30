@@ -11,6 +11,7 @@ interface SectorNodeProps {
   position: [number, number, number];
   allocation: number;
   maxAllocation: number;
+  budget: number;
   isHovered?: boolean;
   onClick?: () => void;
   onHover?: (hover: boolean) => void;
@@ -28,6 +29,7 @@ export function SectorNode({
   position,
   allocation,
   maxAllocation,
+  budget,
   isHovered,
   onClick,
   onHover,
@@ -130,7 +132,7 @@ export function SectorNode({
         anchorX="center"
         anchorY="top"
       >
-        {((allocation / 100_000_000) * 100).toFixed(1)}%
+        {budget > 0 ? ((allocation / budget) * 100).toFixed(1) : '0.0'}%
       </Text>
     </group>
   );

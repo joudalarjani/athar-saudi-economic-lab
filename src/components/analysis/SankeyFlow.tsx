@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
 import { useLabStore } from '../../state/labStore';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 
 const W = 920;
@@ -43,6 +43,7 @@ const OUTCOME_COLOR = 'rgba(212, 160, 23, 0.6)';
 
 export function SankeyFlow() {
   const allocations = useLabStore((s) => s.allocations);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const { nodes, links } = useMemo(() => {
     const sectorNodes = SECTORS.filter((s) => (allocations[s.id] ?? 0) > 1)
@@ -78,7 +79,7 @@ export function SankeyFlow() {
     }));
 
     const graphNodes: SFNode[] = [
-      { name: 'رأس المال', value: TOTAL_BUDGET, color: '#d4a017', level: 0 },
+      { name: 'رأس المال', value: totalBudget, color: '#d4a017', level: 0 },
       ...sectorNodes,
       ...impactNodes,
       ...outcomeNodes,
@@ -123,7 +124,7 @@ export function SankeyFlow() {
     links.push({ source: impactStart + 2, target: outcomeStart + 2, value: impactTotals[2] * 0.5 }); // induced -> gdp
 
     return { nodes: graphNodes, links };
-  }, [allocations]);
+  }, [allocations, totalBudget]);
 
   const { renderedNodes, renderedLinks } = useMemo(() => {
     const gen = (sankey as any)()

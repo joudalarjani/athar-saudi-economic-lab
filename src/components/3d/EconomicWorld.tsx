@@ -8,7 +8,6 @@ import { SectorNode } from './SectorNode';
 import { MoneyFlow } from './MoneyFlow';
 import { SECTORS } from '../../data/sectors';
 import { useLabStore } from '../../state/labStore';
-import { TOTAL_BUDGET } from '../../data/sectors';
 
 const SECTOR_RADIUS = 2.5;
 
@@ -22,6 +21,7 @@ export function EconomicWorld() {
   const setStage = useLabStore((s) => s.setStage);
   const showLabels = useLabStore((s) => s.showLabels);
   const cameraMode = useLabStore((s) => s.cameraMode);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const [hoveredSector, setHoveredSector] = useState<string | null>(null);
 
@@ -91,7 +91,7 @@ export function EconomicWorld() {
 
       {/* Central Capital Pool */}
       <Float speed={0.5} rotationIntensity={0.1} floatIntensity={0.2}>
-        <CapitalPool totalAllocated={totalAllocated} totalBudget={TOTAL_BUDGET} />
+        <CapitalPool totalAllocated={totalAllocated} totalBudget={totalBudget} />
       </Float>
 
       {/* Sector nodes */}
@@ -104,7 +104,8 @@ export function EconomicWorld() {
           color={s.color}
           position={s.position}
           allocation={allocations[s.id] ?? 0}
-          maxAllocation={TOTAL_BUDGET * 0.6}
+          maxAllocation={totalBudget * 0.6}
+          budget={totalBudget}
           isHovered={hoveredSector === s.id}
           onHover={(hover: boolean) => setHoveredSector(hover ? s.id : null)}
           onClick={() => setStage('analysis')}
@@ -114,7 +115,7 @@ export function EconomicWorld() {
       {/* Money flows from pool to each node */}
       {sectorPositions.map((s) => {
         const allocation = allocations[s.id] ?? 0;
-        const intensity = allocation / TOTAL_BUDGET;
+        const intensity = allocation / totalBudget;
         if (intensity < 0.01) return null;
         return (
           <MoneyFlow

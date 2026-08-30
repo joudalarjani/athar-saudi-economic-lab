@@ -9,10 +9,11 @@ import { StageNav } from '../shared/StageNav';
 
 export function Regional() {
   const setStage = useLabStore((s) => s.setStage);
+  const totalBudget = useLabStore((s) => s.totalBudget);
   const [strategy, setStrategy] = useState<'population' | 'gap' | 'compare'>('compare');
 
-  const popAlloc = useMemo(() => populationBasedAllocation(REGIONS, 100_000_000), []);
-  const gapAlloc = useMemo(() => gapBasedAllocation(REGIONS, 100_000_000), []);
+  const popAlloc = useMemo(() => populationBasedAllocation(REGIONS, totalBudget), [totalBudget]);
+  const gapAlloc = useMemo(() => gapBasedAllocation(REGIONS, totalBudget), [totalBudget]);
   const comparison = useMemo(() => compareAllocations(popAlloc, gapAlloc), [popAlloc, gapAlloc]);
 
   return (
@@ -122,13 +123,13 @@ export function Regional() {
                         {/* Pop portion (gold) */}
                         <div
                           className="absolute inset-y-0 right-0 bg-gold/40"
-                          style={{ width: `${(c.popAmount / 100_000_000) * 100 * 4}%` }}
+                          style={{ width: `${(c.popAmount / totalBudget) * 100 * 4}%` }}
                         />
                         {/* Gap portion (emerald) overlaid */}
                         <div
                           className="absolute inset-y-0 right-0 bg-[#10b981]/60"
                           style={{
-                            width: `${(c.gapAmount / 100_000_000) * 100 * 4}%`,
+                            width: `${(c.gapAmount / totalBudget) * 100 * 4}%`,
                             mixBlendMode: 'screen',
                           }}
                         />

@@ -19,6 +19,7 @@ export function Brief() {
   const fundingMix = useLabStore((s) => s.fundingMix);
   const setStage = useLabStore((s) => s.setStage);
   const resetProgress = useLabStore((s) => s.resetProgress);
+  const totalBudget = useLabStore((s) => s.totalBudget);
   const [copied, setCopied] = useState(false);
 
   const metrics = useMemo(
@@ -37,7 +38,7 @@ export function Brief() {
   );
 
   const ppf = useMemo(
-    () => buildPPFDataset(SECTORS, 100_000_000, allocations, 300, 7),
+    () => buildPPFDataset(SECTORS, totalBudget, allocations, 300, 7),
     [allocations]
   );
 
@@ -294,7 +295,7 @@ export function Brief() {
             >
               {SECTORS.map((s) => {
                 const a = allocations[s.id] ?? 0;
-                const share = a / 100_000_000;
+                const share = a / totalBudget;
                 return (
                   <motion.div
                     key={s.id}

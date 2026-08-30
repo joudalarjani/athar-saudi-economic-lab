@@ -8,7 +8,7 @@ import {
 } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
 import { useLabStore } from '../../state/labStore';
 
 /**
@@ -316,6 +316,7 @@ function GridFloor() {
 export function PortfolioUniverse() {
   const allocations = useLabStore((s) => s.allocations);
   const cameraMode = useLabStore((s) => s.cameraMode);
+  const totalBudget = useLabStore((s) => s.totalBudget);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const totalAllocated = Object.values(allocations).reduce((s, v) => s + v, 0);
@@ -338,8 +339,8 @@ export function PortfolioUniverse() {
   }, []);
 
   const getHeight = (allocation: number) => {
-    const minA = 3_000_000;
-    const maxA = 50_000_000;
+    const minA = totalBudget * 0.03;
+    const maxA = totalBudget * 0.5;
     const t = Math.max(0, Math.min(1, (allocation - minA) / (maxA - minA)));
     return 0.5 + t * 3.5;
   };
@@ -371,7 +372,7 @@ export function PortfolioUniverse() {
 
         {sectorPositions.map((s) => {
           const allocation = allocations[s.id] ?? 0;
-          const intensity = allocation / TOTAL_BUDGET;
+          const intensity = allocation / totalBudget;
           return (
             <SectorTower
               key={s.id}
@@ -387,7 +388,7 @@ export function PortfolioUniverse() {
 
         {sectorPositions.map((s) => {
           const allocation = allocations[s.id] ?? 0;
-          const intensity = allocation / TOTAL_BUDGET;
+          const intensity = allocation / totalBudget;
           if (intensity < 0.01) return null;
           return (
             <FlowStream

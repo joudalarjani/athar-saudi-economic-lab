@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
 import { computeAllMultipliers } from '../../engine/multiplier';
 import { formatSAR, formatMultiplier } from '../../lib/format';
 import { useLabStore } from '../../state/labStore';
@@ -14,13 +14,14 @@ import { EvidenceBadge } from '../shared/EvidenceBadge';
  */
 export function RiyalToImpact() {
   const allocations = useLabStore((s) => s.allocations);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const results = useMemo(() => computeAllMultipliers(SECTORS, allocations), [allocations]);
 
   const multiplier = useMemo(() => {
     const totalGdp = results.reduce((s, r) => s + r.totalGdpImpact, 0);
-    return TOTAL_BUDGET > 0 ? totalGdp / TOTAL_BUDGET : 0;
-  }, [results]);
+    return totalBudget > 0 ? totalGdp / totalBudget : 0;
+  }, [results, totalBudget]);
 
   const socialValue = useMemo(() => {
     let sv = 0;
@@ -34,13 +35,13 @@ export function RiyalToImpact() {
     const induced = results.reduce((s, r) => s + r.inducedValue, 0);
     const gdp = results.reduce((s, r) => s + r.totalGdpImpact, 0);
     return [
-      { ar: 'استثمار', en: 'Investment', value: TOTAL_BUDGET, fmt: () => formatSAR(TOTAL_BUDGET, { compact: true }) },
+      { ar: 'استثمار', en: 'Investment', value: totalBudget, fmt: () => formatSAR(totalBudget, { compact: true }) },
       { ar: 'دخل مباشر', en: 'Direct', value: direct, fmt: () => formatSAR(direct, { compact: true }) },
       { ar: 'سلاسل توريد', en: 'Indirect', value: indirect, fmt: () => formatSAR(indirect, { compact: true }) },
       { ar: 'استهلاك مستحث', en: 'Induced', value: induced, fmt: () => formatSAR(induced, { compact: true }) },
       { ar: 'أثر GDP', en: 'GDP Impact', value: gdp, fmt: () => formatSAR(gdp, { compact: true }) },
     ];
-  }, [results]);
+  }, [results, totalBudget]);
 
   return (
     <div className="glass-panel terminal-border p-6">
@@ -116,7 +117,7 @@ export function RiyalToImpact() {
       </motion.div>
 
       <p className="mt-4 text-[10px] text-ivory/40 font-mono leading-relaxed">
-        100 مليون ريال → قيمة سوقية GDP + قيمة اجتماعية SROI. هذه أرقام توضيحية مبنية على
+        {formatSAR(totalBudget, { compact: true })} → قيمة سوقية GDP + قيمة اجتماعية SROI. هذه أرقام توضيحية مبنية على
         افتراضات نموذج مبسّطة لأغراض تعليمية ومحفظة تجريبية.
       </p>
     </div>

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
 import { SECTORS } from '../../data/sectors';
+import { sectorMin, sectorMax } from '../../lib/budget';
 import { computeTradeOff } from '../../engine/tradeoff';
 import type { TradeOffResult } from '../../engine/tradeoff';
 import { computePortfolioMetrics } from '../../engine/portfolio';
@@ -25,6 +26,7 @@ export function TradeOff() {
   const setAllAllocations = useLabStore((s) => s.setAllAllocations);
   const discountRate = useLabStore((s) => s.discountRate);
   const horizon = useLabStore((s) => s.horizon);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const [fromId, setFromId] = useState('education');
   const [toId, setToId] = useState('health');
@@ -33,10 +35,12 @@ export function TradeOff() {
   const maxShift = useMemo(() => {
     const fromS = SECTORS.find((s) => s.id === fromId);
     const toS = SECTORS.find((s) => s.id === toId);
-    const available = (allocations[fromId] ?? 0) - (fromS?.minAllocation ?? 0);
-    const headroom = (toS?.maxAllocation ?? 0) - (allocations[toId] ?? 0);
+    const fromMin = fromS ? sectorMin(fromS, totalBudget) : 0;
+    const toMax = toS ? sectorMax(toS, totalBudget) : 0;
+    const available = (allocations[fromId] ?? 0) - fromMin;
+    const headroom = toMax - (allocations[toId] ?? 0);
     return Math.max(0, Math.min(available, headroom));
-  }, [allocations, fromId, toId]);
+  }, [allocations, fromId, toId, totalBudget]);
 
   const result = useMemo(
     () =>
@@ -46,10 +50,11 @@ export function TradeOff() {
         fromId,
         toId,
         shift,
+        budget: totalBudget,
         discountRate,
         horizon,
       }),
-    [allocations, fromId, toId, shift, discountRate, horizon]
+    [allocations, fromId, toId, shift, discountRate, horizon, totalBudget]
   );
 
   const baseMetrics = useMemo(
@@ -144,7 +149,7 @@ export function TradeOff() {
               type="range"
               min={0}
               max={Math.max(maxShift, 1_000_000)}
-              step={1_000_000}
+              step={Math.max(100_000, Math.round(totalBudget / 100))}
               value={Math.min(shift, maxShift)}
               onChange={(e) => setShift(parseInt(e.target.value))}
               className="w-full h-1.5 appearance-none cursor-pointer accent-[#d4a017]"

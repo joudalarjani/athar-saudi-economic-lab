@@ -50,16 +50,32 @@ function run(sc: Record<string, number>) {
   return computePortfolioMetrics(SECTORS, sc, 0.03, 10);
 }
 
+function scaleToBudget(alloc: Record<string, number>, budget: number): Record<string, number> {
+  const raw = SECTORS.map((s) => alloc[s.id] ?? 0);
+  const sum = raw.reduce((a, b) => a + b, 0);
+  if (sum <= 0) return { ...alloc };
+  const factor = budget / sum;
+  const out: Record<string, number> = {};
+  for (const s of SECTORS) out[s.id] = Math.round((alloc[s.id] ?? 0) * factor);
+  return out;
+}
+
 export function ScenarioLab() {
   const allocations = useLabStore((s) => s.allocations);
+  const totalBudget = useLabStore((s) => s.totalBudget);
   const [selected, setSelected] = useState<string>('balanced');
 
+  const scaled = useMemo(
+    () => SCENARIOS.map((s) => ({ ...s, allocation: scaleToBudget(s.allocation, totalBudget) })),
+    [totalBudget]
+  );
+
   const current = useMemo(() => run(allocations), [allocations]);
-  const scenario = SCENARIOS.find((s) => s.id === selected)!;
+  const scenario = scaled.find((s) => s.id === selected)!;
   const after = useMemo(() => run(scenario.allocation), [scenario]);
 
   const ranked = useMemo(() => {
-    const rows = SCENARIOS.map((s) => ({ ...s, m: run(s.allocation) }));
+    const rows = scaled.map((s) => ({ ...s, m: run(s.allocation) }));
     const maxBene = Math.max(...rows.map((r) => r.m.totalBeneficiaries));
     const maxEmp = Math.max(...rows.map((r) => r.m.totalEmployment));
     const maxNpv = Math.max(...rows.map((r) => r.m.npvTotal));
@@ -73,7 +89,7 @@ export function ScenarioLab() {
         return { ...r, score };
       })
       .sort((a, b) => b.score - a.score);
-  }, []);
+  }, [scaled]);
 
   const verdict = ranked[0];
 

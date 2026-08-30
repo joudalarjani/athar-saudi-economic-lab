@@ -1,5 +1,6 @@
 import { useLabStore } from '../../state/labStore';
-import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
+import { SECTORS } from '../../data/sectors';
+import { sectorMin, sectorMax } from '../../lib/budget';
 import { formatSAR, formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 
@@ -7,9 +8,10 @@ export function AllocationPanel() {
   const allocations = useLabStore((s) => s.allocations);
   const setAllocation = useLabStore((s) => s.setAllocation);
   const resetAllocations = useLabStore((s) => s.resetAllocations);
+  const totalBudget = useLabStore((s) => s.totalBudget);
 
   const total = Object.values(allocations).reduce((s, v) => s + v, 0);
-  const remaining = TOTAL_BUDGET - total;
+  const remaining = totalBudget - total;
 
   return (
     <div className="glass-panel p-5 terminal-border">
@@ -36,9 +38,9 @@ export function AllocationPanel() {
       <div className="space-y-3">
         {SECTORS.map((sector) => {
           const allocation = allocations[sector.id] ?? 0;
-          const share = allocation / TOTAL_BUDGET;
-          const minShare = sector.minAllocation / TOTAL_BUDGET;
-          const maxShare = sector.maxAllocation / TOTAL_BUDGET;
+          const share = allocation / totalBudget;
+          const minShare = sectorMin(sector, totalBudget) / totalBudget;
+          const maxShare = sectorMax(sector, totalBudget) / totalBudget;
 
           return (
             <div key={sector.id} className="space-y-1">
@@ -66,9 +68,9 @@ export function AllocationPanel() {
               <div className="relative">
                 <input
                   type="range"
-                  min={sector.minAllocation}
-                  max={sector.maxAllocation}
-                  step={500_000}
+                  min={sectorMin(sector, totalBudget)}
+                  max={sectorMax(sector, totalBudget)}
+                  step={Math.max(100_000, Math.round(totalBudget / 100))}
                   value={allocation}
                   onChange={(e) => setAllocation(sector.id, parseFloat(e.target.value))}
                   className="w-full h-1.5 appearance-none rounded-sm cursor-pointer"
@@ -78,8 +80,8 @@ export function AllocationPanel() {
                   }}
                 />
                 <div className="flex justify-between mt-0.5 text-[8px] font-mono text-ivory/30">
-                  <span>{formatSAR(sector.minAllocation, { compact: true })}</span>
-                  <span>{formatSAR(sector.maxAllocation, { compact: true })}</span>
+                  <span>{formatSAR(sectorMin(sector, totalBudget), { compact: true })}</span>
+                  <span>{formatSAR(sectorMax(sector, totalBudget), { compact: true })}</span>
                 </div>
               </div>
             </div>

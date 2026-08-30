@@ -19,6 +19,7 @@
 
 import type { Sector } from '../data/sectors';
 import { computePortfolioMetrics } from './portfolio';
+import { sectorMin, sectorMax } from '../lib/budget';
 
 export interface TradeOffDelta {
   /** Signed delta; positive = the portfolio gains, negative = it loses. */
@@ -62,6 +63,8 @@ export interface TradeOffInput {
   toId: string;
   /** SAR amount to shift (engine clamps to available headroom). */
   shift: number;
+  /** Optional budget context for scaled min/max bounds (defaults to absolute bounds). */
+  budget?: number;
   discountRate?: number;
   horizon?: number;
 }
@@ -76,7 +79,8 @@ export function buildProposedAllocation(
   allocations: Record<string, number>,
   fromId: string,
   toId: string,
-  shift: number
+  shift: number,
+  budget?: number
 ): Record<string, number> {
   const fromSector = sectors.find((s) => s.id === fromId);
   const toSector = sectors.find((s) => s.id === toId);
@@ -85,10 +89,12 @@ export function buildProposedAllocation(
   }
 
   const available = allocations[fromId] ?? 0;
-  const headroom = (toSector.maxAllocation - (allocations[toId] ?? 0));
+  const fromFloor = budget ? sectorMin(fromSector, budget) : fromSector.minAllocation;
+  const toCeiling = budget ? sectorMax(toSector, budget) : toSector.maxAllocation;
+  const headroom = toCeiling - (allocations[toId] ?? 0);
   // Never withdraw below the from-sector's floor: applied is the amount that
   // is actually removed from `from` AND added to `to`, so total budget holds.
-  const applied = Math.max(0, Math.min(shift, available - fromSector.minAllocation, headroom));
+  const applied = Math.max(0, Math.min(shift, available - fromFloor, headroom));
 
   const proposed = { ...allocations };
   proposed[fromId] = available - applied;
@@ -112,9 +118,9 @@ function favorOf(delta: number): 'to' | 'from' | 'even' {
  * sector to another. Returns deltas and an opportunity-cost framing.
  */
 export function computeTradeOff(input: TradeOffInput): TradeOffResult {
-  const { sectors, allocations, fromId, toId, discountRate = 0.03, horizon = 10 } = input;
+  const { sectors, allocations, fromId, toId, discountRate = 0.03, horizon = 10, budget } = input;
 
-  const proposedAllocation = buildProposedAllocation(sectors, allocations, fromId, toId, input.shift);
+  const proposedAllocation = buildProposedAllocation(sectors, allocations, fromId, toId, input.shift, budget);
 
   const base = computePortfolioMetrics(sectors, allocations, discountRate, horizon);
   const proposed = computePortfolioMetrics(sectors, proposedAllocation, discountRate, horizon);
