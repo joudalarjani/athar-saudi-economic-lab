@@ -9,6 +9,8 @@ const STAGES: Array<{ id: Stage; label: string; ar: string }> = [
   { id: 'sensitivity', label: 'Sensitivity', ar: 'حساسية' },
   { id: 'capitalStack', label: 'Capital', ar: 'تمويل' },
   { id: 'regional', label: 'Regional', ar: 'إقليمي' },
+  { id: 'ppf', label: 'PPF', ar: 'PPF' },
+  { id: 'marginalReturns', label: 'Marginal', ar: 'عائد حدي' },
   { id: 'critique', label: 'Critique', ar: 'مراجعة' },
   { id: 'brief', label: 'Brief', ar: 'موجز' },
   { id: 'credits', label: 'Credits', ar: 'شكراً' },

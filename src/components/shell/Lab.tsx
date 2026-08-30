@@ -8,6 +8,7 @@ import { computeAllMultipliers } from '../../engine/multiplier';
 import { formatSAR, formatSROIRange, formatNumber } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { GlossaryTag } from '../shared/GlossaryModal';
+import { PortfolioUniverse } from '../3d/PortfolioUniverse';
 
 const SECTOR_ICONS: Record<string, string> = {
   education: '📚',
@@ -27,6 +28,8 @@ export function Lab() {
   const discountRate = useLabStore((s) => s.discountRate);
   const horizon = useLabStore((s) => s.horizon);
   const setStage = useLabStore((s) => s.setStage);
+  const prefer2D = useLabStore((s) => s.prefer2D);
+  const isMobile = useLabStore((s) => s.isMobile);
 
   const metrics = useMemo(
     () => computePortfolioMetrics(SECTORS, allocations, discountRate, horizon),
@@ -121,6 +124,18 @@ export function Lab() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-3">
+        {/* 3D Visual Centerpiece */}
+        {!prefer2D && !isMobile && (
+          <div className="w-full rounded-xl overflow-hidden border border-[rgba(212,160,23,0.15)] bg-[#0d1527] mb-1">
+            <div className="px-4 py-2 flex items-center justify-between text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.45)] font-mono border-b border-[rgba(212,160,23,0.1)]">
+              <span>Portfolio Universe — live 3D</span>
+              <span className="text-[rgba(16,185,129,0.8)]">● LIVE</span>
+            </div>
+            <div className="h-[360px]">
+              <PortfolioUniverse />
+            </div>
+          </div>
+        )}
         {/* LEFT — Sector Allocation (40%) */}
         <div className="lg:w-[40%] flex flex-col gap-2">
           <SectionTitle>التخصيص القطاعي ({SECTORS.length})</SectionTitle>

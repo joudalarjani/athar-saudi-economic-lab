@@ -20,6 +20,8 @@ export type Stage =
   | 'sensitivity'
   | 'capitalStack'
   | 'regional'
+  | 'ppf'
+  | 'marginalReturns'
   | 'critique'
   | 'brief'
   | 'credits';

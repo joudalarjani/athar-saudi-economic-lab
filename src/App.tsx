@@ -11,6 +11,8 @@ import { StressTest } from './components/shell/StressTest';
 import { Sensitivity } from './components/shell/Sensitivity';
 import { CapitalStack } from './components/shell/CapitalStack';
 import { Regional } from './components/shell/Regional';
+import { PPF } from './components/shell/PPF';
+import { MarginalReturns } from './components/shell/MarginalReturns';
 import { Critique } from './components/shell/Critique';
 import { Brief } from './components/shell/Brief';
 import { Credits } from './components/shell/Credits';
@@ -54,6 +56,8 @@ function App() {
           {stage === 'sensitivity' && <Sensitivity />}
           {stage === 'capitalStack' && <CapitalStack />}
           {stage === 'regional' && <Regional />}
+          {stage === 'ppf' && <PPF />}
+          {stage === 'marginalReturns' && <MarginalReturns />}
           {stage === 'critique' && <Critique />}
           {stage === 'brief' && <Brief />}
           {stage === 'credits' && <Credits />}
