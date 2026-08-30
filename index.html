@@ -1,12 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/athar-saudi-economic-lab/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ATHAR | أثر — مختبر تفاعلي يحاكي مفاضلات تخصيص رأس المال في الاقتصاد الاجتماعي السعودي" />
+
+    <!-- Primary SEO -->
+    <title>أثر ATHAR — مختبر الاستثمار الاجتماعي السعودي وتخصيص رأس المال | Saudi Social Investment &amp; Economic Policy Lab</title>
+    <meta
+      name="description"
+      content="ATHAR | أثر — محاكاة اقتصادية تفاعلية: لديك 100 مليون ريال سعودي، أين تستثمرها لتحقيق أكبر أثر؟ وزّع رأس المال على 7 قطاعات، وشاهد مفاضلات العائد الاقتصادي، الأثر الاجتماعي، المخاطر، والزمن."
+    />
     <meta name="author" content="Joud Abdullah Al-Arjani" />
-    <title>ATHAR | أثر — Saudi Social Investment & Economic Policy Lab</title>
+    <meta name="keywords" content="اقتصاد, أثر اجتماعي, استثمار, رأس مال, SROI, مضاعف اقتصادي, Allocation, Saudi Arabia, Policy Simulation, مفاضلات" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://joudalarjani.github.io/athar-saudi-economic-lab/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ATHAR | أثر" />
+    <meta property="og:title" content="أثر ATHAR — إلى أين توجّه 100 مليون ريال لتحقيق أكبر أثر؟" />
+    <meta
+      property="og:description"
+      content="محاكاة اقتصادية تفاعلية: وزّع 100 مليون ريال سعودي على 7 قطاعات وشاهد مفاضلات العائد الاقتصادي والأثر الاجتماعي والمخاطر والزمن — من إعداد Joud Abdullah Al-Arjani."
+    />
+    <meta property="og:url" content="https://joudalarjani.github.io/athar-saudi-economic-lab/" />
+    <meta property="og:image" content="https://joudalarjani.github.io/athar-saudi-economic-lab/favicon.svg" />
+    <meta property="og:locale" content="ar_SA" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="أثر ATHAR — أين توجّه 100 مليون ريال لتحقيق أكبر أثر؟" />
+    <meta
+      name="twitter:description"
+      content="محاكاة اقتصادية تفاعلية لمفاضلات تخصيص رأس المال في الاقتصاد الاجتماعي السعودي."
+    />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ATHAR | أثر — Saudi Social Investment & Economic Policy Lab",
+        "url": "https://joudalarjani.github.io/athar-saudi-economic-lab/",
+        "description": "Interactive Saudi social investment policy simulation that models capital allocation across sectors and the trade-offs between economic return, social impact, risk, and time.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "inLanguage": ["ar", "en"],
+        "author": {
+          "@type": "Person",
+          "name": "Joud Abdullah Al-Arjani",
+          "jobTitle": "Economics Student"
+        },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SAR" }
+      }
+    </script>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,7 +68,7 @@
       html, body, #root {
         margin: 0;
         padding: 0;
-        height: 100%;
+        min-height: 100%;
         background: #0A0E1A;
         color: #E8E9F0;
         font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
@@ -25,7 +76,31 @@
       }
       body {
         direction: rtl;
+        line-height: 1.7;
       }
+      .osa {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #0A0E1A;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        text-align: center;
+      }
+      .osa .brand { font-family: 'JetBrains Mono', monospace; color: #C7A04A; letter-spacing: 0.25em; font-size: 13px; }
+      .osa h1 { font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 600; font-size: clamp(2rem, 6vw, 3.5rem); color: #f0e6d3; margin: 18px 0 6px; }
+      .osa h2 { font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 300; font-size: clamp(1rem, 2.5vw, 1.4rem); color: rgba(240,230,211,0.7); margin: 0 0 20px; }
+      .osa .money { font-family: 'JetBrains Mono', monospace; font-size: clamp(2rem, 7vw, 3rem); color: #FFD580; letter-spacing: 0.05em; }
+      .osa .sub { color: rgba(240,230,211,0.5); font-size: 14px; margin: 18px 0; }
+      .osa .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 720px; margin: 20px auto; }
+      .osa .chip { border: 1px solid rgba(199,160,74,0.3); border-radius: 999px; padding: 6px 14px; font-size: 12px; color: rgba(240,230,211,0.7); background: rgba(212,160,23,0.06); }
+      .osa .cta { display: inline-block; margin-top: 14px; padding: 14px 34px; background: linear-gradient(135deg, #d4a017, #f0c14b); color: #0A0E1A; font-weight: 600; border-radius: 8px; text-decoration: none; font-size: 15px; }
+      .osa .dim { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(240,230,211,0.45); margin-top: 26px; }
+      .osa .foot { margin-top: 20px; font-size: 11px; color: rgba(240,230,211,0.4); font-family: 'JetBrains Mono', monospace; }
+      .osa .gold { color: #d4a017; }
       .loader {
         position: fixed;
         inset: 0;
@@ -33,21 +108,46 @@
         align-items: center;
         justify-content: center;
         background: #0A0E1A;
-        z-index: 9999;
+        z-index: 10000;
         color: #C7A04A;
         font-family: 'JetBrains Mono', monospace;
         font-size: 14px;
         letter-spacing: 0.2em;
       }
     </style>
-    <script type="module" crossorigin src="/athar-saudi-economic-lab/assets/index-eFWEUDbm.js"></script>
+    <script type="module" crossorigin src="/athar-saudi-economic-lab/assets/index-tfbCyP6f.js"></script>
     <link rel="modulepreload" crossorigin href="/athar-saudi-economic-lab/assets/three-DV5fPVC3.js">
     <link rel="modulepreload" crossorigin href="/athar-saudi-economic-lab/assets/charts-BRTu2QJK.js">
-    <link rel="stylesheet" crossorigin href="/athar-saudi-economic-lab/assets/index-mbCsAVdN.css">
+    <link rel="stylesheet" crossorigin href="/athar-saudi-economic-lab/assets/index-DjMTW7iT.css">
   </head>
   <body>
     <div id="root">
-      <div class="loader">INITIALIZING ECONOMIC LAB...</div>
+      <!-- Static pre-rendered content shown until React mounts (and to crawlers/SEO). -->
+      <div class="osa" aria-label="أكبر أثر — محاكاة الاستثمار الاجتماعي السعودي">
+        <div class="brand">ATHAR | أثر — SAUDI SOCIAL INVESTMENT &amp; ECONOMIC POLICY LAB</div>
+        <h1>أكبر أثر</h1>
+        <h2>إذا كان لديك 100 مليون ريال… إلى أين توجّهها لتحقيق أكبر أثر؟</h2>
+        <div class="money">SAR 100,000,000</div>
+        <div class="sub">اختبر القرار. قارن البدائل. وشاهد كيف يتضاعف الأثر.</div>
+        <div class="chips">
+          <span class="chip">التعليم</span>
+          <span class="chip">الرعاية الصحية</span>
+          <span class="chip">الإسكان</span>
+          <span class="chip">التمكين الاقتصادي</span>
+          <span class="chip">تمكين المرأة</span>
+          <span class="chip">البيئة</span>
+          <span class="chip">خدمات الحج والمعتمر</span>
+        </div>
+        <a class="cta" href="#lab">ادخل المختبر — ENTER THE LAB</a>
+        <div class="dim">
+          <span>ECONOMIC RETURN ×</span>
+          <span>SOCIAL IMPACT ×</span>
+          <span>RISK ×</span>
+          <span>TIME</span>
+        </div>
+        <div class="foot">Simulation based on stated assumptions — not a forecast, not investment advice.</div>
+        <div class="foot gold">Joud Abdullah Al-Arjani — Economics Student</div>
+      </div>
     </div>
   </body>
 </html>
