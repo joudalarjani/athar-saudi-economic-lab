@@ -7,6 +7,7 @@ import { computePortfolioMetrics } from '../../engine/portfolio';
 import { formatSAR, formatPercent, formatNumber, formatSROIRange } from '../../lib/format';
 import { StageNav } from '../shared/StageNav';
 import { AdvisorPanel } from '../analysis/AdvisorPanel';
+import { EconomicAdvisor } from './EconomicAdvisor';
 import { ScenarioLab } from '../analysis/ScenarioLab';
 
 export function Optimization() {
@@ -107,6 +108,11 @@ export function Optimization() {
         {/* ATHAR INTELLIGENCE — decision-support advisor */}
         <div className="mb-6">
           <AdvisorPanel />
+        </div>
+
+        {/* Economic goal advisor — اكتب هدفك الاقتصادي */}
+        <div className="mb-6">
+          <EconomicAdvisor />
         </div>
 
         {/* Comparison: Your vs Optimized */}
