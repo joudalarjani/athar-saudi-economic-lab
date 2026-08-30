@@ -91,7 +91,7 @@ export function Hero() {
           <span>ALLOCATE / خصّص</span>
         </motion.div>
 
-        {/* The title — أثر */}
+        {/* The title — أكبر أثر */}
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -99,7 +99,7 @@ export function Hero() {
           className="lux-title mb-3 text-center"
           style={{ fontSize: 'clamp(3.2rem, 12vw, 9rem)' }}
         >
-          أثر
+          أكبر أثر
         </motion.h1>
 
         {/* Subtitle */}
@@ -122,7 +122,8 @@ export function Hero() {
           إذا كان لديك{' '}
           <span className="lux-title font-bold">100 مليون ريال</span>…
           <br />
-          أين تصنع <span className="text-[#f4d27a] font-medium">أكبر أثر؟</span>
+          أين تعيد استثمارها لتحقيق{' '}
+          <span className="text-[#f4d27a] font-medium">أكبر أثر؟</span>
         </motion.h2>
 
         {/* The number */}
@@ -150,14 +151,24 @@ export function Hero() {
           </motion.span>
         </div>
 
-        {/* Sub-question */}
+        {/* Sub-line */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 2.6 }}
           className="mt-6 text-base sm:text-lg text-[rgba(244,242,236,0.65)]"
         >
-          استخدم رأس المال. اختبر القرار. قِس الأثر.
+          اختبر القرار. قارن البدائل. وشاهد كيف يتضاعف الأثر.
+        </motion.p>
+
+        {/* Core tagline */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 2.8 }}
+          className="mt-2 text-sm sm:text-base font-mono tracking-wider text-[#f4d27a]/80"
+        >
+          100 مليون ريال · قرار واحد · احتمالات لا نهائية
         </motion.p>
 
         {/* Sector chips */}

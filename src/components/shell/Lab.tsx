@@ -108,8 +108,11 @@ export function Lab() {
         <div className="relative flex flex-col lg:flex-row lg:items-end gap-6 justify-between">
           <div className="min-w-[260px]">
             <LevelHud compact />
-            <div className="text-[9px] tracking-[0.35em] uppercase font-mono text-[rgba(240,230,211,0.35)] mt-2">
-              Display Economic Policy Lab
+            <h1 className="mt-3 lux-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>
+              مختبر الاستثمار
+            </h1>
+            <div className="text-xs text-[rgba(240,230,211,0.6)] font-light mt-1">
+              وزّع رأس مالك. وابنِ محفظتك. ثم شاهد الأثر.
             </div>
             <div className="mt-3 flex items-end gap-3">
               <span className="lux-big-number" style={{ fontSize: 'clamp(2.4rem, 6vw, 4rem)' }}>
