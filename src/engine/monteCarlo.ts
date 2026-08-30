@@ -31,7 +31,7 @@ export interface MonteCarloTrial {
   socialValue: number;
   gdpImpact: number;
   beneficiaries: number;
-  npvTotal: number;
+  npv: number;
 }
 
 export interface MonteCarloResult {
@@ -78,7 +78,7 @@ export function evaluateDeterministic(
     npvTotal += (a * sroi + gdp) / Math.pow(1 + discountRate, horizon / 2);
   }
 
-  return { socialValue, gdpImpact, beneficiaries, npvTotal };
+  return { socialValue, gdpImpact, beneficiaries, npv: npvTotal };
 }
 
 /** Seeded mulberry32 PRNG — same convention as the PPF engine. */
@@ -177,14 +177,14 @@ export function runMonteCarlo(
       npvTotal += (a * sroiSample + gdp) / Math.pow(1 + discountRate, horizon / 2);
     }
 
-    trials.push({ id: i, socialValue, gdpImpact, beneficiaries, npvTotal });
+    trials.push({ id: i, socialValue, gdpImpact, beneficiaries, npv: npvTotal });
   }
 
   const series: Record<MonteCarloMetric, number[]> = {
     socialValue: trials.map((t) => t.socialValue),
     gdpImpact: trials.map((t) => t.gdpImpact),
     beneficiaries: trials.map((t) => t.beneficiaries),
-    npv: trials.map((t) => t.npvTotal),
+    npv: trials.map((t) => t.npv),
   };
 
   const mean: Record<MonteCarloMetric, number> = {} as Record<MonteCarloMetric, number>;
