@@ -86,11 +86,13 @@ export function buildProposedAllocation(
 
   const available = allocations[fromId] ?? 0;
   const headroom = (toSector.maxAllocation - (allocations[toId] ?? 0));
-  const applied = Math.max(0, Math.min(shift, available, headroom));
+  // Never withdraw below the from-sector's floor: applied is the amount that
+  // is actually removed from `from` AND added to `to`, so total budget holds.
+  const applied = Math.max(0, Math.min(shift, available - fromSector.minAllocation, headroom));
 
   const proposed = { ...allocations };
-  proposed[fromId] = Math.max(fromSector.minAllocation, available - applied);
-  proposed[toId] = Math.min(toSector.maxAllocation, (allocations[toId] ?? 0) + applied);
+  proposed[fromId] = available - applied;
+  proposed[toId] = (allocations[toId] ?? 0) + applied;
   return proposed;
 }
 

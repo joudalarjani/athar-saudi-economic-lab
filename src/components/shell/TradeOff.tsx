@@ -33,7 +33,7 @@ export function TradeOff() {
   const maxShift = useMemo(() => {
     const fromS = SECTORS.find((s) => s.id === fromId);
     const toS = SECTORS.find((s) => s.id === toId);
-    const available = allocations[fromId] ?? 0;
+    const available = (allocations[fromId] ?? 0) - (fromS?.minAllocation ?? 0);
     const headroom = (toS?.maxAllocation ?? 0) - (allocations[toId] ?? 0);
     return Math.max(0, Math.min(available, headroom));
   }, [allocations, fromId, toId]);
