@@ -181,17 +181,18 @@
 
 @layer base {
   :root {
-    --lux-bg: #05070f;
-    --lux-navy: #070b18;
-    --lux-panel: rgba(13, 20, 38, 0.55);
-    --lux-gold: #d4a017;
-    --lux-gold-soft: #f0d67c;
-    --lux-emerald: #10b981;
-    --lux-teal: #2dd4bf;
-    --lux-ivory: #f0e6d3;
+    --lux-bg: #02070b;
+    --lux-navy: #071318;
+    --lux-panel: rgba(13, 24, 32, 0.55);
+    --lux-gold: #d9a441;
+    --lux-gold-soft: #f4d27a;
+    --lux-emerald: #38b89a;
+    --lux-teal: #4ed6c0;
+    --lux-ivory: #f4f2ec;
+    --lux-muted: #9ba7a8;
     --lux-line: rgba(212, 160, 23, 0.14);
-    --lux-glow-gold: rgba(212, 160, 23, 0.22);
-    --lux-glow-emerald: rgba(16, 185, 129, 0.16);
+    --lux-glow-gold: rgba(217, 164, 65, 0.22);
+    --lux-glow-emerald: rgba(56, 184, 154, 0.16);
   }
 }
 

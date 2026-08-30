@@ -91,18 +91,39 @@ export function Hero() {
           <span>ALLOCATE / خصّص</span>
         </motion.div>
 
-        {/* The question */}
+        {/* The title — أثر */}
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.2 }}
-          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light leading-[1.6] max-w-4xl mx-auto"
+          className="lux-title mb-3 text-center"
+          style={{ fontSize: 'clamp(3.2rem, 12vw, 9rem)' }}
         >
-          لو كنت <span className="text-[#f0d67c] font-medium">المستثمر الاجتماعي</span> للسعودية…
-          <br />
-          <span className="text-[#f0d67c]/90 font-medium">أين ستضع</span>{' '}
-          <span className="lux-title font-bold">100 مليون ريال؟</span>
+          أثر
         </motion.h1>
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="text-xs sm:text-sm tracking-[0.35em] uppercase font-mono text-[rgba(244,242,236,0.55)]"
+        >
+          Saudi Social Investment &amp; Economic Policy Lab
+        </motion.p>
+
+        {/* The question */}
+        <motion.h2
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="mt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light leading-[1.6] max-w-4xl mx-auto"
+        >
+          إذا كان لديك{' '}
+          <span className="lux-title font-bold">100 مليون ريال</span>…
+          <br />
+          أين تصنع <span className="text-[#f4d27a] font-medium">أكبر أثر؟</span>
+        </motion.h2>
 
         {/* The number */}
         <div className="mt-8 flex items-baseline justify-center gap-2 font-mono tabular-nums">
@@ -123,7 +144,7 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.4 }}
-            className="text-xl sm:text-2xl text-[#f0e6d3]/80 font-light whitespace-nowrap"
+            className="text-xl sm:text-2xl text-[#f4f2ec]/80 font-light whitespace-nowrap"
           >
             ريال سعودي
           </motion.span>
@@ -134,9 +155,9 @@ export function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 2.6 }}
-          className="mt-6 text-base sm:text-lg text-[rgba(240,230,211,0.6)]"
+          className="mt-6 text-base sm:text-lg text-[rgba(244,242,236,0.65)]"
         >
-          موارد محدودة — احتياجات أكبر — كيف ستختار؟
+          استخدم رأس المال. اختبر القرار. قِس الأثر.
         </motion.p>
 
         {/* Sector chips */}
@@ -165,7 +186,7 @@ export function Hero() {
           onClick={dispatchCta}
           className="lux-btn mt-12 cursor-pointer"
         >
-          <span>ادخل المختبر — Enter The Lab</span>
+          <span>ادخل المختبر — ENTER THE LAB</span>
           <span>→</span>
         </motion.button>
       </div>
