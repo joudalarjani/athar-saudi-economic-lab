@@ -454,10 +454,11 @@ describe('PPF knee point', () => {
   it('findKnee on a synthetic frontier returns the maximally-distant point', () => {
     const pts = [
       { id: 'A', allocation: {}, socialValue: 0, economicImpact: 0, beneficiaries: 0 },
-      { id: 'B', allocation: {}, socialValue: 1, economicImpact: 1, beneficiaries: 0 },
-      { id: 'C', allocation: {}, socialValue: 2, economicImpact: 0.1, beneficiaries: 0 },
+      { id: 'B', allocation: {}, socialValue: 5, economicImpact: 5, beneficiaries: 0 },
+      { id: 'C', allocation: {}, socialValue: 10, economicImpact: 5.1, beneficiaries: 0 },
     ];
     const frontier = findParetoFrontier(pts);
+    expect(frontier.map((p) => p.id)).toEqual(['A', 'B', 'C']);
     const knee = findKnee(frontier).point;
     expect(knee.id).toBe('B');
   });
