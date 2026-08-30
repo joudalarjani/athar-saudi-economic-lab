@@ -21,6 +21,7 @@
  */
 
 import type { Sector } from '../data/sectors';
+import { computeDirectImpact } from './impact';
 import { computeMultiplier } from './multiplier';
 
 export type MonteCarloMetric = 'socialValue' | 'gdpImpact' | 'beneficiaries' | 'npv';
