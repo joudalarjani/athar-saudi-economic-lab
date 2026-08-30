@@ -92,6 +92,10 @@ interface LabState {
   // Sources panel
   showSources: boolean;
   setShowSources: (b: boolean) => void;
+
+  // Saved strategy name (policy card)
+  strategyName: string;
+  setStrategyName: (name: string) => void;
 }
 
 /**
@@ -233,4 +237,7 @@ export const useLabStore = create<LabState>((set, get) => ({
 
   showSources: false,
   setShowSources: (b) => set({ showSources: b }),
+
+  strategyName: 'Your Strategy • استراتيجيتي',
+  setStrategyName: (name) => set({ strategyName: name }),
 }));

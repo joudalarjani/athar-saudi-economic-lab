@@ -20,7 +20,19 @@ export function Sensitivity() {
     [allocations, metric, discountRate, horizon]
   );
 
-  const maxRange = Math.max(...bars.map((b) => b.range));
+  // Shared horizontal domain for the tornado (across all bars), padded so bars
+  // never touch the edges.
+  const rawMin = Math.min(...bars.map((b) => Math.min(b.lowMetric, b.highMetric)));
+  const rawMax = Math.max(...bars.map((b) => Math.max(b.lowMetric, b.highMetric)));
+  const rawSpan = rawMax - rawMin || 1;
+  const PAD = rawSpan * 0.08;
+  const domainMin = rawMin - PAD;
+  const domainMax = rawMax + PAD;
+  const baseValue = bars[0]?.baseValue ?? 0;
+
+  const pos = (v: number) => ((v - domainMin) / (domainMax - domainMin)) * 100;
+  const domainTicks = [domainMin, (domainMin + domainMax) / 2, domainMax];
+
   const metricLabel: Record<Metric, { ar: string; format: (v: number) => string }> = {
     beneficiaries: { ar: 'المستفيدون', format: (v) => formatNumber(v) },
     socialValue: { ar: 'القيمة الاجتماعية', format: (v) => formatSAR(v, { compact: true }) },
@@ -76,43 +88,73 @@ export function Sensitivity() {
 
           <div className="space-y-3">
             {bars.map((bar, i) => {
-              const lowPct = (bar.lowMetric / maxRange) * 100;
-              const highPct = (bar.highMetric / maxRange) * 100;
+              const low = Math.min(bar.lowMetric, bar.highMetric);
+              const high = Math.max(bar.lowMetric, bar.highMetric);
+              const base = Math.min(
+                Math.max(bar.baseValue, domainMin),
+                domainMax
+              );
+              // Widths are measured from the base-anchor outwards.
+              const lowW = Math.max(0, base - bar.lowMetric) / (domainMax - domainMin) * 100;
+              const highW = Math.max(0, bar.highMetric - base) / (domainMax - domainMin) * 100;
               return (
                 <div key={bar.parameter} className="space-y-1">
                   <div className="flex items-center gap-3 text-xs">
                     <div className="w-32 text-ivory/80 flex-shrink-0">
                       {bar.parameterAr}
                     </div>
-                    <div className="flex-1 relative h-7">
-                      {/* Zero line (centered) */}
-                      <div className="absolute inset-y-0 left-1/2 w-px bg-ivory/30" />
-                      {/* Low bar (left) */}
+                    {/* Chart track */}
+                    <div className="flex-1 relative h-7" role="img" aria-label={`Sensitivity of ${bar.parameterAr}`}>
+                      {/* Base anchor (current portfolio value) */}
+                      <div
+                        className="absolute inset-y-0 w-px bg-ivory/40"
+                        style={{ left: `${pos(base)}%` }}
+                      />
+                      {/* Low bar (left of anchor) */}
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${(lowPct / 2) || 0}%` }}
+                        animate={{ width: `${lowW}%` }}
                         transition={{ duration: 0.6, delay: i * 0.05 }}
-                        className="absolute right-1/2 top-0 bottom-0 bg-gradient-to-l from-red-500/40 to-red-500/80 border border-red-500/60 flex items-center justify-end pr-2"
+                        className="absolute top-0 bottom-0 bg-gradient-to-l from-red-500/40 to-red-500/80 border border-red-500/60 flex items-center justify-end pr-2"
+                        style={{ right: `${100 - pos(base)}%` }}
                       >
-                        <span className="text-[9px] font-mono text-red-200">
-                          {metricLabel[metric].format(bar.lowMetric)}
-                        </span>
+                        {lowW > 12 && (
+                          <span className="text-[9px] font-mono text-red-100 whitespace-nowrap">
+                            {metricLabel[metric].format(low)}
+                          </span>
+                        )}
                       </motion.div>
-                      {/* High bar (right) */}
+                      {/* High bar (right of anchor) */}
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${(highPct / 2) || 0}%` }}
+                        animate={{ width: `${highW}%` }}
                         transition={{ duration: 0.6, delay: i * 0.05 + 0.1 }}
-                        className="absolute left-1/2 top-0 bottom-0 bg-gradient-to-r from-emerald-500/40 to-emerald-500/80 border border-emerald-500/60 flex items-center pl-2"
+                        className="absolute top-0 bottom-0 bg-gradient-to-r from-emerald-500/40 to-emerald-500/80 border border-emerald-500/60 flex items-center pl-2"
+                        style={{ left: `${pos(base)}%` }}
                       >
-                        <span className="text-[9px] font-mono text-emerald-200">
-                          {metricLabel[metric].format(bar.highMetric)}
-                        </span>
+                        {highW > 12 && (
+                          <span className="text-[9px] font-mono text-emerald-100 whitespace-nowrap">
+                            {metricLabel[metric].format(high)}
+                          </span>
+                        )}
                       </motion.div>
                     </div>
                     <div className="w-16 text-right font-mono text-ivory/50 text-[10px] tabular-nums flex-shrink-0">
                       ±10%
                     </div>
+                  </div>
+                  {/* Domain axis for this row (aligned to the track in RTL) */}
+                  <div
+                    className="relative h-px bg-ivory/10"
+                    style={{ marginInlineStart: '8.75rem', marginInlineEnd: '4rem' }}
+                  >
+                    {domainTicks.map((t) => (
+                      <span
+                        key={t}
+                        className="absolute -top-[3px] w-px h-[7px] bg-ivory/20"
+                        style={{ left: `${pos(t)}%` }}
+                      />
+                    ))}
                   </div>
                 </div>
               );
@@ -129,6 +171,18 @@ export function Sensitivity() {
                 <div className="w-3 h-3 bg-emerald-500/60 border border-emerald-500" />
                 <span>+10% scenario</span>
               </div>
+              <div className="flex items-center gap-2">
+                <div className="w-px h-3 bg-ivory/40" />
+                <span>base (current value)</span>
+              </div>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-3">
+              {domainTicks.map((t) => (
+                <span key={`tick-${t}`} className="text-ivory/40 tabular-nums">
+                  {metricLabel[metric].format(t)}
+                </span>
+              ))}
+              <span className="text-ivory/20">← domain scale</span>
             </div>
             <div className="mt-3">
               كل شريط يوضح كيف يتغير المقياس عند ±10% في كل افتراض.

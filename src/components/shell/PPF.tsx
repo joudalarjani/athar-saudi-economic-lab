@@ -29,15 +29,31 @@ export function PPF() {
     [allocations, seed]
   );
 
+  // Domain derived from the curve that matters (frontier + user point) so the
+  // PPF is centered and fills the frame instead of huddling in a corner.
+  const chartDomain = useMemo(() => {
+    const xs = [...dataset.frontier.map((p) => p.socialValue), dataset.userPoint.socialValue];
+    const ys = [...dataset.frontier.map((p) => p.economicImpact), dataset.userPoint.economicImpact];
+    let x0 = Math.min(...xs);
+    let x1 = Math.max(...xs);
+    let y0 = Math.min(...ys);
+    let y1 = Math.max(...ys);
+    const spanX = x1 - x0 || 1;
+    const spanY = y1 - y0 || 1;
+    const px = spanX * 0.06;
+    const py = spanY * 0.06;
+    return { x0: x0 - px, x1: x1 + px, y0: y0 - py, y1: y1 + py };
+  }, [dataset.frontier, dataset.userPoint]);
+
   // Scales
   const xScale = (x: number) => {
     const w = VIEW_W - PAD_L - PAD_R;
-    return PAD_L + ((x - dataset.minX) / (dataset.maxX - dataset.minX)) * w;
+    return PAD_L + ((x - chartDomain.x0) / (chartDomain.x1 - chartDomain.x0)) * w;
   };
 
   const yScale = (y: number) => {
     const h = VIEW_H - PAD_T - PAD_B;
-    return PAD_T + (1 - (y - dataset.minY) / (dataset.maxY - dataset.minY)) * h;
+    return PAD_T + (1 - (y - chartDomain.y0) / (chartDomain.y1 - chartDomain.y0)) * h;
   };
 
   // Build smooth frontier path using cardinal spline
@@ -214,8 +230,8 @@ export function PPF() {
 
               {/* Tick labels */}
               {[0, 0.25, 0.5, 0.75, 1].map((p) => {
-                const xVal = dataset.minX + p * (dataset.maxX - dataset.minX);
-                const yVal = dataset.minY + (1 - p) * (dataset.maxY - dataset.minY);
+                const xVal = chartDomain.x0 + p * (chartDomain.x1 - chartDomain.x0);
+                const yVal = chartDomain.y0 + (1 - p) * (chartDomain.y1 - chartDomain.y0);
                 return (
                   <g key={p}>
                     <line

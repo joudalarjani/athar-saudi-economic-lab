@@ -99,6 +99,45 @@ export function Lab() {
 
   return (
     <div className="min-h-screen lux-shell text-[#f0e6d3] p-3 md:p-6">
+      {/* The economics question — framing before you allocate */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="lux-glass lux-hairline p-5 md:p-6 mb-4 relative overflow-hidden border-r-2 border-[#d4a017]"
+      >
+        <div className="text-[10px] tracking-[0.3em] uppercase text-[#d4a017] font-mono mb-2">
+          The Economic Question / السؤال الاقتصادي
+        </div>
+        <p className="text-base md:text-lg text-[#f0e6d3]/90 leading-relaxed max-w-3xl">
+          الموارد محدودة، لكن الاحتياجات غير محدودة.
+          <br />
+          <span className="text-[#f4d27a]">فكيف نحدد أين يصنع الريال الإضافي أكبر أثر؟</span>
+        </p>
+        <p className="text-xs text-[rgba(240,230,211,0.55)] mt-2 max-w-3xl">
+          هذا ليس مجرد محاكاة استثمار — بل اختبار المفاضلة بين أربعة أبعاد
+          اقتصادية حقيقية، وكل ريال تنقله بين القطاعات يغيّر توازنها:
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {[
+            { k: 'Economic Return', icon: '↗' },
+            { k: 'Social Impact', icon: '❤' },
+            { k: 'Risk', icon: '⚠' },
+            { k: 'Time to Impact', icon: '⏳' },
+          ].map((t) => (
+            <span
+              key={t.k}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-mono text-[rgba(240,230,211,0.7)] bg-[rgba(212,160,23,0.08)] border border-[rgba(212,160,23,0.2)]"
+            >
+              <span className="text-[#f4d27a]">{t.icon}</span>
+              {t.k}
+            </span>
+          ))}
+        </div>
+        <p className="mt-3 text-[9px] text-[rgba(240,230,211,0.35)] font-mono">
+          Scarcity → Choice → Trade-off (Opportunity Cost) — the core of economics.
+        </p>
+      </motion.div>
+
       {/* Immersive header — big numbers first */}
       <div className="lux-glass lux-hairline p-5 md:p-6 mb-4 relative overflow-hidden">
         <div

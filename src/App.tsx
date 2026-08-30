@@ -43,6 +43,31 @@ function App() {
     if (loader) loader.remove();
   }, []);
 
+  const setAllAllocations = useLabStore((s) => s.setAllAllocations);
+  const setStrategyName = useLabStore((s) => s.setStrategyName);
+  const setStage = useLabStore((s) => s.setStage);
+
+  useEffect(() => {
+    const applyStrategy = () => {
+      if (!window.location.hash.startsWith('#strategy=')) return;
+      try {
+        const raw = window.location.hash.replace(/^#strategy=/, '');
+        const json = typeof atob === 'function' ? decodeURIComponent(escape(atob(raw))) : decodeURIComponent(raw);
+        const parsed = JSON.parse(json);
+        if (parsed && typeof parsed.a === 'object' && parsed.a !== null) {
+          setAllAllocations(parsed.a as Record<string, number>);
+          if (parsed.n) setStrategyName(parsed.n);
+          setStage('brief');
+        }
+      } catch {
+        /* ignore malformed shared link */
+      }
+    };
+    applyStrategy();
+    window.addEventListener('hashchange', applyStrategy);
+    return () => window.removeEventListener('hashchange', applyStrategy);
+  }, [setAllAllocations, setStrategyName, setStage]);
+
   return (
     <div className="min-h-screen bg-midnight-900 text-ivory lux-shell">
       {stage !== 'hero' && stage !== 'map' && <GlobalNav />}

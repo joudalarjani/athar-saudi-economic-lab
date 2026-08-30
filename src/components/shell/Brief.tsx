@@ -10,6 +10,7 @@ import { FUNDING_INSTRUMENTS } from '../../data/fundingInstruments';
 import { SECTORS } from '../../data/sectors';
 import { formatSAR, formatMultiplier, formatNumber, formatPercent, formatSROIRange } from '../../lib/format';
 import { jsPDF } from 'jspdf';
+import { PolicyVerdict } from './PolicyVerdict';
 
 export function Brief() {
   const allocations = useLabStore((s) => s.allocations);
@@ -184,6 +185,9 @@ export function Brief() {
             ملخص شامل لمحفظتك — جاهز للمشاركة
           </p>
         </div>
+
+        {/* Policy Verdict + SAVE MY STRATEGY card */}
+        <PolicyVerdict />
 
         {/* Main brief document */}
         <motion.div
