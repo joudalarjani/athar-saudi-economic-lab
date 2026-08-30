@@ -5,6 +5,7 @@ import { optimizeAllocation, compareToUser } from '../../engine/optimizer';
 import { SECTORS } from '../../data/sectors';
 import { computePortfolioMetrics } from '../../engine/portfolio';
 import { formatSAR, formatPercent, formatNumber, formatSROIRange } from '../../lib/format';
+import { StageNav } from '../shared/StageNav';
 
 export function Optimization() {
   const allocations = useLabStore((s) => s.allocations);
@@ -271,21 +272,8 @@ export function Optimization() {
           })}
         </motion.div>
 
-        {/* Nav */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setStage('analysis')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={() => setStage('critique')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Policy Critique
-          </button>
-        </div>
+        {/* Sequential journey nav */}
+        <StageNav />
       </motion.div>
     </div>
   );

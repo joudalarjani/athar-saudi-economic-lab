@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { useLabStore, type Stage } from '../../state/labStore';
-import { getLevelForStage, LEVEL_STAGES } from '../../lib/levels';
+import { getLevelForStage, isStageUnlocked, LEVEL_STAGES } from '../../lib/levels';
 import { BrandTag } from '../shared/LevelHud';
 
 export function GlobalNav() {
   const stage = useLabStore((s) => s.stage);
+  const visited = useLabStore((s) => s.visited);
   const setStage = useLabStore((s) => s.setStage);
   const setShowModelExplainer = useLabStore((s) => s.setShowModelExplainer);
   const setShowSources = useLabStore((s) => s.setShowSources);
@@ -67,17 +68,24 @@ export function GlobalNav() {
                     <div className="flex items-center gap-0.5 mr-1">
                       {group.stages.map((sid: Stage) => {
                         const active = stage === sid;
+                        const unlocked = isStageUnlocked(sid, visited);
+                        const base = `px-1.5 py-0.5 font-mono text-[8.5px] uppercase tracking-wider transition rounded-sm ${
+                          active
+                            ? 'text-[#f0d67c] cursor-default'
+                            : unlocked
+                              ? 'text-[rgba(240,230,211,0.4)] hover:text-[rgba(240,230,211,0.8)] hover:bg-[rgba(255,255,255,0.04)] cursor-pointer'
+                              : 'text-[rgba(240,230,211,0.18)] cursor-not-allowed'
+                        }`;
                         return (
                           <button
                             key={sid}
-                            onClick={() => setStage(sid)}
-                            className={`px-1.5 py-0.5 font-mono text-[8.5px] uppercase tracking-wider transition rounded-sm ${
-                              active
-                                ? 'text-[#f0d67c]'
-                                : 'text-[rgba(240,230,211,0.4)] hover:text-[rgba(240,230,211,0.8)] hover:bg-[rgba(255,255,255,0.04)]'
-                            }`}
+                            onClick={() => unlocked && setStage(sid)}
+                            disabled={!unlocked}
+                            className={base}
+                            title={unlocked ? `Go to ${sid}` : '🔒 أكمل المراحل السابقة أولاً'}
                             style={active ? { boxShadow: `0 0 10px ${group.level.color}40`, border: `1px solid ${group.level.color}60` } : { border: '1px solid transparent' }}
                           >
+                            {!unlocked && !active ? <span className="mr-0.5">🔒</span> : null}
                             {sid === 'marginalReturns' ? 'marginal' : sid}
                           </button>
                         );

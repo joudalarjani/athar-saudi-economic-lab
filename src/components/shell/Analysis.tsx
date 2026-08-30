@@ -8,6 +8,7 @@ import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { MarginalReturns } from '../analysis/MarginalReturns';
 import { GlossaryTag } from '../shared/GlossaryModal';
 import { LevelHud } from '../shared/LevelHud';
+import { StageNav } from '../shared/StageNav';
 
 export function Analysis() {
   const allocations = useLabStore((s) => s.allocations);
@@ -265,20 +266,9 @@ export function Analysis() {
         {/* Marginal returns section */}
         <MarginalReturns />
 
-        {/* Nav buttons */}
-        <div className="flex gap-3 mt-8">
-          <button
-            onClick={() => setStage('lab')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Back to Lab
-          </button>
-          <button
-            onClick={() => setStage('optimization')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Optimization
-          </button>
+        {/* Sequential journey nav */}
+        <div className="mt-8">
+          <StageNav />
         </div>
       </motion.div>
     </div>

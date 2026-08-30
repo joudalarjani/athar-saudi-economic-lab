@@ -4,6 +4,7 @@
  */
 
 import { create } from 'zustand';
+import { isStageUnlocked } from '../lib/levels';
 import { SECTORS, TOTAL_BUDGET } from '../data/sectors';
 import { DEFAULT_OBJECTIVE_WEIGHTS } from '../data/objectives';
 import { FUNDING_INSTRUMENTS } from '../data/fundingInstruments';
@@ -30,6 +31,10 @@ interface LabState {
   // Navigation
   stage: Stage;
   setStage: (s: Stage) => void;
+
+  // Progressively unlocked stages (sequential journey gate)
+  visited: Stage[];
+  resetProgress: () => void;
 
   // Allocation
   allocations: Record<string, number>;
@@ -140,7 +145,15 @@ const initialReachRates = (): Record<string, number> => {
 
 export const useLabStore = create<LabState>((set, get) => ({
   stage: 'hero',
-  setStage: (s) => set({ stage: s }),
+  visited: [],
+  setStage: (s) => {
+    const { visited } = get();
+    // Sequential gate: block navigation to locked stages.
+    if (!isStageUnlocked(s, visited)) return;
+    const newVisited = visited.includes(s) ? visited : [...visited, s];
+    set({ stage: s, visited: newVisited });
+  },
+  resetProgress: () => set({ visited: [] }),
 
   allocations: initialAllocations(),
   setAllocation: (sectorId, amount) => {

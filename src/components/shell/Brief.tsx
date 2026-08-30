@@ -11,6 +11,7 @@ export function Brief() {
   const discountRate = useLabStore((s) => s.discountRate);
   const horizon = useLabStore((s) => s.horizon);
   const setStage = useLabStore((s) => s.setStage);
+  const resetProgress = useLabStore((s) => s.resetProgress);
 
   const metrics = useMemo(
     () => computePortfolioMetrics(SECTORS, allocations, discountRate, horizon),
@@ -267,7 +268,10 @@ export function Brief() {
           </button>
           <span className="text-ivory/20">•</span>
           <button
-            onClick={() => setStage('hero')}
+            onClick={() => {
+              resetProgress();
+              setStage('hero');
+            }}
             className="text-[10px] text-ivory/40 hover:text-gold font-mono tracking-widest uppercase"
           >
             ↻ Start Over

@@ -6,6 +6,7 @@ import { runStressTest } from '../../engine/stress';
 import { SECTORS } from '../../data/sectors';
 import { formatNumber, formatSAR, formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
+import { StageNav } from '../shared/StageNav';
 
 export function StressTest() {
   const allocations = useLabStore((s) => s.allocations);
@@ -248,21 +249,8 @@ export function StressTest() {
           <span>Source: {shock.evidenceSource.name} ({shock.evidenceSource.year})</span>
         </div>
 
-        {/* Nav */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setStage('lab')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Back to Lab
-          </button>
-          <button
-            onClick={() => setStage('sensitivity')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Sensitivity Analysis
-          </button>
-        </div>
+        {/* Sequential journey nav */}
+        <StageNav />
       </motion.div>
     </div>
   );

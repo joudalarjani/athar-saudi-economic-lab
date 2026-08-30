@@ -5,6 +5,7 @@ import { REGIONS } from '../../data/regions';
 import { populationBasedAllocation, gapBasedAllocation, compareAllocations } from '../../engine/regional';
 import { formatSAR, formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
+import { StageNav } from '../shared/StageNav';
 
 export function Regional() {
   const setStage = useLabStore((s) => s.setStage);
@@ -195,21 +196,8 @@ export function Regional() {
           </div>
         </motion.div>
 
-        {/* Nav */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setStage('capitalStack')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Capital Stack
-          </button>
-          <button
-            onClick={() => setStage('brief')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Policy Brief
-          </button>
-        </div>
+        {/* Sequential journey nav */}
+        <StageNav />
       </motion.div>
     </div>
   );

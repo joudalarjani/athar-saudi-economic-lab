@@ -6,6 +6,7 @@ import { buildPPFDataset, type PPFPoint } from '../../engine/ppf';
 import { formatSAR, formatNumber, formatPercent } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { LevelHud } from '../shared/LevelHud';
+import { StageNav } from '../shared/StageNav';
 
 const VIEW_W = 900;
 const VIEW_H = 540;
@@ -560,21 +561,8 @@ export function PPF() {
           </span>
         </div>
 
-        {/* Nav */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setStage('regional')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Regional
-          </button>
-          <button
-            onClick={() => setStage('critique')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Policy Critique
-          </button>
-        </div>
+        {/* Sequential journey nav */}
+        <StageNav />
       </motion.div>
     </div>
   );

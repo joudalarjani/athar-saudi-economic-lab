@@ -5,6 +5,7 @@ import { SECTORS, TOTAL_BUDGET } from '../../data/sectors';
 import { formatNumber, formatSAR } from '../../lib/format';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { LevelHud } from '../shared/LevelHud';
+import { StageNav } from '../shared/StageNav';
 
 /**
  * Sector Marginal Returns — 7 diminishing returns curves
@@ -461,21 +462,8 @@ export function MarginalReturns() {
           </div>
         </motion.div>
 
-        {/* Nav */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setStage('ppf')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← PPF Frontier
-          </button>
-          <button
-            onClick={() => setStage('critique')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Policy Critique
-          </button>
-        </div>
+        {/* Sequential journey nav */}
+        <StageNav />
       </motion.div>
     </div>
   );

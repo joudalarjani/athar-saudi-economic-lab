@@ -6,6 +6,7 @@ import { SECTORS } from '../../data/sectors';
 import { formatSAR, formatNumber, formatMultiplier } from '../../lib/format';
 import { useState } from 'react';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
+import { StageNav } from '../shared/StageNav';
 
 export function Sensitivity() {
   const allocations = useLabStore((s) => s.allocations);
@@ -170,21 +171,8 @@ export function Sensitivity() {
           <span>±10% perturbation on each parameter. All others held constant (ceteris paribus).</span>
         </div>
 
-        {/* Nav */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setStage('stress')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Stress Test
-          </button>
-          <button
-            onClick={() => setStage('capitalStack')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Capital Stack
-          </button>
-        </div>
+        {/* Sequential journey nav */}
+        <StageNav />
       </motion.div>
     </div>
   );

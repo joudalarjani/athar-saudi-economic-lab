@@ -5,6 +5,7 @@ import { critiquePortfolio } from '../../engine/critique';
 import { SECTORS } from '../../data/sectors';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { formatPercent } from '../../lib/format';
+import { StageNav } from '../shared/StageNav';
 
 export function Critique() {
   const allocations = useLabStore((s) => s.allocations);
@@ -202,20 +203,9 @@ export function Critique() {
           السؤال: لماذا اخترت هذا التخصيص؟ هل تتفق أو تختلف؟
         </motion.div>
 
-        {/* Nav */}
-        <div className="flex gap-3 mt-8">
-          <button
-            onClick={() => setStage('optimization')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={() => setStage('brief')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Generate Policy Brief
-          </button>
+        {/* Sequential journey nav */}
+        <div className="mt-8">
+          <StageNav />
         </div>
       </motion.div>
     </div>

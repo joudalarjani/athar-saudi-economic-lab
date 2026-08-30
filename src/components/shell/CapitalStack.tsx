@@ -4,6 +4,7 @@ import { useLabStore } from '../../state/labStore';
 import { FUNDING_INSTRUMENTS } from '../../data/fundingInstruments';
 import { evaluateCapitalStack } from '../../engine/capitalStack';
 import { formatPercent } from '../../lib/format';
+import { StageNav } from '../shared/StageNav';
 
 export function CapitalStack() {
   const fundingMix = useLabStore((s) => s.fundingMix);
@@ -198,21 +199,8 @@ export function CapitalStack() {
           </div>
         </motion.div>
 
-        {/* Nav */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => setStage('sensitivity')}
-            className="flex-1 py-3 border border-ivory/20 text-ivory/70 text-xs font-mono tracking-widest uppercase hover:bg-ivory/5"
-          >
-            ← Sensitivity
-          </button>
-          <button
-            onClick={() => setStage('regional')}
-            className="flex-1 py-3 border border-gold/30 text-gold text-xs font-mono tracking-widest uppercase hover:bg-gold/10"
-          >
-            → Regional Analysis
-          </button>
-        </div>
+        {/* Sequential journey nav */}
+        <StageNav />
       </motion.div>
     </div>
   );
