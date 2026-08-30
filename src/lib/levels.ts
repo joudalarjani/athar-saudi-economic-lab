@@ -69,6 +69,7 @@ const STAGE_LEVEL: Record<Stage, LevelId> = {
   marginalReturns: 3,
   sensitivity: 3,
   trade: 3,
+  monteCarlo: 3,
   consequence: 4, // The Consequence Lab — gateway into shocks
   stress: 4, // Stress Test
   regional: 5, // Policy Review
@@ -88,7 +89,7 @@ export function getLevelForStage(stage: Stage): LevelMeta {
 export const LEVEL_STAGES: Array<{ level: LevelMeta; stages: Stage[] }> = [
   { level: LEVELS[0], stages: ['lab'] },
   { level: LEVELS[1], stages: ['analysis'] },
-  { level: LEVELS[2], stages: ['optimization', 'ppf', 'marginalReturns', 'sensitivity', 'trade'] },
+  { level: LEVELS[2], stages: ['optimization', 'ppf', 'marginalReturns', 'sensitivity', 'trade', 'monteCarlo'] },
   { level: LEVELS[3], stages: ['consequence', 'stress'] },
   { level: LEVELS[4], stages: ['regional', 'capitalStack', 'sankey', 'critique', 'brief'] },
 ];
@@ -101,6 +102,7 @@ export const JOURNEY_STAGES: Array<{ id: Stage; label: string; ar: string }> = [
   { id: 'marginalReturns', label: 'Marginal', ar: 'عائد' },
   { id: 'sensitivity', label: 'Sensitivity', ar: 'حساسية' },
   { id: 'trade', label: 'Trade-off', ar: 'مبادلة' },
+  { id: 'monteCarlo', label: 'Monte-Carlo', ar: 'محاكاة' },
   { id: 'stress', label: 'Stress', ar: 'صدمات' },
   { id: 'regional', label: 'Regional', ar: 'إقليمي' },
   { id: 'capitalStack', label: 'Capital', ar: 'تمويل' },
@@ -123,6 +125,7 @@ export const STAGE_SEQUENCE: Stage[] = [
   'marginalReturns',
   'sensitivity',
   'trade',
+  'monteCarlo',
   'consequence',
   'stress',
   'regional',
@@ -183,6 +186,7 @@ const STAGE_LABEL: Record<Stage, { en: string; ar: string }> = {
   marginalReturns: { en: 'Marginal', ar: 'عائد' },
   sensitivity: { en: 'Sensitivity', ar: 'حساسية' },
   trade: { en: 'Trade-off', ar: 'مبادلة' },
+  monteCarlo: { en: 'Monte-Carlo', ar: 'محاكاة' },
   consequence: { en: 'Consequence', ar: 'عواقب' },
   stress: { en: 'Stress', ar: 'صدمات' },
   regional: { en: 'Regional', ar: 'إقليمي' },

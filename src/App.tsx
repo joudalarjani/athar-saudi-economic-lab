@@ -11,6 +11,7 @@ import { StressTest } from './components/shell/StressTest';
 import { ConsequenceLab } from './components/shell/ConsequenceLab';
 import { Sensitivity } from './components/shell/Sensitivity';
 import { TradeOff } from './components/shell/TradeOff';
+import { MonteCarlo } from './components/shell/MonteCarlo';
 import { CapitalStack } from './components/shell/CapitalStack';
 import { SankeyStage } from './components/shell/SankeyStage';
 import { Regional } from './components/shell/Regional';
@@ -84,6 +85,7 @@ function App() {
           {stage === 'consequence' && <ConsequenceLab />}
           {stage === 'sensitivity' && <Sensitivity />}
           {stage === 'trade' && <TradeOff />}
+          {stage === 'monteCarlo' && <MonteCarlo />}
           {stage === 'capitalStack' && <CapitalStack />}
           {stage === 'sankey' && <SankeyStage />}
           {stage === 'regional' && <Regional />}

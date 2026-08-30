@@ -20,6 +20,7 @@ import { esgComposite, buildConsequenceProfile } from '../consequence';
 import { buildChallenges, analyzeDefense } from '../reviewer';
 import { clampBudget, BUDGET_MIN, BUDGET_MAX, sectorMin, sectorMax, SYSTEM_BUDGET } from '../../lib/budget';
 import { buildProposedAllocation, computeTradeOff } from '../tradeoff';
+import { runMonteCarlo, evaluateDeterministic } from '../monteCarlo';
 
 describe('Impact Calculator', () => {
   it('should return zero for zero allocation', () => {
@@ -373,3 +374,47 @@ describe('Adjustable Capital — budget scaling', () => {
 function Div(a: number, b: number): number {
   return Math.round(a / b);
 }
+
+describe('Monte-Carlo simulation', () => {
+  const alloc: Record<string, number> = {};
+  SECTORS.forEach((s) => {
+    const equal = TOTAL_BUDGET / SECTORS.length;
+    alloc[s.id] = Math.max(s.minAllocation, Math.min(s.maxAllocation, equal));
+  });
+
+  it('runs the requested number of trials', () => {
+    const r = runMonteCarlo(SECTORS, alloc, 500, 1);
+    expect(r.trials.length).toBe(500);
+    expect(r.numTrials).toBe(500);
+  });
+
+  it('orders percentiles p5 <= p50 <= p95', () => {
+    const r = runMonteCarlo(SECTORS, alloc, 800, 3);
+    for (const metric of ['socialValue', 'gdpImpact', 'beneficiaries', 'npv'] as const) {
+      expect(r.percentiles[metric].p5).toBeLessThanOrEqual(r.percentiles[metric].p50);
+      expect(r.percentiles[metric].p50).toBeLessThanOrEqual(r.percentiles[metric].p95);
+    }
+  });
+
+  it('is deterministic for the same seed', () => {
+    const a = runMonteCarlo(SECTORS, alloc, 400, 99);
+    const b = runMonteCarlo(SECTORS, alloc, 400, 99);
+    expect(a.percentiles.socialValue).toEqual(b.percentiles.socialValue);
+  });
+
+  it('keeps the deterministic baseline equal to the point estimate', () => {
+    const r = runMonteCarlo(SECTORS, alloc, 200, 5, 0.03, 10);
+    const base = evaluateDeterministic(SECTORS, alloc, 0.03, 10);
+    expect(r.deterministicBase.socialValue).toBeCloseTo(base.socialValue, 0);
+    expect(r.deterministicBase.gdpImpact).toBeCloseTo(base.gdpImpact, 0);
+  });
+
+  it('produces a legitimate downside probability and positive mean', () => {
+    const r = runMonteCarlo(SECTORS, alloc, 600, 11);
+    for (const metric of ['socialValue', 'gdpImpact', 'beneficiaries', 'npv'] as const) {
+      expect(r.downsideProbability[metric]).toBeGreaterThanOrEqual(0);
+      expect(r.downsideProbability[metric]).toBeLessThanOrEqual(1);
+      expect(r.mean[metric]).toBeGreaterThan(0);
+    }
+  });
+});

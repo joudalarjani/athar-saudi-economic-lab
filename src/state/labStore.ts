@@ -22,6 +22,7 @@ export type Stage =
   | 'stress'
   | 'sensitivity'
   | 'trade'
+  | 'monteCarlo'
   | 'capitalStack'
   | 'sankey'
   | 'regional'
