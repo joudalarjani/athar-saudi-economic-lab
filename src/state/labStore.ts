@@ -10,6 +10,7 @@ import { DEFAULT_OBJECTIVE_WEIGHTS } from '../data/objectives';
 import { FUNDING_INSTRUMENTS } from '../data/fundingInstruments';
 import { clampBudget, defaultBudget, sectorMin, sectorMax } from '../lib/budget';
 import type { ObjectiveWeights } from '../engine/optimizer';
+import { DEFAULT_ATHAR_WEIGHTS, type AtharWeights } from '../engine/impactScore';
 import type { GlossaryTermId } from '../data/glossary';
 
 export type Stage =
@@ -41,6 +42,9 @@ interface LabState {
   visited: Stage[];
   resetProgress: () => void;
 
+  // Full model reset (SAR 100M + default allocation + base case + default weights)
+  resetModel: () => void;
+
   // Allocation
   allocations: Record<string, number>;
   setAllocation: (sectorId: string, amount: number) => void;
@@ -65,6 +69,11 @@ interface LabState {
   objectiveWeights: ObjectiveWeights;
   setObjectiveWeight: (key: keyof ObjectiveWeights, value: number) => void;
   resetObjectiveWeights: () => void;
+
+  // Athar Impact Score weights (Economic/Social/Employment/Risk/Time — adjustable)
+  atharWeights: AtharWeights;
+  setAtharWeight: (key: keyof AtharWeights, value: number) => void;
+  resetAtharWeights: () => void;
 
   // Funding mix (capital stack)
   fundingMix: Record<string, number>;
@@ -174,6 +183,20 @@ export const useLabStore = create<LabState>((set, get) => ({
     set({ stage: s, visited: newVisited });
   },
   resetProgress: () => set({ visited: [] }),
+  resetModel: () =>
+    set({
+      totalBudget: defaultBudget(),
+      allocations: initialAllocations(defaultBudget()),
+      objectiveWeights: { ...DEFAULT_OBJECTIVE_WEIGHTS },
+      atharWeights: { ...DEFAULT_ATHAR_WEIGHTS },
+      fundingMix: initialFunding(),
+      discountRate: 0.03,
+      horizon: 10,
+      currentYear: 5,
+      governance: 0.7,
+      environmental: 0.6,
+      social: 0.7,
+    }),
 
   allocations: initialAllocations(defaultBudget()),
   setAllocation: (sectorId, amount) => {
@@ -224,6 +247,13 @@ export const useLabStore = create<LabState>((set, get) => ({
     set({ objectiveWeights: newWeights });
   },
   resetObjectiveWeights: () => set({ objectiveWeights: { ...DEFAULT_OBJECTIVE_WEIGHTS } }),
+
+  atharWeights: { ...DEFAULT_ATHAR_WEIGHTS },
+  setAtharWeight: (key, value) => {
+    const { atharWeights } = get();
+    set({ atharWeights: { ...atharWeights, [key]: Math.max(0, Math.min(1, value)) } });
+  },
+  resetAtharWeights: () => set({ atharWeights: { ...DEFAULT_ATHAR_WEIGHTS } }),
 
   fundingMix: initialFunding(),
   setFundingShare: (instrumentId, value) => {

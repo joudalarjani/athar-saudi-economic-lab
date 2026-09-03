@@ -22,6 +22,7 @@ import { clampBudget, BUDGET_MIN, BUDGET_MAX, sectorMin, sectorMax, SYSTEM_BUDGE
 import { buildProposedAllocation, computeTradeOff } from '../tradeoff';
 import { runMonteCarlo, evaluateDeterministic } from '../monteCarlo';
 import { buildPPFDataset, findKnee, findParetoFrontier } from '../ppf';
+import { calculateAtharScore, DEFAULT_ATHAR_WEIGHTS } from '../impactScore';
 
 describe('Impact Calculator', () => {
   it('should return zero for zero allocation', () => {
@@ -461,5 +462,59 @@ describe('PPF knee point', () => {
     expect(frontier.map((p) => p.id)).toEqual(['A', 'B', 'C']);
     const knee = findKnee(frontier).point;
     expect(knee.id).toBe('B');
+  });
+});
+
+describe('Athar Impact Score', () => {
+  const alloc: Record<string, number> = {};
+  SECTORS.forEach((s) => {
+    const equal = TOTAL_BUDGET / SECTORS.length;
+    alloc[s.id] = Math.max(s.minAllocation, Math.min(s.maxAllocation, equal));
+  });
+
+  it('returns a score with five dimensions and default weights', () => {
+    const r = calculateAtharScore(SECTORS, alloc);
+    expect(r.dimensions.length).toBe(5);
+    for (const d of r.dimensions) {
+      expect(d.score).toBeGreaterThanOrEqual(0);
+      expect(d.score).toBeLessThanOrEqual(100);
+      expect(d.weight).toBeGreaterThan(0);
+    }
+    expect(DEFAULT_ATHAR_WEIGHTS.economic).toBeCloseTo(0.3);
+    expect(DEFAULT_ATHAR_WEIGHTS.social).toBeCloseTo(0.3);
+    expect(DEFAULT_ATHAR_WEIGHTS.employment).toBeCloseTo(0.2);
+  });
+
+  it('normalizes weights so they sum to ~1 even when custom partial', () => {
+    const r = calculateAtharScore(SECTORS, alloc, { economic: 1, social: 1 });
+    expect(r.weightSum).toBeCloseTo(1, 1);
+    expect(r.overall).toBeGreaterThanOrEqual(0);
+    expect(r.overall).toBeLessThanOrEqual(100);
+  });
+
+  it('returns zero overall on empty allocation', () => {
+    const empty: Record<string, number> = {};
+    SECTORS.forEach((s) => (empty[s.id] = 0));
+    const r = calculateAtharScore(SECTORS, empty);
+    expect(r.overall).toBe(0);
+  });
+
+  it('produces a deterministic score', () => {
+    const a = calculateAtharScore(SECTORS, alloc, DEFAULT_ATHAR_WEIGHTS);
+    const b = calculateAtharScore(SECTORS, alloc, DEFAULT_ATHAR_WEIGHTS);
+    expect(a).toEqual(b);
+  });
+
+  it('overall is the weighted combination of dimension scores', () => {
+    const r = calculateAtharScore(SECTORS, alloc);
+    let manual = 0;
+    for (const d of r.dimensions) manual += d.score * d.weight;
+    expect(Math.abs(r.overall - manual)).toBeLessThanOrEqual(1);
+  });
+
+  it('returns a non-empty insight narrative', () => {
+    const r = calculateAtharScore(SECTORS, alloc);
+    expect(r.insightAr.length).toBeGreaterThan(0);
+    expect(r.insightEn.length).toBeGreaterThan(0);
   });
 });

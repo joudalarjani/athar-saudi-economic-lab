@@ -8,6 +8,7 @@ import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { MarginalReturns } from '../analysis/MarginalReturns';
 import { RiyalToImpact } from '../analysis/RiyalToImpact';
 import { Timeline } from '../analysis/Timeline';
+import { AtharScorePanel } from '../analysis/AtharScorePanel';
 import { GlossaryTag } from '../shared/GlossaryModal';
 import { LevelHud } from '../shared/LevelHud';
 import { StageNav } from '../shared/StageNav';
@@ -128,6 +129,9 @@ export function Analysis() {
             </div>
           </motion.div>
         </div>
+
+        {/* Athar Impact Score — the composite portfolio score */}
+        <AtharScorePanel />
 
         {/* Sector breakdown */}
         <motion.div

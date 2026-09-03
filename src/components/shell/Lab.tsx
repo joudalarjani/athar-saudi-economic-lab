@@ -35,6 +35,7 @@ export function Lab() {
   const isMobile = useLabStore((s) => s.isMobile);
   const totalBudget = useLabStore((s) => s.totalBudget);
   const setTotalBudget = useLabStore((s) => s.setTotalBudget);
+  const resetModel = useLabStore((s) => s.resetModel);
   const [customBudget, setCustomBudget] = useState('');
 
   const metrics = useMemo(
@@ -207,6 +208,13 @@ export function Lab() {
                   ✓
                 </button>
               </div>
+              <button
+                onClick={() => { resetModel(); setCustomBudget(''); }}
+                className="px-2.5 py-1 text-[10px] font-mono rounded-sm border border-[rgba(240,230,211,0.15)] text-[rgba(240,230,211,0.5)] hover:text-red-300 hover:border-red-400/40 transition-colors cursor-pointer"
+                title="Reset the whole model to base case (SAR 100M, default allocation, default weights)"
+              >
+                ↻ RESET MODEL
+              </button>
             </div>
             <div className="text-[9px] text-[rgba(240,230,211,0.3)] font-mono mt-1">
               Adjust total capital — كل حدود القطاعات تُعاد قياسها تلقائيًا

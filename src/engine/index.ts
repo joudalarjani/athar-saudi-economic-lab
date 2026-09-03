@@ -15,3 +15,4 @@ export * from './regional';
 export * from './optimizer';
 export * from './sensitivity';
 export * from './portfolio';
+export * from './impactScore';
