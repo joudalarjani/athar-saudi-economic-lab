@@ -276,8 +276,27 @@ export function calculateAtharScore(
     time: w.time / norm,
   };
 
-  const metrics = computePortfolioMetrics(sectors, allocations, discountRate, horizon);
   const tot = Object.values(allocations).reduce((s, v) => s + v, 0);
+
+  if (tot <= 0) {
+    const zero: AtharDimension[] = [
+      { key: 'economic', labelAr: 'الأثر الاقتصادي', labelEn: 'Economic Impact', score: 0, weight: wn.economic, whyAr: 'لا يوجد تخصيص.', whyEn: 'No allocation.' },
+      { key: 'social', labelAr: 'الأثر الاجتماعي', labelEn: 'Social Impact', score: 0, weight: wn.social, whyAr: 'لا يوجد تخصيص.', whyEn: 'No allocation.' },
+      { key: 'employment', labelAr: 'التوظيف', labelEn: 'Employment', score: 0, weight: wn.employment, whyAr: 'لا يوجد تخصيص.', whyEn: 'No allocation.' },
+      { key: 'risk', labelAr: 'سلامة المخاطر', labelEn: 'Risk Safety', score: 0, weight: wn.risk, whyAr: 'لا يوجد تخصيص.', whyEn: 'No allocation.' },
+      { key: 'time', labelAr: 'زمن الأثر', labelEn: 'Time to Impact', score: 0, weight: wn.time, whyAr: 'لا يوجد تخصيص.', whyEn: 'No allocation.' },
+    ];
+    return {
+      overall: 0,
+      dimensions: zero,
+      primaryDriver: 'social',
+      insightAr: 'أضف تخصيصًا لرأس المال لحساب سكور ATHAR.',
+      insightEn: 'Allocate capital to compute the ATHAR impact score.',
+      weightSum: wn.economic + wn.social + wn.employment + wn.risk + wn.time,
+    };
+  }
+
+  const metrics = computePortfolioMetrics(sectors, allocations, discountRate, horizon);
 
   const econ = calculateEconomicImpact(sectors, metrics.totalGdpImpact, tot);
   const soc = calculateSocialImpact(sectors, metrics.totalSocialValue, tot);
