@@ -14,7 +14,7 @@
 | المرحلة | الوصف |
 |---|---|
 | **Lab** | محاكي 3D تفاعلي — Capital Pool مركزي مع 7 Sector Nodes + Money Flow |
-| **Analysis** | SROI vs Economic Multiplier — فصل صارم بين القيمة الاجتماعية والأثر السوقي |
+| **Analysis** | SROI vs Economic Multiplier — فصل صارم بين القيمة الاجتماعية والأثر السوقي + **Athar Impact Score** المركّب |
 | **Optimize** | Multi-Objective Optimization مع 5 أوزان قابلة للتعديل |
 | **PPF** | منحنى إمكانية الإنتاج + **Knee Point** (نقطة التوازن المثلى) |
 | **Marginal Returns** | تحليل العائد الحدي لكل قطاع |
@@ -45,6 +45,7 @@
 | **Tornado** | Sensitivity to ±10% parameter changes | All scenarios |
 | **Monte-Carlo** | Seeded mulberry32 — SROI داخل نطاق دراسات الحالة الحقيقية + ضجيج مضاعِف σ≈10% | Case-study ranges + stated assumptions |
 | **Opportunity Cost** | Trade-off engine + PPF knee point (أقصى مسافة من خط الأطراف) | Frontier geometry |
+| **Athar Impact Score** | Composite مرجّح بلا أبعاد (Economic 30% / Social 30% / Employment 20% / Risk 10% / Time 10%) قابل للتعديل — ترتيب نسبي وليس forecast | من المحفظة المستخرجة + معايرة SROI/Resilience/Time-profile |
 
 **مبدأ حاكم:** SROI ≠ Economic Multiplier. كل رقم له Evidence Badge مرئي:
 - 🟢 **VERIFIED** — من تقرير رسمي سعودي
@@ -81,7 +82,7 @@ npm run build
 athar/
 ├── src/
 │   ├── data/          # مصادر البيانات (7 ملفات)
-│   ├── engine/        # Economic Engine (21 ملف pure functions)
+│   ├── engine/        # Economic Engine (22 ملف pure functions)
 │   ├── state/         # Zustand state
 │   ├── components/
 │   │   ├── 3d/        # React Three Fiber (4 ملفات)
