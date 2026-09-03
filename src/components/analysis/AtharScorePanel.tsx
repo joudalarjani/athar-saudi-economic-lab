@@ -105,7 +105,7 @@ export function AtharScorePanel() {
           </div>
           {isEmpty && (
             <div className="mt-2 text-[11px] text-red-300">
-              Allocation must be > 0 before running the score.
+              Allocation must be &gt; 0 before running the score.
             </div>
           )}
         </div>
