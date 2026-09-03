@@ -10,7 +10,8 @@ import { useAnimatedValue } from '../../lib/useAnimatedValue';
 import { BUDGET_PRESETS, sectorMax, sectorMin } from '../../lib/budget';
 import { EvidenceBadge } from '../shared/EvidenceBadge';
 import { GlossaryTag } from '../shared/GlossaryModal';
-import { PortfolioUniverse } from '../3d/PortfolioUniverse';
+import { AllocationMatrix } from '../visual/AllocationMatrix';
+import { ImpactRings } from '../visual/ImpactRings';
 import { LevelHud, BrandTag } from '../shared/LevelHud';
 
 const SECTOR_ICONS: Record<string, string> = {
@@ -31,8 +32,6 @@ export function Lab() {
   const discountRate = useLabStore((s) => s.discountRate);
   const horizon = useLabStore((s) => s.horizon);
   const setStage = useLabStore((s) => s.setStage);
-  const prefer2D = useLabStore((s) => s.prefer2D);
-  const isMobile = useLabStore((s) => s.isMobile);
   const totalBudget = useLabStore((s) => s.totalBudget);
   const setTotalBudget = useLabStore((s) => s.setTotalBudget);
   const resetModel = useLabStore((s) => s.resetModel);
@@ -259,20 +258,33 @@ export function Lab() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-3">
-        {/* 3D Visual Centerpiece */}
-        {!prefer2D && !isMobile && (
-          <div className="w-full rounded-xl overflow-hidden border border-[rgba(212,160,23,0.15)] bg-[#0d1527] mb-1">
-            <div className="px-4 py-2 flex items-center justify-between text-[10px] uppercase tracking-widest text-[rgba(240,230,211,0.45)] font-mono border-b border-[rgba(212,160,23,0.1)]">
-              <span>Portfolio Universe — live 3D</span>
-              <span className="text-[rgba(16,185,129,0.8)]">● LIVE</span>
-            </div>
-            <div className="h-[360px]">
-              <PortfolioUniverse />
-            </div>
+      {/* ECONOMIC ALLOCATION MATRIX + IMPACT RINGS — the redesign centerpiece */}
+      <div className="lux-glass lux-hairline p-5 md:p-6 mb-4 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-[10px] tracking-[0.3em] uppercase font-mono text-[#d4a017]">
+            ECONOMIC ALLOCATION MATRIX
           </div>
-        )}
-        {/* LEFT — Sector Allocation (40%) */}
+          <div className="text-[9px] font-mono text-[rgba(240,230,211,0.4)] uppercase tracking-widest">
+            أعد تشكيل الاقتصاد — Live
+          </div>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-6 items-start">
+          <div>
+            <AllocationMatrix />
+          </div>
+          <div className="lg:border-l lg:border-[rgba(212,160,23,0.12)] lg:pl-6">
+            <div className="text-[10px] tracking-[0.3em] uppercase font-mono text-[rgba(240,230,211,0.55)] mb-4">
+              IMPACT RINGS / حلقات الأثر
+            </div>
+            <ImpactRings metrics={metrics} />
+            <p className="mt-4 text-[9px] text-[rgba(240,230,211,0.35)] font-mono leading-relaxed">
+              كل حلقة تتحرك مباشرة مع قرارك — حسب نموذج المحفظة، وليست شكلاً زخرفيًا.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-3">
         <div className="lg:w-[40%] flex flex-col gap-2">
           <SectionTitle>التخصيص القطاعي ({SECTORS.length})</SectionTitle>
           {SECTORS.map((s, i) => {
@@ -294,43 +306,75 @@ export function Lab() {
                   animate={{ opacity: 0 }}
                   transition={{ duration: 0.9 }}
                 />
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <div
-                      className="w-8 h-8 rounded-md flex items-center justify-center text-base"
+                      className="w-8 h-8 rounded-md flex items-center justify-center text-base flex-shrink-0"
                       style={{ backgroundColor: `${s.color}1A`, border: `1px solid ${s.color}55` }}
                     >
                       {SECTOR_ICONS[s.iconKey] ?? s.iconKey}
                     </div>
-                    <span className="text-sm">{s.arName}</span>
+                    <div className="min-w-0">
+                      <div className="flex items-baseline gap-2">
+                        <span className="uppercase tracking-wider text-[10px] font-mono text-[rgba(240,230,211,0.8)]">
+                          {s.enName}
+                        </span>
+                        <span className="text-[10px] text-[rgba(240,230,211,0.45)]">{s.arName}</span>
+                      </div>
+                      <AnimatedNumber value={val} formatter={(v) => formatSAR(v, { compact: true })} className="text-[#f0d67c] text-lg" />
+                    </div>
                   </div>
-                  <AnimatedNumber value={val} formatter={(v) => formatSAR(v, { compact: true })} className="text-[#f0d67c] text-sm" />
+                  <div className="text-right shrink-0">
+                    <div className="text-[#10b981] font-mono text-xl tabular-nums font-semibold">{pct.toFixed(1)}%</div>
+                    <div className="text-[8px] uppercase tracking-widest text-[rgba(240,230,211,0.35)] font-mono">
+                      SHARE
+                    </div>
+                  </div>
                 </div>
 
-                <input
-                  type="range"
-                  min={sectorMin(s, totalBudget)}
-                  max={sectorMax(s, totalBudget)}
-                  step={Math.max(1, Math.round(totalBudget / 100))}
-                  value={val}
-                  onChange={(e) => setAllocation(s.id, parseInt(e.target.value))}
-                  className="mt-3 w-full h-1.5 appearance-none cursor-pointer accent-[#10b981]"
-                />
+                {/* Allocation Control — refined, spatial, not a generic dashboard slider */}
+                <div className="mt-3 flex items-center gap-2">
+                  <button
+                    onClick={() => setAllocation(s.id, Math.max(sectorMin(s, totalBudget), val - stepSize(totalBudget)))}
+                    className="w-6 h-6 rounded-sm border border-[rgba(240,230,211,0.15)] text-[rgba(240,230,211,0.6)] hover:border-[#d4a017] hover:text-[#f4d27a] text-xs leading-none flex items-center justify-center cursor-pointer transition-colors"
+                    aria-label={`Decrease ${s.enName}`}
+                  >
+                    −
+                  </button>
+                  <input
+                    type="range"
+                    min={sectorMin(s, totalBudget)}
+                    max={sectorMax(s, totalBudget)}
+                    step={stepSize(totalBudget)}
+                    value={val}
+                    onChange={(e) => setAllocation(s.id, parseInt(e.target.value))}
+                    className="flex-1 h-1 appearance-none cursor-pointer accent-[#10b981]"
+                  />
+                  <button
+                    onClick={() => setAllocation(s.id, Math.min(sectorMax(s, totalBudget), val + stepSize(totalBudget)))}
+                    className="w-6 h-6 rounded-sm border border-[rgba(240,230,211,0.15)] text-[rgba(240,230,211,0.6)] hover:border-[#d4a017] hover:text-[#f4d27a] text-xs leading-none flex items-center justify-center cursor-pointer transition-colors"
+                    aria-label={`Increase ${s.enName}`}
+                  >
+                    +
+                  </button>
+                </div>
 
-                <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-mono">
+                <div className="mt-2.5 flex items-center justify-between gap-2 text-[10px] font-mono">
                   <div className="flex items-center gap-1.5 min-w-0">
                     <span className="text-[rgba(240,230,211,0.45)] whitespace-nowrap">
                       SROI {formatSROIRange(s.sroiRange.min, s.sroiRange.max)}
                     </span>
                     <EvidenceBadge level={s.sroiRange.evidence.level} size="xs" showLabel={false} />
                   </div>
-                  <span className="text-[#10b981] whitespace-nowrap">{pct.toFixed(1)}%</span>
-                </div>
-                <div className="mt-1 h-1 rounded-sm bg-[#1a2138] overflow-hidden">
-                  <div
-                    className="h-full bg-[#d4a017]"
-                    style={{ width: `${(val % 100) === 0 ? pct : pct}%` }}
-                  />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[8px] uppercase tracking-widest text-[rgba(240,230,211,0.3)]">
+                      MIN
+                    </span>
+                    <span className="h-px w-6 bg-[rgba(255,255,255,0.15)]" />
+                    <span className="text-[8px] uppercase tracking-widest text-[rgba(240,230,211,0.3)]">
+                      MAX
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             );
@@ -584,4 +628,9 @@ function AnimatedNumber({
       {formatter(display)}
     </motion.div>
   );
+}
+
+/** Increment for the Allocation Control steppers — 0.5% of the total budget. */
+function stepSize(totalBudget: number): number {
+  return Math.max(1, Math.round(totalBudget * 0.005));
 }

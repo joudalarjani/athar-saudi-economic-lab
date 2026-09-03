@@ -12,6 +12,7 @@ import { AtharScorePanel } from '../analysis/AtharScorePanel';
 import { GlossaryTag } from '../shared/GlossaryModal';
 import { LevelHud } from '../shared/LevelHud';
 import { StageNav } from '../shared/StageNav';
+import { ImpactRings } from '../visual/ImpactRings';
 
 export function Analysis() {
   const allocations = useLabStore((s) => s.allocations);
@@ -129,6 +130,18 @@ export function Analysis() {
             </div>
           </motion.div>
         </div>
+
+        {/* Impact Rings — the new KPI visualization */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-panel terminal-border p-6 mb-4"
+        >
+          <div className="text-[10px] tracking-widest uppercase text-gold font-mono mb-4">
+            Impact Rings / حلقات الأثر · تتحدث مباشرة مع تخصيصك
+          </div>
+          <ImpactRings metrics={metrics} />
+        </motion.div>
 
         {/* Athar Impact Score — the composite portfolio score */}
         <AtharScorePanel />

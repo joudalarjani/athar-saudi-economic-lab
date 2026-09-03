@@ -1,20 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLabStore } from '../../state/labStore';
-import { SECTORS } from '../../data/sectors';
 import { formatNumber } from '../../lib/format';
-import { CapitalFlow } from '../shared/CapitalFlow';
+import { AllocationMatrix } from '../visual/AllocationMatrix';
 import { BrandTag } from '../shared/LevelHud';
-
-const SECTOR_ICONS: Record<string, string> = {
-  education: '📚',
-  health: '🏥',
-  housing: '🏘️',
-  employment: '💼',
-  women: '⚡',
-  environment: '🌿',
-  hajj: '🕋',
-};
 
 function useCountUp(target: number, durationMs: number): number {
   const [value, setValue] = useState(0);
@@ -43,9 +32,8 @@ function useDigitSlots(target: number, durationMs: number): string[] {
 
 export function Hero() {
   const setStage = useLabStore((s) => s.setStage);
-  const allocations = useLabStore((s) => s.allocations);
-  const setShowModelExplainer = useLabStore((s) => s.setShowModelExplainer);
   const totalBudget = useLabStore((s) => s.totalBudget);
+  const setShowModelExplainer = useLabStore((s) => s.setShowModelExplainer);
   const dispatchCta = () => setStage('lab');
 
   const [logoClicks, setLogoClicks] = useState(0);
@@ -55,14 +43,12 @@ export function Hero() {
 
   return (
     <div className="relative min-h-screen lux-shell text-[#f0e6d3] overflow-hidden flex flex-col">
-      {/* Animated capital-flow network */}
-      <div className="absolute inset-0 pointer-events-none">
-        <CapitalFlow sectorAllocations={allocations} />
-      </div>
+      {/* Fine economic grid backdrop */}
+      <div className="absolute inset-0 pointer-events-none grid-bg opacity-60" />
 
-      {/* Ambient orbs */}
-      <div className="orb" style={{ top: '-10%', left: '10%', width: 420, height: 420, background: '#d4a017' }} />
-      <div className="orb" style={{ bottom: '-10%', right: '5%', width: 380, height: 380, background: '#10b981' }} />
+      {/* Ambient orbs — restrained */}
+      <div className="orb" style={{ top: '-12%', left: '14%', width: 360, height: 360, background: '#d4a017', opacity: 0.4 }} />
+      <div className="orb" style={{ bottom: '-12%', right: '6%', width: 320, height: 320, background: '#10b981', opacity: 0.32 }} />
 
       {/* Vignette */}
       <div
@@ -88,151 +74,143 @@ export function Hero() {
         <BrandTag />
       </div>
 
-      {/* Center stage */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
-        {/* LEVEL frame */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="level-hud mb-8"
-        >
-          <span className="level-num">LEVEL 01</span>
-          <span className="level-bar"><span style={{ backgroundColor: '#d4a017' }} /></span>
-          <span>ALLOCATE / خصّص</span>
-        </motion.div>
-
-        {/* The title — أكبر أثر */}
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          className="lux-title mb-3 text-center"
-          style={{ fontSize: 'clamp(3.2rem, 12vw, 9rem)' }}
-        >
-          أكبر أثر
-        </motion.h1>
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-xs sm:text-sm tracking-[0.35em] uppercase font-mono text-[rgba(244,242,236,0.55)]"
-        >
-          Saudi Social Investment &amp; Economic Policy Lab
-        </motion.p>
-
-        {/* The question */}
-        <motion.h2
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="mt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light leading-[1.6] max-w-4xl mx-auto"
-        >
-          إذا كان لديك{' '}
-          <span className="lux-title font-bold">100 مليون ريال</span>…
-          <br />
-          أين تعيد استثمارها لتحقيق{' '}
-          <span className="text-[#f4d27a] font-medium">أكبر أثر؟</span>
-        </motion.h2>
-
-        {/* The number */}
-        <div className="mt-8 flex items-baseline justify-center gap-2 font-mono tabular-nums">
-          <span className="lux-big-number flex overflow-hidden" style={{ fontSize: 'clamp(2.8rem, 9vw, 7rem)' }}>
-            {digits.map((d, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 26 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.5 + i * 0.035 }}
-                className="inline-block"
-              >
-                {d}
-              </motion.span>
-            ))}
-          </span>
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.4 }}
-            className="text-xl sm:text-2xl text-[#f4f2ec]/80 font-light whitespace-nowrap"
-          >
-            ريال سعودي
-          </motion.span>
-        </div>
-
-        {/* Sub-line */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 2.6 }}
-          className="mt-6 text-base sm:text-lg text-[rgba(244,242,236,0.65)]"
-        >
-          اختبر القرار. قارن البدائل. وشاهد كيف يتضاعف الأثر.
-        </motion.p>
-
-        {/* Core tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 2.8 }}
-          className="mt-2 text-sm sm:text-base font-mono tracking-wider text-[#f4d27a]/80"
-        >
-          100 مليون ريال · قرار واحد · احتمالات لا نهائية
-        </motion.p>
-
-        {secret && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-3 text-xs font-mono text-[#10b981] border border-[#10b981]/30 rounded-full px-4 py-1.5 lux-glass"
-          >
-            ◈ &quot;العائد الحقيقي قرارٌ ذكي، لا مبلغٌ كبير.&quot; — ATHAR
-          </motion.div>
-        )}
-
-        {/* Sector chips */}
-        <div className="mt-10 flex flex-wrap justify-center gap-2.5 w-full max-w-4xl">
-          {SECTORS.map((s, i) => (
+      {/* Center stage — two columns: message | allocation matrix */}
+      <div className="relative z-10 flex-1 flex items-center px-6 md:px-10 py-8">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 w-full max-w-6xl mx-auto items-center">
+          {/* LEFT — the economic question */}
+          <div className="text-left lg:text-right" dir="rtl">
             <motion.div
-              key={s.id}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="level-hud mb-6"
+            >
+              <span className="level-num">ATHAR</span>
+              <span className="level-bar"><span style={{ backgroundColor: '#d4a017' }} /></span>
+              <span>أثر</span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.15 }}
+              className="lux-title mb-4"
+              style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: 1.05 }}
+            >
+              أين تصنع أكبر أثر؟
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-[10px] tracking-[0.35em] uppercase font-mono text-[#d4a017]/80 mb-5"
+              dir="ltr"
+            >
+              ECONOMIC ALLOCATION ENGINE
+            </motion.div>
+
+            <motion.h2
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 2.8 + i * 0.08 }}
-              className="flex items-center gap-2 rounded-full px-3 py-1.5 lux-glass"
+              transition={{ duration: 0.8, delay: 0.55 }}
+              className="text-lg sm:text-xl md:text-2xl font-light leading-[1.7] max-w-xl"
             >
-              <span className="text-base">{SECTOR_ICONS[s.iconKey] ?? s.iconKey}</span>
-              <span className="text-[10px] text-[rgba(240,230,211,0.7)]">{s.arName}</span>
-            </motion.div>
-          ))}
+              إذا كان لديك{' '}
+              <span className="lux-title font-bold">100,000,000 SAR</span>…
+              <br />
+              كيف تعيد توزيعها لصناعة{' '}
+              <span className="text-[#f4d27a] font-medium">أكبر أثر اقتصادي واجتماعي؟</span>
+            </motion.h2>
+
+            {/* The number — Western numerals */}
+            <div className="mt-7 flex items-baseline gap-2 font-mono tabular-nums" dir="ltr">
+              <span className="lux-big-number flex overflow-hidden" style={{ fontSize: 'clamp(2.2rem, 6vw, 4.4rem)' }}>
+                {digits.map((d, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.8 + i * 0.035 }}
+                    className="inline-block"
+                  >
+                    {d}
+                  </motion.span>
+                ))}
+              </span>
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2.2 }}
+                className="text-lg sm:text-xl text-[#f4f2ec]/80 font-light whitespace-nowrap"
+              >
+                SAR
+              </motion.span>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 2.5 }}
+              className="mt-6 text-sm sm:text-base text-[rgba(244,242,236,0.65)] max-w-xl"
+            >
+              أعد تشكيل هذه المساحة بقرارك — تبديل ريال واحد يعيد ترتيب حجم كل قطاع وتأثيره.
+            </motion.p>
+
+            {secret && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mt-4 text-xs font-mono text-[#10b981] border border-[#10b981]/30 rounded-full px-4 py-1.5 lux-glass inline-block"
+              >
+                ◈ &quot;العائد الحقيقي قرارٌ ذكي، لا مبلغٌ كبير.&quot;
+              </motion.div>
+            )}
+
+            {/* CTAs */}
+            <motion.button
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 3 }}
+              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.03 }}
+              onClick={dispatchCta}
+              className="lux-btn mt-8 cursor-pointer"
+            >
+              <span>ادخل المختبر — ENTER THE LAB</span>
+              <span>→</span>
+            </motion.button>
+
+            <motion.button
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 3.1 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setShowModelExplainer(true)}
+              className="mt-4 text-[10px] tracking-[0.3em] uppercase font-mono text-[rgba(240,230,211,0.5)] hover:text-[#f4d27a] transition-colors cursor-pointer"
+            >
+              explore the model — استكشف النموذج ›
+            </motion.button>
+          </div>
+
+          {/* RIGHT — the Economic Allocation Matrix centerpiece */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="lux-glass p-5 md:p-6 lux-hairline"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-[10px] tracking-[0.3em] uppercase font-mono text-[#d4a017]">
+                ECONOMIC ALLOCATION MATRIX
+              </div>
+              <div className="text-[9px] font-mono text-[rgba(240,230,211,0.4)] uppercase tracking-widest">
+                Live · تفاعلي
+              </div>
+            </div>
+            <AllocationMatrix interactive />
+          </motion.div>
         </div>
-
-        {/* CTA */}
-        <motion.button
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 3.6 }}
-          whileTap={{ scale: 0.97 }}
-          whileHover={{ scale: 1.03 }}
-          onClick={dispatchCta}
-          className="lux-btn mt-12 cursor-pointer"
-        >
-          <span>ادخل المختبر — ENTER THE LAB</span>
-          <span>→</span>
-        </motion.button>
-
-        {/* Secondary CTA — straight to the model */}
-        <motion.button
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 3.7 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => setShowModelExplainer(true)}
-          className="mt-4 text-[10px] tracking-[0.3em] uppercase font-mono text-[rgba(240,230,211,0.5)] hover:text-[#f4d27a] transition-colors cursor-pointer"
-        >
-          explore the model — استكشف النموذج ›
-        </motion.button>
       </div>
 
       {/* Bottom row: quote + attribution */}
